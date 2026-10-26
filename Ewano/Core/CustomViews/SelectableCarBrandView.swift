@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectableCarModelView: View {
+struct SelectableCarBrandView: View {
     let carLogo: ImageResource
     let carName: String
     let isSelected: Bool
@@ -44,5 +44,5 @@ struct SelectableCarModelView: View {
 }
 
 #Preview {
-    SelectableCarModelView(carLogo:  .logoBmw, carName: "Car", isSelected: true)
+    SelectableCarBrandView(carLogo:  .logoBmw, carName: "Car", isSelected: true)
 }
