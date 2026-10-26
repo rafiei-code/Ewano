@@ -13,17 +13,23 @@ struct BadgeView: View {
     let textFont: Font
     let textColor: Color
     let backgroundColor: Color
+    let verticalPadding: CGFloat
+    let horizontalPadding: CGFloat
 
     init(
         text: String,
         textFont: Font = .svBody,
         textColor: Color = .svOnTertiaryFixed,
-        backgroundColor: Color = .svOnTertiaryContainer
+        backgroundColor: Color = .svOnTertiaryContainer,
+        verticalPadding: CGFloat = 4,
+        horizontalPadding: CGFloat = 12
     ) {
         self.text = text
         self.textFont = textFont
         self.textColor = textColor
         self.backgroundColor = backgroundColor
+        self.verticalPadding = verticalPadding
+        self.horizontalPadding = horizontalPadding
     }
 
     var body: some View {
@@ -31,7 +37,8 @@ struct BadgeView: View {
             Text(text)
                 .font(textFont)
                 .foregroundColor(textColor)
-                .padding(8)
+                .padding(.horizontal, horizontalPadding)
+                .padding(.vertical, verticalPadding)
 
         }
         .background(backgroundColor)

@@ -167,13 +167,9 @@ struct ServiceStatusRow: View {
                 .foregroundStyle(status.valueColor)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-            Text(status.badgeTitle)
-                .font(.svLabel)
+            BadgeView(text: status.badgeTitle, textFont: .svLabel, textColor: status.badgeForeground, backgroundColor: status.badgeBackground)
                 .tracking(1.5)
-                .foregroundStyle(status.badgeForeground)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 5)
-                .background(status.badgeBackground, in: Capsule())
+
         }
         .fixedSize(horizontal: true, vertical: false)
         .layoutPriority(1)
