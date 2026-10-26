@@ -51,16 +51,12 @@ struct ServiceReminderCard: View {
                 }
             }
 
-            GeometryReader { geometry in
-                Capsule()
-                    .fill(.white.opacity(0.20))
-                    .overlay(alignment: .leading) {
-                        Capsule()
-                            .fill(.svTertiaryFixed)
-                            .frame(width: geometry.size.width * clampedProgress)
-                    }
-            }
-            .frame(height: 7)
+            ProgressBarView(
+                progress: clampedProgress,
+                fillColor: .svTertiaryFixed,
+                trackColor: .white.opacity(0.20),
+                height: 7
+            )
             .accessibilityLabel("Service interval completed")
             .accessibilityValue(Text(clampedProgress, format: .percent.precision(.fractionLength(0))))
 

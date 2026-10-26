@@ -86,9 +86,8 @@ struct CustomTextFieldView: View {
                 }
             }
             .padding(.horizontal, 16)
-            .background(Color.svSurfaceLowest, in: RoundedRectangle(cornerRadius: 16))
+            .cardSurface(cornerRadius: 16, hasShadow: false)
             .opacity(isEnabled ? 1 : 0.5)
-            .contentShape(RoundedRectangle(cornerRadius: 16))
             .onTapGesture { isFocused = true }
 
             if let errorMessage {
