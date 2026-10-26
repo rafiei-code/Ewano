@@ -1,0 +1,12 @@
+
+name: Ewano
+
+options:
+  bundleIdPrefix: com.bcom.ewn.production.Ewano
+
+targets:
+  Ewano:
+    type: application
+    platform: iOS
+    sources:
+      - Ewano
