@@ -1,0 +1,38 @@
+
+name: Ewano
+
+options:
+  deploymentTarget:
+    iOS: "26.5"
+
+packages:
+  Lottie:
+    url: https://github.com/airbnb/lottie-ios
+    from: 4.6.1
+
+targets:
+  Ewano:
+    type: application
+    platform: iOS
+
+    sources:
+      - path: Ewano
+        excludes:
+          - "App/Resources/Fonts/*.txt"
+
+    dependencies:
+      - package: Lottie
+        product: Lottie
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bcom.ewn.production.Ewano
+        SWIFT_VERSION: "5.0"
+        GENERATE_INFOPLIST_FILE: "YES"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        DEVELOPMENT_TEAM: 3PML7PK6NM
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES"
+        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+        INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleDefault
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"

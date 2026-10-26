@@ -1,0 +1,14 @@
+Add to Info.plist (or Target > Info > "Fonts provided by application"):
+
+<key>UIAppFonts</key>
+<array>
+    <string>BarlowCondensed-SemiBold.ttf</string>
+    <string>BarlowCondensed-Bold.ttf</string>
+    <string>SourceSans3-Medium.ttf</string>
+    <string>SourceSans3-SemiBold.ttf</string>
+    <string>SourceSans3-Bold.ttf</string>
+</array>
+
+Usage (PostScript names):
+Font.custom("BarlowCondensed-Bold", size: 28)
+Font.custom("SourceSans3-Medium", size: 16)
