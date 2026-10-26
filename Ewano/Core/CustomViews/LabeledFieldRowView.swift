@@ -82,15 +82,7 @@ struct LabeledFieldRowView: View {
     }
 
     private var leadingIcon: some View {
-        Image(icon)
-            .resizable()
-            .renderingMode(.template)
-            .scaledToFit()
-            .frame(width: 24, height: 24)
-            .foregroundStyle(.svOnSurfaceVariant)
-            .frame(width: 56, height: 56)
-            .background(Color.svSurfaceContainer, in: Circle())
-            .accessibilityHidden(true)
+        IconCircleView(icon: icon)
     }
 
     @ViewBuilder

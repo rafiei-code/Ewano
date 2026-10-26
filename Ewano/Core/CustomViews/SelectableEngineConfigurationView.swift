@@ -33,9 +33,11 @@ struct SelectableEngineConfigurationView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.svHeadlineMobile)
+                    .foregroundStyle(.svOnSurface)
 
                 Text(description)
-                    .font(.callout)
+                    .font(.svBodySm)
+                    .foregroundStyle(.svOnSurfaceVariant)
             }
 
             Spacer(minLength: 0)

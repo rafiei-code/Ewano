@@ -136,11 +136,15 @@ struct CustomButtonView: View {
                 Spacer()
             }
         }
+        .contentShape(Rectangle())
         .onTapGesture {
-            if config.isEnabled == true {
+            if config.isEnabled && !config.isLoading {
                 action()
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .disabled(!config.isEnabled || config.isLoading)
     }
 
     var backgroundColor: Color {

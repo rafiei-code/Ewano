@@ -24,7 +24,7 @@ struct CarModelRowView: View {
         Group {
             if let option {
                 Button(action: onTap) { content(option) }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .accessibilityElement(children: .combine)
                     .accessibilityAddTraits(isSelected ? .isSelected : [])
             } else {
@@ -35,7 +35,7 @@ struct CarModelRowView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-
+        .cardSurface()
     }
 
     private func content(_ option: CarModelOption) -> some View {
@@ -108,61 +108,6 @@ struct CarModelRowView: View {
         }
         .shimmer()
     }
-}
-
-struct SelectionDot: View {
-    let isSelected: Bool
-
-    var body: some View {
-        Circle()
-            .fill(isSelected ? .svTertiaryContainer : .svSurfaceHigh)
-            .frame(width: 32, height: 32)
-            .overlay {
-                if isSelected {
-                    Image(.icCheck)
-                        .resizable()
-                        .renderingMode(.template)
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .foregroundStyle(.svOnTertiaryContainer)
-                        .transition(.scale.combined(with: .opacity))
-                }
-            }
-            .animation(.spring(duration: 0.25), value: isSelected)
-            .accessibilityHidden(true)
-    }
-}
-
-struct Shimmer: ViewModifier {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var phase: CGFloat = -0.6
-
-    func body(content: Content) -> some View {
-        content
-            .overlay {
-                GeometryReader { geometry in
-                    LinearGradient(
-                        colors: [.clear, .white.opacity(0.6), .clear],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                    .frame(width: geometry.size.width * 0.6)
-                    .offset(x: geometry.size.width * phase)
-                }
-                .mask(content)
-                .allowsHitTesting(false)
-            }
-            .onAppear {
-                guard !reduceMotion else { return }
-                withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: false)) {
-                    phase = 1.0
-                }
-            }
-    }
-}
-
-extension View {
-    func shimmer() -> some View { modifier(Shimmer()) }
 }
 
 #Preview("Car model rows") {

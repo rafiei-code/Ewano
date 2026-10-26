@@ -1,5 +1,5 @@
 //
-//  SelectableCarModelView.swift
+//  SelectableCarBrandView.swift
 //  Ewano
 //
 //  Created by Abolfazl on 2026/10/24.
@@ -20,15 +20,16 @@ struct SelectableCarBrandView: View {
                 .padding()
 
             Text(carName)
-                .font(.title2)
-                .bold()
+                .font(.svHeadlineMd)
+                .foregroundStyle(.svOnSurface)
             Text(isSelected ? "Selected" : "")
-                .font(.caption)
-                .bold()
+                .font(.svLabel)
                 .foregroundStyle(.svOnTertiaryContainer)
 
         }
         .padding()
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
         .overlay(alignment: .topTrailing) {
             if isSelected {
                 Image(.icCheckCircleFill)
