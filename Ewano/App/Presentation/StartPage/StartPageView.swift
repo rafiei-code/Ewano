@@ -48,7 +48,6 @@ struct StartPageView: View {
             }
         }
         .background(.svInverseSurface)
-        .preferredColorScheme(.dark)
         .task(id: autoAdvanceID) {
             guard let autoAdvanceID else { return }
             do {

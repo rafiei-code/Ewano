@@ -39,6 +39,7 @@ struct TextFieldRule {
 struct CustomTextFieldView: View {
     let placeholder: String
     @Binding var text: String
+    var title: String?
     var icon: ImageResource?
     var isSecure: Bool = false
     var rules: [TextFieldRule] = []
@@ -63,29 +64,18 @@ struct CustomTextFieldView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 12) {
-                if let icon {
-                    Image(icon)
-                        .resizable()
-                        .renderingMode(.template)
-                        .scaledToFit()
-                        .frame(width: 22, height: 22)
+            VStack(alignment: .leading, spacing: 0) {
+                if let title {
+                    Text(title)
+                        .font(.svLabel)
                         .foregroundStyle(hasError ? .svError : .svOnSurfaceVariant)
                         .accessibilityHidden(true)
                 }
 
-                field
-                    .font(.svBody)
-                    .foregroundStyle(.svOnSurface)
-                    .focused($isFocused)
-                    .disabled(!isEnabled)
-                    .frame(minHeight: 44)
-
-                if isSecure {
-                    revealButton
-                }
+                inputRow
             }
             .padding(.horizontal, 16)
+            .padding(.top, title == nil ? 0 : 12)
             .cardSurface(cornerRadius: 16, hasShadow: false)
             .opacity(isEnabled ? 1 : 0.5)
             .onTapGesture { isFocused = true }
@@ -115,6 +105,32 @@ struct CustomTextFieldView: View {
         }
         .onChange(of: failingMessage == nil, initial: true) { _, isValid in
             onValidationChange?(isValid)
+        }
+    }
+
+    private var inputRow: some View {
+        HStack(spacing: 12) {
+            if let icon {
+                Image(icon)
+                    .resizable()
+                    .renderingMode(.template)
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
+                    .foregroundStyle(hasError ? .svError : .svOnSurfaceVariant)
+                    .accessibilityHidden(true)
+            }
+
+            field
+                .font(.svBody)
+                .foregroundStyle(.svOnSurface)
+                .focused($isFocused)
+                .disabled(!isEnabled)
+                .frame(minHeight: 44)
+                .accessibilityLabel(title ?? placeholder)
+
+            if isSecure {
+                revealButton
+            }
         }
     }
 
