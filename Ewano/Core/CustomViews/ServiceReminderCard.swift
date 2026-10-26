@@ -24,15 +24,18 @@ struct ServiceReminderCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            ViewThatFits(in: .horizontal) {
-                HStack {
-                    headingLabel
-                    Spacer(minLength: 12)
-                    intervalBadge
-                }
-                VStack(alignment: .leading, spacing: 10) {
-                    headingLabel
-                    intervalBadge
+            HStack {
+                headingLabel
+                Spacer(minLength: 12)
+                VStack {
+                    BadgeView(
+                        text: intervalText,
+                        textFont: .svBodySm,
+                        textColor: .svInverseOnSurface, backgroundColor: .white.opacity(0.10),
+                        verticalPadding: 4,
+                        horizontalPadding: 14
+                    )
+
                 }
             }
 
@@ -42,17 +45,10 @@ struct ServiceReminderCard: View {
                     .foregroundStyle(.svInverseOnSurface)
                     .fixedSize(horizontal: false, vertical: true)
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .firstTextBaseline, spacing: 10) {
-                        distanceLabel
-                        remainingText
-                    }
-                    VStack(alignment: .leading, spacing: 0) {
-                        distanceLabel
-                        remainingText
-                    }
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    distanceLabel
+                    remainingText
                 }
-                .accessibilityElement(children: .combine)
             }
 
             GeometryReader { geometry in
@@ -68,19 +64,12 @@ struct ServiceReminderCard: View {
             .accessibilityLabel("Service interval completed")
             .accessibilityValue(Text(clampedProgress, format: .percent.precision(.fractionLength(0))))
 
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 16) {
-                    dueLabel
-                    Spacer(minLength: 0)
-                    bookingButton
-                }
-                VStack(alignment: .leading, spacing: 8) {
-                    dueLabel
-                    bookingButton
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                }
+            HStack() {
+                dueLabel
+                Spacer(minLength: 0)
+                bookingButton
+                    .fixedSize()
             }
-            .padding(.vertical, -8)
         }
         .padding(28)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -110,21 +99,10 @@ struct ServiceReminderCard: View {
         .fixedSize()
     }
 
-    private var intervalBadge: some View {
-        Text(intervalText)
-            .font(.svBodySm)
-            .foregroundStyle(.svInverseOnSurface)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 5)
-            .background(.white.opacity(0.10), in: Capsule())
-            .fixedSize(horizontal: false, vertical: true)
-    }
-
     private var distanceLabel: some View {
         Text(remainingDistance)
             .font(.svNumberXl)
             .foregroundStyle(.svTertiaryFixed)
-            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var remainingText: some View {
@@ -134,7 +112,7 @@ struct ServiceReminderCard: View {
     }
 
     private var dueLabel: some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 8) {
             Image(.icEvent)
                 .resizable()
                 .renderingMode(.template)
@@ -145,7 +123,6 @@ struct ServiceReminderCard: View {
             Text(dueText)
                 .font(.svBody)
                 .foregroundStyle(.svInverseOnSurface.opacity(0.78))
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -179,8 +156,8 @@ struct ServiceReminderCard: View {
         progress: 0.75,
         onBook: {}
     )
-    .padding(12)
-    .frame(width: 430)
+    .padding()
+    .frame(width: .infinity)
     .background(.svBackground)
 }
 
