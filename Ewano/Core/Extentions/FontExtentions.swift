@@ -6,18 +6,37 @@
 //
 
 import SwiftUI
+import CoreText
 
 extension Font {
-    static let svDisplay = Font.custom("BarlowCondensed-Bold", size: 44, relativeTo: .largeTitle)
-    static let svHeadlineLg = Font.custom("BarlowCondensed-Bold", size: 34, relativeTo: .title)
-    static let svHeadlineMobile = Font.custom("BarlowCondensed-Bold", size: 28, relativeTo: .title2)
-    static let svHeadlineMd = Font.custom("BarlowCondensed-SemiBold", size: 26, relativeTo: .title3)
-    static let svNumberXl = Font.custom("BarlowCondensed-Bold", size: 56, relativeTo: .largeTitle)
-    static let svNumberMd = Font.custom("BarlowCondensed-Bold", size: 24, relativeTo: .title3)
+    // Register lazily so bundled fonts also render in standalone view previews.
+    private static let registerBundledFonts: Void = {
+        let names = [
+            "BarlowCondensed-Bold", "BarlowCondensed-SemiBold",
+            "SourceSans3-Bold", "SourceSans3-SemiBold", "SourceSans3-Medium"
+        ]
+        for name in names {
+            if let url = Bundle.main.url(forResource: name, withExtension: "ttf") {
+                CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+            }
+        }
+    }()
 
-    static let svTitle = Font.custom("SourceSans3-Bold", size: 18, relativeTo: .headline)
-    static let svBody = Font.custom("SourceSans3-Medium", size: 16, relativeTo: .body)
-    static let svBodySm = Font.custom("SourceSans3-Medium", size: 14, relativeTo: .subheadline)
-    static let svLabel = Font.custom("SourceSans3-SemiBold", size: 13, relativeTo: .caption)
-    static let svButton = Font.custom("SourceSans3-Bold", size: 17, relativeTo: .headline)
+    private static func registeredCustom(_ name: String, size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
+        _ = registerBundledFonts
+        return Font.custom(name, size: size, relativeTo: style)
+    }
+
+    static let svDisplay = registeredCustom("BarlowCondensed-Bold", size: 44, relativeTo: .largeTitle)
+    static let svHeadlineLg = registeredCustom("BarlowCondensed-Bold", size: 34, relativeTo: .title)
+    static let svHeadlineMobile = registeredCustom("BarlowCondensed-Bold", size: 28, relativeTo: .title2)
+    static let svHeadlineMd = registeredCustom("BarlowCondensed-SemiBold", size: 26, relativeTo: .title3)
+    static let svNumberXl = registeredCustom("BarlowCondensed-Bold", size: 56, relativeTo: .largeTitle)
+    static let svNumberMd = registeredCustom("BarlowCondensed-Bold", size: 24, relativeTo: .title3)
+
+    static let svTitle = registeredCustom("SourceSans3-Bold", size: 18, relativeTo: .headline)
+    static let svBody = registeredCustom("SourceSans3-Medium", size: 16, relativeTo: .body)
+    static let svBodySm = registeredCustom("SourceSans3-Medium", size: 14, relativeTo: .subheadline)
+    static let svLabel = registeredCustom("SourceSans3-SemiBold", size: 13, relativeTo: .caption)
+    static let svButton = registeredCustom("SourceSans3-Bold", size: 17, relativeTo: .headline)
 }
