@@ -11,7 +11,7 @@ import SwiftUI
 struct EwanoApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            StartPageView()
         }
     }
 }

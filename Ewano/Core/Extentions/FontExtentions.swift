@@ -33,6 +33,7 @@ extension Font {
     static let svHeadlineMd = registeredCustom("BarlowCondensed-SemiBold", size: 26, relativeTo: .title3)
     static let svNumberXl = registeredCustom("BarlowCondensed-Bold", size: 56, relativeTo: .largeTitle)
     static let svNumberMd = registeredCustom("BarlowCondensed-Bold", size: 24, relativeTo: .title3)
+    static let svBrandMark = registeredCustom("BarlowCondensed-SemiBold", size: 16, relativeTo: .callout)
 
     static let svTitle = registeredCustom("SourceSans3-Bold", size: 18, relativeTo: .headline)
     static let svBody = registeredCustom("SourceSans3-Medium", size: 16, relativeTo: .body)

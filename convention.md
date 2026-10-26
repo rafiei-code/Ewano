@@ -8,6 +8,13 @@
 - Record conventions the user provides; do not treat one-off requests or inferred preferences as permanent conventions.
 - If a new instruction clearly replaces an existing convention, update the existing entry. If the conflict is unclear, ask for clarification.
 
+## Architecture
+
+- Build features from the Stitch screen designs, one page at a time, each in its own folder under `Ewano/App/Presentation/`.
+- The presentation layer uses MV (Model-View), with no per-page ViewModels. Views own their UI state and work directly with `@Observable` models and services.
+- Before building UI, check `Ewano/Core/CustomViews/` for an existing component that fits. If none exists, build the component there as its own reusable view, then use it in the page.
+- Implement the network layer with Alamofire.
+
 ## Implementation conventions
 
 - Avoid unnecessary code comments, including documentation that merely describes an obvious property or behavior. Add a comment only when it explains important, non-obvious information needed to understand or maintain the code.

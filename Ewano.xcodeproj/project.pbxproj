@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5104D896308F25D700AA7BA3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5104D895308F25D700AA7BA3 /* Lottie */; };
 		7F1713F3308F683E00DAD814 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 7F1713F2308F683E00DAD814 /* Alamofire */; };
-		7F1713F5308F683E00DAD814 /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 7F1713F4308F683E00DAD814 /* AlamofireDynamic */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +29,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5104D896308F25D700AA7BA3 /* Lottie in Frameworks */,
-				7F1713F5308F683E00DAD814 /* AlamofireDynamic in Frameworks */,
 				7F1713F3308F683E00DAD814 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -76,7 +74,6 @@
 			packageProductDependencies = (
 				5104D895308F25D700AA7BA3 /* Lottie */,
 				7F1713F2308F683E00DAD814 /* Alamofire */,
-				7F1713F4308F683E00DAD814 /* AlamofireDynamic */,
 			);
 			productName = Ewano;
 			productReference = 51965AB6308CE09E0097533C /* Ewano.app */;
@@ -395,11 +392,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7F1713F1308F683E00DAD814 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		7F1713F4308F683E00DAD814 /* AlamofireDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7F1713F1308F683E00DAD814 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = AlamofireDynamic;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

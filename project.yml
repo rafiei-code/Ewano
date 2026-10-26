@@ -9,6 +9,9 @@ packages:
   Lottie:
     url: https://github.com/airbnb/lottie-ios
     from: 4.6.1
+  Alamofire:
+    url: https://github.com/Alamofire/Alamofire.git
+    from: 5.12.2
 
 targets:
   Ewano:
@@ -23,6 +26,8 @@ targets:
     dependencies:
       - package: Lottie
         product: Lottie
+      - package: Alamofire
+        product: Alamofire
 
     settings:
       base:
