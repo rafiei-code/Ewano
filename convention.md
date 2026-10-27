@@ -18,14 +18,14 @@
 ## Implementation conventions
 
 - Avoid unnecessary code comments, including documentation that merely describes an obvious property or behavior. Add a comment only when it explains important, non-obvious information needed to understand or maintain the code.
-- Add the following header to every new source file, using the actual filename, author name `Abolfazl`, and the file's creation date in `YYYY/MM/DD` format. Preserve the original creation date when editing existing files. This required header is an exception to the rule against unnecessary comments. Use equivalent comment syntax for file types that do not support `//`; do not add invalid comments to formats that do not support them.
+- Add the following header to every new source file, using the actual filename, the author's name, and the file's creation date in `YYYY/MM/DD` format. The author is the owner of the account creating the file: `Alireza Sotoudeh` for files made from Alireza's account (including by Claude), and `Abolfazl` for files made by Abolfazl. Preserve the original author and creation date when editing existing files. This required header is an exception to the rule against unnecessary comments. Use equivalent comment syntax for file types that do not support `//`; do not add invalid comments to formats that do not support them.
 
   ```swift
   //
   //  <Filename.swift>
   //  Ewano
   //
-  //  Created by Abolfazl on <YYYY/MM/DD>.
+  //  Created by <Author> on <YYYY/MM/DD>.
   //
   ```
 

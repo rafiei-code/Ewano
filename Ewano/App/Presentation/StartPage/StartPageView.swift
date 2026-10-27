@@ -2,14 +2,13 @@
 //  StartPageView.swift
 //  Ewano
 //
-//  Created by Abolfazl on 2026/10/26.
+//  Created by Alireza Sotoudeh on 2026/10/26.
 //
 
 import SwiftUI
 
 struct StartPageView: View {
     var onGetStarted: () -> Void = {}
-    var onLogIn: () -> Void = {}
     var onFeatureTap: () -> Void = {}
 
     private let slides = StartSlide.all
@@ -20,6 +19,7 @@ struct StartPageView: View {
     @State private var scrollPhase: ScrollPhase = .idle
     @State private var controlsHeight: CGFloat = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.navigate) private var navigate
 
     private var currentSlide: Int {
         (position ?? 0) % slides.count
@@ -142,7 +142,7 @@ struct StartPageView: View {
             HStack(spacing: 4) {
                 Text("Already have an account?")
                     .foregroundStyle(.svInverseOnSurface.opacity(0.80))
-                Button("Log in", action: onLogIn)
+                Button("Log in") { navigate(to: .login) }
                     .bold()
                     .foregroundStyle(.svTertiaryFixed)
             }

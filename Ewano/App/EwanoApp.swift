@@ -14,15 +14,11 @@ struct EwanoApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $path) {
-                StartPageView(onLogIn: { path.append(.login) })
+                StartPageView()
                     .toolbar(.hidden, for: .navigationBar)
-                    .navigationDestination(for: AppRoute.self) { route in
-                        switch route {
-                        case .login:
-                            LoginPageView()
-                        }
-                    }
+                    .appRouteDestinations()
             }
+            .environment(\.navigate, NavigateAction { path.append($0) })
             // Pages in one stack share a single color scheme, so it is chosen here from the top page.
             .preferredColorScheme(path.last?.colorScheme ?? .dark)
         }
