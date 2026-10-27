@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "img_login_fleet.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

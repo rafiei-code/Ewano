@@ -37,6 +37,8 @@ struct CustomButtonView: View {
         let trailingImageSize: CGFloat?
         let titleColor: Color?
         let titleFont: Font?
+        let titleTracking: CGFloat
+        let iconColor: Color?
         let cornerRadius: CGFloat
         let backgroundColor: Color?
         let variant: CustomButtonVariant?
@@ -53,6 +55,8 @@ struct CustomButtonView: View {
             trailingImageSize: CGFloat? = 16,
             titleColor: Color? = nil,
             titleFont: Font? = .title,
+            titleTracking: CGFloat = 0,
+            iconColor: Color? = nil,
             cornerRadius: CGFloat = 16,
             backgroundColor: Color? = nil,
             variant: CustomButtonVariant? = .filled,
@@ -68,6 +72,8 @@ struct CustomButtonView: View {
             self.trailingImageSize = trailingImageSize
             self.titleColor = titleColor
             self.titleFont = titleFont
+            self.titleTracking = titleTracking
+            self.iconColor = iconColor
             self.cornerRadius = cornerRadius
             self.backgroundColor = backgroundColor
             self.variant = variant
@@ -92,12 +98,13 @@ struct CustomButtonView: View {
                     .scaledToFit()
                     .frame(width: config.leadingImageSize, height: config.leadingImageSize)
                     .padding(.trailing, 8)
-                    .foregroundStyle(iconColor)
+                    .foregroundStyle(config.iconColor ?? iconColor)
             }
 
             if let title = config.title {
                 Text(title)
                     .font(config.titleFont)
+                    .tracking(config.titleTracking)
                     .foregroundStyle(config.titleColor ?? titleColor)
             }
 
@@ -106,7 +113,7 @@ struct CustomButtonView: View {
                     .resizable()
                     .frame(width: config.trailingImageSize, height: config.trailingImageSize)
                     .padding(.leading, 8)
-                    .foregroundStyle(iconColor)
+                    .foregroundStyle(config.iconColor ?? iconColor)
             }
 
             if config.size == .full {

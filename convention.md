@@ -8,17 +8,24 @@
 - Record conventions the user provides; do not treat one-off requests or inferred preferences as permanent conventions.
 - If a new instruction clearly replaces an existing convention, update the existing entry. If the conflict is unclear, ask for clarification.
 
+## Architecture
+
+- Build features from the Stitch screen designs, one page at a time, each in its own folder under `Ewano/App/Presentation/`.
+- The presentation layer uses MV (Model-View), with no per-page ViewModels. Views own their UI state and work directly with `@Observable` models and services.
+- Before building UI, check `Ewano/Core/CustomViews/` for an existing component that fits. If none exists, build the component there as its own reusable view, then use it in the page.
+- Implement the network layer with Alamofire.
+
 ## Implementation conventions
 
 - Avoid unnecessary code comments, including documentation that merely describes an obvious property or behavior. Add a comment only when it explains important, non-obvious information needed to understand or maintain the code.
-- Add the following header to every new source file, using the actual filename, author name `Abolfazl`, and the file's creation date in `YYYY/MM/DD` format. Preserve the original creation date when editing existing files. This required header is an exception to the rule against unnecessary comments. Use equivalent comment syntax for file types that do not support `//`; do not add invalid comments to formats that do not support them.
+- Add the following header to every new source file, using the actual filename, the author's name, and the file's creation date in `YYYY/MM/DD` format. The author is the owner of the account creating the file: `Alireza Sotoudeh` for files made from Alireza's account (including by Claude), and `Abolfazl` for files made by Abolfazl. Preserve the original author and creation date when editing existing files. This required header is an exception to the rule against unnecessary comments. Use equivalent comment syntax for file types that do not support `//`; do not add invalid comments to formats that do not support them.
 
   ```swift
   //
   //  <Filename.swift>
   //  Ewano
   //
-  //  Created by Abolfazl on <YYYY/MM/DD>.
+  //  Created by <Author> on <YYYY/MM/DD>.
   //
   ```
 
