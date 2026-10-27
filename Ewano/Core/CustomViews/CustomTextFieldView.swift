@@ -31,19 +31,42 @@ struct TextFieldRule {
         TextFieldRule(message: message) { $0.contains(where: \.isLetter) }
     }
 
+    static func email(_ message: String = "Enter a valid email address") -> TextFieldRule {
+        TextFieldRule(message: message) {
+            $0.trimmingCharacters(in: .whitespaces)
+                .wholeMatch(of: /[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}/) != nil
+        }
+    }
+
     static func custom(_ message: String, isValid: @escaping (String) -> Bool) -> TextFieldRule {
         TextFieldRule(message: message, isValid: isValid)
     }
 }
 
 struct CustomTextFieldView: View {
+    enum TitleAccessory {
+        case text(String)
+        case icon(ImageResource)
+    }
+
+    enum Appearance {
+        case card
+        case inset
+    }
+
     let placeholder: String
     @Binding var text: String
+    var appearance: Appearance = .card
     var title: String?
+    var titleAccessory: TitleAccessory?
     var icon: ImageResource?
+    var trailingIcon: ImageResource?
     var isSecure: Bool = false
+    var showsRevealButton: Bool = true
+    var secureContentType: UITextContentType = .password
     var rules: [TextFieldRule] = []
     var isEnabled: Bool = true
+    var validatesWhileTyping: Bool = false
     var onValidationChange: ((Bool) -> Void)?
 
     @FocusState private var isFocused: Bool
@@ -64,21 +87,9 @@ struct CustomTextFieldView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            VStack(alignment: .leading, spacing: 0) {
-                if let title {
-                    Text(title)
-                        .font(.svLabel)
-                        .foregroundStyle(hasError ? .svError : .svOnSurfaceVariant)
-                        .accessibilityHidden(true)
-                }
-
-                inputRow
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, title == nil ? 0 : 12)
-            .cardSurface(cornerRadius: 16, hasShadow: false)
-            .opacity(isEnabled ? 1 : 0.5)
-            .onTapGesture { isFocused = true }
+            fieldContainer
+                .opacity(isEnabled ? 1 : 0.5)
+                .onTapGesture { isFocused = true }
 
             if let errorMessage {
                 HStack(spacing: 6) {
@@ -103,8 +114,53 @@ struct CustomTextFieldView: View {
         .onChange(of: isFocused) { _, focused in
             if !focused { hasInteracted = true }
         }
+        .onAppear {
+            if !text.isEmpty { hasInteracted = true }
+        }
+        .onChange(of: text) {
+            if validatesWhileTyping { hasInteracted = true }
+        }
         .onChange(of: failingMessage == nil, initial: true) { _, isValid in
             onValidationChange?(isValid)
+        }
+    }
+
+    @ViewBuilder
+    private var fieldContainer: some View {
+        switch appearance {
+        case .card:
+            VStack(alignment: .leading, spacing: 0) {
+                titleRow
+                inputRow
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, title == nil ? 0 : 12)
+            .cardSurface(cornerRadius: 16, hasShadow: false)
+        case .inset:
+            VStack(alignment: .leading, spacing: 8) {
+                titleRow
+                inputRow
+                    .padding(.horizontal, 12)
+                    .frame(minHeight: 56)
+                    .background(Color.svSurfaceLow, in: RoundedRectangle(cornerRadius: 8))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var titleRow: some View {
+        if let title {
+            HStack(spacing: 8) {
+                Text(title)
+                    .font(.svLabel)
+                    .foregroundStyle(hasError ? .svError : .svOnSurfaceVariant)
+                    .accessibilityHidden(true)
+
+                if let titleAccessory {
+                    Spacer(minLength: 0)
+                    titleAccessoryView(titleAccessory)
+                }
+            }
         }
     }
 
@@ -128,9 +184,39 @@ struct CustomTextFieldView: View {
                 .frame(minHeight: 44)
                 .accessibilityLabel(title ?? placeholder)
 
-            if isSecure {
+            if let trailingIcon {
+                Image(trailingIcon)
+                    .resizable()
+                    .renderingMode(.template)
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(.svTertiary)
+                    .transition(.scale.combined(with: .opacity))
+                    .accessibilityHidden(true)
+            }
+
+            if isSecure && showsRevealButton {
                 revealButton
             }
+        }
+        .animation(.spring(duration: 0.25), value: trailingIcon)
+    }
+
+    @ViewBuilder
+    private func titleAccessoryView(_ accessory: TitleAccessory) -> some View {
+        switch accessory {
+        case .text(let value):
+            Text(value)
+                .font(.svLabel)
+                .foregroundStyle(.svOutline)
+        case .icon(let resource):
+            Image(resource)
+                .resizable()
+                .renderingMode(.template)
+                .scaledToFit()
+                .frame(width: 18, height: 18)
+                .foregroundStyle(.svOutlineVariant)
+                .accessibilityHidden(true)
         }
     }
 
@@ -138,7 +224,7 @@ struct CustomTextFieldView: View {
     private var field: some View {
         if isSecure && !isRevealed {
             SecureField(placeholder, text: $text)
-                .textContentType(.password)
+                .textContentType(secureContentType)
         } else {
             TextField(placeholder, text: $text)
                 .autocorrectionDisabled(isSecure)

@@ -91,7 +91,6 @@ struct CustomButtonView: View {
                 Spacer()
             }
 
-
             if let leadingImage = config.leadingImage {
                 Image(leadingImage)
                     .resizable()
@@ -127,7 +126,8 @@ struct CustomButtonView: View {
                     .fill(config.backgroundColor ?? backgroundColor)
                     .overlay {
                         if !config.isEnabled {
-                            Color.white.opacity(0.4)
+                            RoundedRectangle(cornerRadius: config.cornerRadius)
+                                .fill(.black.opacity(0.4))
                         }
                     }
             }

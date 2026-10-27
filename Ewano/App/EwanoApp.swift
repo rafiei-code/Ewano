@@ -18,9 +18,18 @@ struct EwanoApp: App {
                     .toolbar(.hidden, for: .navigationBar)
                     .appRouteDestinations()
             }
-            .environment(\.navigate, NavigateAction { path.append($0) })
+            .environment(\.navigate, NavigateAction(action: navigate))
             // Pages in one stack share a single color scheme, so it is chosen here from the top page.
             .preferredColorScheme(path.last?.colorScheme ?? .dark)
+        }
+    }
+
+    // Going to a page that is already in the stack pops back to it, so Login ⇄ Sign Up never piles up copies.
+    private func navigate(to route: AppRoute) {
+        if let index = path.firstIndex(of: route) {
+            path.removeSubrange((index + 1)...)
+        } else {
+            path.append(route)
         }
     }
 }
