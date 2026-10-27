@@ -10,7 +10,7 @@ import Foundation
 struct CarFactoryModel: Codable {
     let id: String
     let name: String
-    let imageUrl: String
+    let imageURl: String
     let isSelected: Bool?
     let models: [CarModel]
 }
