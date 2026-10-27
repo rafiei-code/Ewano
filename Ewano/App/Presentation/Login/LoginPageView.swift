@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
-import Lottie
 
 struct LoginPageView: View {
     var onLogIn: (_ email: String, _ password: String) async -> Void = { _, _ in }
-    var onForgotPassword: () -> Void = {}
-    var onCreateAccount: () -> Void = {}
     var onAppleSignIn: () -> Void = {}
     var onGoogleSignIn: () -> Void = {}
+
+    @Environment(\.navigate) private var navigate
 
     @State private var email = ""
     @State private var password = ""
@@ -28,22 +27,25 @@ struct LoginPageView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                statusRow
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
+//                statusRow
+//                    .padding(.top, 12)
+//                    .padding(.bottom, 8)
 
-                header
-                    .padding(.top, 16)
-                    .padding(.bottom, 28)
-
-                GarageGlanceCard(
-                    image: .imgLoginFleet,
-                    status: "Active fleet",
-                    detail: "Ready to Sync",
-                    title: "2 Vehicles Monitored",
-                    subtitle: "Next due: Oil & Filter in 420 mi"
+                AuthHeaderView(
+                    title: "WELCOME BACK",
+                    subtitle: "Log in to track your garage maintenance schedules."
                 )
-                .padding(.bottom, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 28)
+
+//                GarageGlanceCard(
+//                    image: .imgLoginFleet,
+//                    status: "Active fleet",
+//                    detail: "Ready to Sync",
+//                    title: "2 Vehicles Monitored",
+//                    subtitle: "Next due: Oil & Filter in 420 mi"
+//                )
+//                .padding(.bottom, 20)
 
                 form
 
@@ -70,58 +72,38 @@ struct LoginPageView: View {
                     .font(.svTitle)
                     .foregroundStyle(.svOnSurface)
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                IconCircleView(
-                    icon: .icPerson,
-                    foreground: .svOnPrimary,
-                    background: .svPrimary,
-                    diameter: 32,
-                    iconSize: 18
-                )
-            }
+//            ToolbarItem(placement: .topBarTrailing) {
+//                IconCircleView(
+//                    icon: .icPerson,
+//                    foreground: .svOnPrimary,
+//                    background: .svPrimary,
+//                    diameter: 32,
+//                    iconSize: 18
+//                )
+//            }
             .sharedBackgroundVisibility(.hidden)
         }
     }
 
-    private var statusRow: some View {
-        HStack {
-            HighlightTag(title: "Servio garage sync", style: .onLight)
-
-            Spacer(minLength: 8)
-
-            HStack(spacing: 4) {
-                Image(.icVerifiedUser)
-                    .resizable()
-                    .renderingMode(.template)
-                    .scaledToFit()
-                    .frame(width: 18, height: 18)
-                    .accessibilityHidden(true)
-                Text("SSL 256-bit")
-                    .font(.svLabel)
-            }
-            .foregroundStyle(.svOnSurfaceVariant)
-        }
-    }
-
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 0) {
-                Text("WELCOME BACK")
-                    .font(.svHeadlineMobile)
-                    .foregroundStyle(.svOnSurface)
-                    .accessibilityAddTraits(.isHeader)
-                LottieView(animation: .loginStar)
-                    .playing(loopMode: .loop)
-                    .frame(width: 32, height: 32)
-                    .accessibilityHidden(true)
-            }
-
-            Text("Log in to track your garage maintenance schedules.")
-                .font(.svBody)
-                .foregroundStyle(.svOnSurfaceVariant)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
+//    private var statusRow: some View {
+//        HStack {
+//            HighlightTag(title: "Servio garage sync", style: .onLight)
+//
+//            Spacer(minLength: 8)
+//
+//            HStack(spacing: 4) {
+//                Image(.icVerifiedUser)
+//                    .resizable()
+//                    .renderingMode(.template)
+//                    .scaledToFit()
+//                    .frame(width: 18, height: 18)
+//                    .accessibilityHidden(true)
+//                Text("SSL 256-bit")
+//                    .font(.svLabel)
+//            }
+//            .foregroundStyle(.svOnSurfaceVariant)
+//        }
+//    }
 
     private var form: some View {
         VStack(spacing: 16) {
@@ -132,9 +114,7 @@ struct LoginPageView: View {
                 icon: .icMail,
                 rules: [
                     .required("Enter your email address"),
-                    .custom("Enter a valid email address") {
-                        $0.trimmingCharacters(in: .whitespaces).wholeMatch(of: /[^@\s]+@[^@\s]+\.[^@\s]+/) != nil
-                    }
+                    .email()
                 ],
                 isEnabled: !isLoggingIn,
                 onValidationChange: { isEmailValid = $0 }
@@ -155,7 +135,9 @@ struct LoginPageView: View {
                 onValidationChange: { isPasswordValid = $0 }
             )
 
-            Button("Forgot password?", action: onForgotPassword)
+            Button("Forgot password?") {
+                navigate(to: .forgotPassword(email: email.trimmingCharacters(in: .whitespaces)))
+            }
                 .font(.svBodySm)
                 .foregroundStyle(.svOutline)
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -167,12 +149,10 @@ struct LoginPageView: View {
                 isLoading: isLoggingIn,
                 trailingImage: .icArrowForward,
                 trailingImageSize: 20,
-                titleColor: .svOnTertiaryFixed,
                 titleFont: .svButton,
                 titleTracking: 0.85,
                 iconColor: .svOnTertiaryFixed,
                 cornerRadius: 12,
-                backgroundColor: .svTertiary
             ), action: logIn)
             .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
             .padding(.top, 4)
@@ -184,7 +164,7 @@ struct LoginPageView: View {
             Text("New here?")
                 .font(.svBody)
                 .foregroundStyle(.svOnSurfaceVariant)
-            Button("Create account", action: onCreateAccount)
+            Button("Create account") { navigate(to: .signUp) }
                 .font(.svTitle)
                 .foregroundStyle(.svTertiary)
         }

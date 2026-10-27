@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct StartPageView: View {
-    var onGetStarted: () -> Void = {}
     var onFeatureTap: () -> Void = {}
 
     private let slides = StartSlide.all
@@ -136,7 +135,9 @@ struct StartPageView: View {
                 iconColor: .svOnTertiaryFixed,
                 cornerRadius: 12,
                 backgroundColor: .svTertiaryFixed
-            ), action: onGetStarted)
+            )) {
+                navigate(to: .signUp)
+            }
             .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
 
             HStack(spacing: 4) {

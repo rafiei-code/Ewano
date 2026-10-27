@@ -9,17 +9,21 @@ import SwiftUI
 
 enum AppRoute: Hashable {
     case login
+    case signUp
+    case forgotPassword(email: String)
 
     @MainActor @ViewBuilder
     var page: some View {
         switch self {
         case .login: LoginPageView()
+        case .signUp: SignUpPageView()
+        case .forgotPassword(let email): ForgotPasswordPageView(email: email)
         }
     }
 
     var colorScheme: ColorScheme {
         switch self {
-        case .login: .light
+        case .login, .signUp, .forgotPassword: .light
         }
     }
 }
