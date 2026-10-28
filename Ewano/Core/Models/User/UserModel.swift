@@ -12,5 +12,6 @@ struct UserModel: Codable, Equatable, Hashable {
     let name: String
     let email: String
     let password: String
+    let profileImageURL: String?
     let cars: [CarModel]
 }

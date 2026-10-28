@@ -11,9 +11,10 @@ import Lottie
 struct HomeView: View {
 
     let user: UserModel
+    var onTapProfile: (() -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
 
             appHeader
             ScrollView {
@@ -41,6 +42,8 @@ struct HomeView: View {
                 }
                 Spacer(minLength: 0)
             }
+            .padding(.top, 8)
+
         }
         .background(.svSurfaceHigh)
         .navigationBarBackButtonHidden(true)
@@ -68,14 +71,33 @@ struct HomeView: View {
 
                 })
                 .fixedSize()
+                Button {
+                    onTapProfile?()
+                } label: {
+                    profileImageView
+                }
 
-                CustomButtonView(config: .init(leadingImage: .icPerson, leadingImageSize: 34, variant: .plain), action: {
-
-                })
-                .fixedSize()
             }
             Divider()
         }
+        .padding(.horizontal, 8)
+    }
+
+    var profileImageView: some View {
+        VStack {
+            if let profileImageURL = user.profileImageURL {
+                AppImage(type: .url(profileImageURL))
+                    .scaledToFit()
+                    .frame(height: 40)
+            } else {
+                AppImage(type: .local(.icPerson))
+                    .scaledToFit()
+                    .frame(height: 30)
+                    .padding(4)
+            }
+        }
+        .background(.svSecondaryContainer)
+        .clipShape(.circle)
     }
 }
 
@@ -86,12 +108,13 @@ struct HomeView: View {
             name: "Ali",
             email: "ali@gmail.com",
             password: "1234",
+            profileImageURL: nil,
             cars: [
                 .init(
                     id: "1",
                     name: "Camry",
                     nickname: "Family car",
-                    imageURL: "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=800",
+                    imageURL: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
                     isSelected: false,
                     carManufacturingYears: [],
                     schedules: [

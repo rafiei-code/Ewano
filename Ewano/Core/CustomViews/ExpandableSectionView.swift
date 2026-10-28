@@ -118,7 +118,7 @@ struct ExpandableSectionView: View {
 
     var schedule: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ForEach(car.schedules, id: \.id) { schedule in
+            ForEach(car.schedules.prefix(2), id: \.id) { schedule in
                 ServiceStatusRow(
                     icon: .icOilBarrelFill,
                     title: schedule.title,
@@ -129,7 +129,6 @@ struct ExpandableSectionView: View {
                 )
             }
         }
-
     }
 }
 
