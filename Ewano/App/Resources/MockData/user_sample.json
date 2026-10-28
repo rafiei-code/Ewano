@@ -1,0 +1,270 @@
+{
+  "id": "user-alex-morgan",
+  "name": "Alex Morgan",
+  "email": "alex.morgan@email.com",
+  "password": "Servio2026!",
+  "profileImageURL": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200",
+  "cars": [
+    {
+      "id": "car-camry-2021",
+      "name": "Camry",
+      "nickname": "Family car",
+      "imageURL": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
+      "isSelected": true,
+      "carManufacturingYears": [
+        {
+          "id": "camry-2021",
+          "year": 2021,
+          "engineConfigurations": [
+            {
+              "id": "camry-2021-2.5",
+              "engineModel": "2.5L I4 Dynamic Force"
+            },
+            {
+              "id": "camry-2021-3.5",
+              "engineModel": "3.5L V6"
+            }
+          ],
+          "carImageURl": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
+          "transmissions": [
+            {
+              "transmission": "8-Speed Automatic"
+            }
+          ]
+        }
+      ],
+      "schedules": [
+        {
+          "id": "camry-tire-rotation",
+          "title": "Tire Rotation",
+          "accumulatedDistance": 7750,
+          "serviceInterval": 7500
+        },
+        {
+          "id": "camry-coolant",
+          "title": "Coolant Change",
+          "accumulatedDistance": 27000,
+          "serviceInterval": 30000
+        },
+        {
+          "id": "camry-oil",
+          "title": "Engine Oil & Filter",
+          "accumulatedDistance": 4600,
+          "serviceInterval": 5000
+        },
+        {
+          "id": "camry-brake-fluid",
+          "title": "Brake Fluid",
+          "accumulatedDistance": 11600,
+          "serviceInterval": 20000
+        },
+        {
+          "id": "camry-spark-plugs",
+          "title": "Spark Plugs Replacement",
+          "accumulatedDistance": 38500,
+          "serviceInterval": 60000
+        },
+        {
+          "id": "camry-transmission",
+          "title": "Transmission Fluid Inspection",
+          "accumulatedDistance": 18800,
+          "serviceInterval": 45000
+        },
+        {
+          "id": "camry-cabin-air",
+          "title": "Cabin Air Filter",
+          "accumulatedDistance": 4000,
+          "serviceInterval": 15000
+        },
+        {
+          "id": "camry-engine-air",
+          "title": "Engine Air Filter",
+          "accumulatedDistance": 9500,
+          "serviceInterval": 15000
+        },
+        {
+          "id": "camry-brake-pads",
+          "title": "Brake Pads Inspection",
+          "accumulatedDistance": 6200,
+          "serviceInterval": 10000
+        },
+        {
+          "id": "camry-alignment",
+          "title": "Wheel Alignment",
+          "accumulatedDistance": 3000,
+          "serviceInterval": 12000
+        },
+        {
+          "id": "camry-battery",
+          "title": "Battery Check",
+          "accumulatedDistance": 5000,
+          "serviceInterval": 10000
+        },
+        {
+          "id": "camry-wipers",
+          "title": "Wiper Blades",
+          "accumulatedDistance": 7000,
+          "serviceInterval": 12000
+        }
+      ],
+      "currentOdometer": "48250"
+    },
+    {
+      "id": "car-corolla-2019",
+      "name": "Corolla",
+      "nickname": "Work car",
+      "imageURL": "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=800",
+      "isSelected": false,
+      "carManufacturingYears": [
+        {
+          "id": "corolla-2019",
+          "year": 2019,
+          "engineConfigurations": [
+            {
+              "id": "corolla-2019-1.8",
+              "engineModel": "1.8L I4"
+            }
+          ],
+          "carImageURl": "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=800",
+          "transmissions": [
+            {
+              "transmission": "CVT"
+            }
+          ]
+        }
+      ],
+      "schedules": [
+        {
+          "id": "corolla-oil",
+          "title": "Engine Oil & Filter",
+          "accumulatedDistance": 2100,
+          "serviceInterval": 5000
+        },
+        {
+          "id": "corolla-coolant",
+          "title": "Coolant Change",
+          "accumulatedDistance": 9000,
+          "serviceInterval": 30000
+        },
+        {
+          "id": "corolla-tire-rotation",
+          "title": "Tire Rotation",
+          "accumulatedDistance": 3200,
+          "serviceInterval": 7500
+        },
+        {
+          "id": "corolla-brake-fluid",
+          "title": "Brake Fluid",
+          "accumulatedDistance": 8000,
+          "serviceInterval": 20000
+        },
+        {
+          "id": "corolla-cabin-air",
+          "title": "Cabin Air Filter",
+          "accumulatedDistance": 6500,
+          "serviceInterval": 15000
+        }
+      ],
+      "currentOdometer": "12040"
+    },
+    {
+      "id": "car-civic-2018",
+      "name": "Civic",
+      "nickname": null,
+      "imageURL": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800",
+      "isSelected": false,
+      "carManufacturingYears": [
+        {
+          "id": "civic-2018",
+          "year": 2018,
+          "engineConfigurations": [
+            {
+              "id": "civic-2018-2.0",
+              "engineModel": "2.0L I4"
+            },
+            {
+              "id": "civic-2018-1.5t",
+              "engineModel": "1.5L Turbo I4"
+            }
+          ],
+          "carImageURl": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800",
+          "transmissions": [
+            {
+              "transmission": "CVT"
+            },
+            {
+              "transmission": "6-Speed Manual"
+            }
+          ]
+        }
+      ],
+      "schedules": [
+        {
+          "id": "civic-oil",
+          "title": "Engine Oil & Filter",
+          "accumulatedDistance": 5600,
+          "serviceInterval": 5000
+        },
+        {
+          "id": "civic-brake-pads",
+          "title": "Brake Pads Inspection",
+          "accumulatedDistance": 10300,
+          "serviceInterval": 10000
+        },
+        {
+          "id": "civic-coolant",
+          "title": "Coolant Change",
+          "accumulatedDistance": 28500,
+          "serviceInterval": 30000
+        },
+        {
+          "id": "civic-tire-rotation",
+          "title": "Tire Rotation",
+          "accumulatedDistance": 2400,
+          "serviceInterval": 7500
+        },
+        {
+          "id": "civic-spark-plugs",
+          "title": "Spark Plugs Replacement",
+          "accumulatedDistance": 41000,
+          "serviceInterval": 60000
+        }
+      ],
+      "currentOdometer": "86410"
+    },
+    {
+      "id": "car-tucson-2024",
+      "name": "Tucson",
+      "nickname": "Weekend SUV",
+      "imageURL": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800",
+      "isSelected": false,
+      "carManufacturingYears": [
+        {
+          "id": "tucson-2024",
+          "year": 2024,
+          "engineConfigurations": [
+            {
+              "id": "tucson-2024-2.5",
+              "engineModel": "2.5L I4"
+            },
+            {
+              "id": "tucson-2024-hybrid",
+              "engineModel": "1.6L Turbo Hybrid"
+            }
+          ],
+          "carImageURl": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800",
+          "transmissions": [
+            {
+              "transmission": "8-Speed Automatic"
+            },
+            {
+              "transmission": "6-Speed Automatic"
+            }
+          ]
+        }
+      ],
+      "schedules": [],
+      "currentOdometer": "320"
+    }
+  ]
+}

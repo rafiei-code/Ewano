@@ -12,6 +12,7 @@ enum AppRoute: Hashable {
     case signUp
     case forgotPassword(email: String)
     case home(user: UserModel)
+    case schedule(user: UserModel)
 
     @MainActor @ViewBuilder
     var page: some View {
@@ -20,6 +21,7 @@ enum AppRoute: Hashable {
         case .signUp: SignUpPageView()
         case .forgotPassword(let email): ForgotPasswordPageView(email: email)
         case .home(let user): HomeView(user: user)
+        case .schedule(let user): SchedulePageView(user: user)
         }
     }
 

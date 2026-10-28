@@ -9,10 +9,10 @@ import SwiftUI
 
 struct ExpandableSectionView: View {
 
-    let car: CarModel
+    let car: Car
+    @State var isExpanded: Bool = false
     var onTapSeeAll: (() -> Void)?
 
-    @State var isExpanded: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -72,7 +72,7 @@ struct ExpandableSectionView: View {
         .accessibilityValue(isExpanded ? "Expanded" : "Collapsed")
     }
 
-    private func carCard(_ car: CarModel) -> some View {
+    private func carCard(_ car: Car) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Spacer()
@@ -135,7 +135,7 @@ struct ExpandableSectionView: View {
 
 #Preview("Expandable section") {
     ExpandableSectionView(
-        car:CarModel(
+        car:Car(
             id: "1",
             name: "Toyota Camry",
             nickname: "Daily driver",

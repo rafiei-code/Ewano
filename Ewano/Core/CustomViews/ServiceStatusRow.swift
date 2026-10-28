@@ -5,13 +5,6 @@
 //  Created by Abolfazl on 2026/10/26.
 //
 
-//
-//  ServiceStatusRow.swift
-//  Ewano
-//
-//  Created by Abolfazl on 2026/10/26.
-//
-
 import SwiftUI
 
 enum ServiceStatus: CaseIterable {
@@ -83,7 +76,7 @@ enum ServiceStatus: CaseIterable {
         }
     }
 
-    fileprivate var progressColor: Color {
+    var progressColor: Color {
         switch self {
         case .overdue: .svError
         case .dueSoon: .svTertiaryContainer
@@ -147,6 +140,21 @@ enum ServiceInterval {
             else { return nil }
             return Measure(total: Double(total), elapsed: Double(elapsed))
         }
+    }
+
+    /// Service is "due soon" when this fraction of the interval (or less) remains.
+    static let dueSoonThreshold = 0.1
+
+    /// `nil` means the input is invalid.
+    var status: ServiceStatus? {
+        guard let measure else { return nil }
+        if measure.elapsed >= measure.total {
+            return .overdue
+        }
+        if measure.remaining <= measure.total * Self.dueSoonThreshold {
+            return .dueSoon
+        }
+        return .ok
     }
 
     fileprivate var intervalText: String {
@@ -232,9 +240,6 @@ struct ServiceStatusRow: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    /// Service is "due soon" when this fraction of the interval (or less) remains.
-    private static let dueSoonThreshold = 0.1
-
     // MARK: - Calculations
 
     private var measure: ServiceInterval.Measure? {
@@ -246,14 +251,7 @@ struct ServiceStatusRow: View {
     }
 
     private var status: ServiceStatus {
-        guard let measure else { return .overdue } // not shown: body renders invalidContent
-        if measure.elapsed >= measure.total {
-            return .overdue
-        }
-        if measure.remaining <= measure.total * Self.dueSoonThreshold {
-            return .dueSoon
-        }
-        return .ok
+        interval.status ?? .overdue // not shown: body renders invalidContent
     }
 
     /// Bar fill, 0...1. Capped for display only; `status` is calculated separately.
@@ -392,8 +390,8 @@ struct ServiceStatusRow: View {
     }
 
     private var standardContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
                 iconView
 
                 if dynamicTypeSize.isAccessibilitySize {
@@ -412,10 +410,9 @@ struct ServiceStatusRow: View {
 
             progressBar
         }
-        .padding(.horizontal, 22)
-        .padding(.vertical, 20)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardSurface(cornerRadius: 32)
+        .cardSurface(cornerRadius: 24)
         .accessibilityElement(children: .combine)
         .accessibilityValue(Text(clampedProgress, format: .percent.precision(.fractionLength(0))))
     }
@@ -425,8 +422,8 @@ struct ServiceStatusRow: View {
             icon: displayIcon,
             foreground: status.iconForeground,
             background: status.iconBackground,
-            diameter: 60,
-            iconSize: 26
+            diameter: 48,
+            iconSize: 24
         )
     }
 
@@ -445,14 +442,21 @@ struct ServiceStatusRow: View {
     }
 
     private func valueBlock(alignment: HorizontalAlignment) -> some View {
-        VStack(alignment: alignment, spacing: 6) {
+        VStack(alignment: alignment, spacing: 4) {
             Text(valueText.uppercased())
-                .font(.svHeadlineMobile)
+                .font(.svNumberMd)
                 .foregroundStyle(status.valueColor)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-            BadgeView(text: status.badgeTitle, textFont: .svLabel, textColor: status.badgeForeground, backgroundColor: status.badgeBackground)
-                .tracking(1.5)
+            BadgeView(
+                text: status.badgeTitle,
+                textFont: .svLabel,
+                textColor: status.badgeForeground,
+                backgroundColor: status.badgeBackground,
+                verticalPadding: 2,
+                horizontalPadding: 10
+            )
+            .tracking(1)
         }
         .fixedSize(horizontal: true, vertical: false)
         .layoutPriority(1)
