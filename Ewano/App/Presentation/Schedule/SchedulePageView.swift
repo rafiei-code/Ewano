@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SchedulePageView: View {
     let user: UserModel
+    let car: Car?
     let onNotifications: () -> Void
     let onProfile: () -> Void
     let onSelectService: (ScheduleModel) -> Void
@@ -18,11 +19,13 @@ struct SchedulePageView: View {
 
     init(
         user: UserModel,
+        car: Car? = nil,
         onNotifications: @escaping () -> Void = {},
         onProfile: @escaping () -> Void = {},
         onSelectService: @escaping (ScheduleModel) -> Void = { _ in }
     ) {
         self.user = user
+        self.car = car
         self.onNotifications = onNotifications
         self.onProfile = onProfile
         self.onSelectService = onSelectService

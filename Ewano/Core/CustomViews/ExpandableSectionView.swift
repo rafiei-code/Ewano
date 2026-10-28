@@ -10,9 +10,9 @@ import SwiftUI
 struct ExpandableSectionView: View {
 
     let car: Car
+    @State var isExpanded: Bool = false
     var onTapSeeAll: (() -> Void)?
 
-    @State var isExpanded: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
