@@ -24,6 +24,7 @@ struct ExpandableSectionView: View {
                     HStack(spacing: 12) {
                         Text("Coming Up")
                             .font(.svNumberMd)
+                            .foregroundStyle(.black)
                         BadgeView(text: "\(car.schedules.count)", backgroundColor: .svInverseOnSurface)
                         Spacer()
                         CustomButtonView(config: .init(title: "See All", trailingImage: .icChevronRight, titleFont: .svBody, variant: .plain)) {
