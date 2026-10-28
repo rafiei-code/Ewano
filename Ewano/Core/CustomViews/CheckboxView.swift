@@ -33,18 +33,26 @@ struct CheckboxView: View {
                 .contentShape(Rectangle().inset(by: -10))
         }
         .buttonStyle(.plain)
-        .animation(.spring(duration: 0.25), value: isOn)
+        .animation(.spring(response: 0.25, dampingFraction: 1), value: isOn)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityAddTraits(isOn ? [.isToggle, .isSelected] : .isToggle)
+        .accessibilityAddTraits(accessibilityTraits)
+    }
+
+    private var accessibilityTraits: AccessibilityTraits {
+        var traits: AccessibilityTraits = isOn ? .isSelected : []
+        if #available(iOS 17.0, *) {
+            traits.insert(.isToggle)
+        }
+        return traits
     }
 }
 
-#Preview {
-    @Previewable @State var isOn = true
-    HStack(spacing: 20) {
-        CheckboxView(isOn: $isOn, accessibilityLabel: "Agree")
-        CheckboxView(isOn: .constant(false), accessibilityLabel: "Agree")
-    }
-    .padding()
-    .background(.svSurfaceHigh)
-}
+//#Preview {
+//    @Previewable @State var isOn = true
+//    HStack(spacing: 20) {
+//        CheckboxView(isOn: $isOn, accessibilityLabel: "Agree")
+//        CheckboxView(isOn: .constant(false), accessibilityLabel: "Agree")
+//    }
+//    .padding()
+//    .background(.svSurfaceHigh)
+//}

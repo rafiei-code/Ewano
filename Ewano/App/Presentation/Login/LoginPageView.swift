@@ -72,38 +72,9 @@ struct LoginPageView: View {
                     .font(.svTitle)
                     .foregroundStyle(.svOnSurface)
             }
-//            ToolbarItem(placement: .topBarTrailing) {
-//                IconCircleView(
-//                    icon: .icPerson,
-//                    foreground: .svOnPrimary,
-//                    background: .svPrimary,
-//                    diameter: 32,
-//                    iconSize: 18
-//                )
-//            }
-            .sharedBackgroundVisibility(.hidden)
+            .hiddenSharedBackground()
         }
     }
-
-//    private var statusRow: some View {
-//        HStack {
-//            HighlightTag(title: "Servio garage sync", style: .onLight)
-//
-//            Spacer(minLength: 8)
-//
-//            HStack(spacing: 4) {
-//                Image(.icVerifiedUser)
-//                    .resizable()
-//                    .renderingMode(.template)
-//                    .scaledToFit()
-//                    .frame(width: 18, height: 18)
-//                    .accessibilityHidden(true)
-//                Text("SSL 256-bit")
-//                    .font(.svLabel)
-//            }
-//            .foregroundStyle(.svOnSurfaceVariant)
-//        }
-//    }
 
     private var form: some View {
         VStack(spacing: 16) {

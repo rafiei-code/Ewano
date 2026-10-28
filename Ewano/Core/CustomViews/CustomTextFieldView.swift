@@ -111,16 +111,17 @@ struct CustomTextFieldView: View {
         }
         .animation(.easeOut(duration: 0.15), value: isFocused)
         .animation(.easeOut(duration: 0.15), value: errorMessage)
-        .onChange(of: isFocused) { _, focused in
+        .onChange(of: isFocused) { focused in
             if !focused { hasInteracted = true }
         }
         .onAppear {
             if !text.isEmpty { hasInteracted = true }
+            onValidationChange?(failingMessage == nil)
         }
-        .onChange(of: text) {
+        .onChange(of: text) { _ in
             if validatesWhileTyping { hasInteracted = true }
         }
-        .onChange(of: failingMessage == nil, initial: true) { _, isValid in
+        .onChange(of: failingMessage == nil) { isValid in
             onValidationChange?(isValid)
         }
     }

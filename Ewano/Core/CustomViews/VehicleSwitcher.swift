@@ -54,7 +54,7 @@ struct VehicleSwitcher: View {
         .accessibilityValue(selectedCar.map(Self.displayName) ?? "None")
     }
 
-    static func displayName(_ car: Car) -> String {
+    nonisolated static func displayName(_ car: Car) -> String {
         if let year = car.carManufacturingYears.first?.year {
             return "\(year) \(car.name)"
         }
@@ -62,9 +62,9 @@ struct VehicleSwitcher: View {
     }
 }
 
-#Preview {
-    @Previewable @State var selectedCarID: String? = UserModel.sample.cars.first?.id
-    VehicleSwitcher(cars: UserModel.sample.cars, selectedCarID: $selectedCarID)
-        .padding()
-        .background(.svSurface)
-}
+//#Preview {
+//    @Previewable @State var selectedCarID: String? = UserModel.sample.cars.first?.id
+//    VehicleSwitcher(cars: UserModel.sample.cars, selectedCarID: $selectedCarID)
+//        .padding()
+//        .background(.svSurface)
+//}

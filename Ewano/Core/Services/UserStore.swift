@@ -9,8 +9,7 @@ import Foundation
 import Observation
 
 @MainActor
-@Observable
-final class UserStore {
+final class UserStore: Observable {
     enum State {
         case idle
         case loading
