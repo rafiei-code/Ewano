@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct EngineConfigurationModel: Codable {
+struct EngineConfigurationModel: Codable, Equatable, Hashable {
     let id: String
     let engineModel: String
 }
