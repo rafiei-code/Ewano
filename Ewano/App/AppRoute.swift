@@ -11,6 +11,7 @@ enum AppRoute: Hashable {
     case login
     case signUp
     case forgotPassword(email: String)
+    case home(user: UserModel)
 
     @MainActor @ViewBuilder
     var page: some View {
@@ -18,12 +19,13 @@ enum AppRoute: Hashable {
         case .login: LoginPageView()
         case .signUp: SignUpPageView()
         case .forgotPassword(let email): ForgotPasswordPageView(email: email)
+        case .home(let user): HomeView(user: user)
         }
     }
 
     var colorScheme: ColorScheme {
         switch self {
-        case .login, .signUp, .forgotPassword: .light
+        default: .light
         }
     }
 }

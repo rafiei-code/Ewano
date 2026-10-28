@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct TransmissionModel: Codable {
+struct TransmissionModel: Codable, Equatable, Hashable {
     let transmission: String
 }

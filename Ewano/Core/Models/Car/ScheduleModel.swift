@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ScheduleModel: Codable {
+struct ScheduleModel: Codable, Equatable, Hashable {
     let id: String
     let title: String
     var accumulatedDistance: Double

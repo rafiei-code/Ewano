@@ -96,7 +96,7 @@ struct CustomButtonView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: config.leadingImageSize, height: config.leadingImageSize)
-                    .padding(.trailing, 8)
+                    .padding(.trailing, 0)
                     .foregroundStyle(config.iconColor ?? iconColor)
             }
 
@@ -119,8 +119,7 @@ struct CustomButtonView: View {
                 Spacer()
             }
         }
-        .padding(16)
-        .background {
+        .padding(config.variant == .plain ? 0 : 16)        .background {
             if config.variant == .filled {
                 RoundedRectangle(cornerRadius: config.cornerRadius)
                     .fill(config.backgroundColor ?? backgroundColor)
@@ -134,7 +133,7 @@ struct CustomButtonView: View {
         }
         .overlay {
             HStack {
-                if config.isLoading {
+                if config.isLoading && config.variant == .plain {
                     LottieView(animation: .loader)
                         .playing(loopMode: .loop)
                         .frame(width: 50, height: 50)
@@ -143,7 +142,6 @@ struct CustomButtonView: View {
                 Spacer()
             }
         }
-        .contentShape(Rectangle())
         .onTapGesture {
             if config.isEnabled && !config.isLoading {
                 action()

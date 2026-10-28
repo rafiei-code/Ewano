@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CarManufacturingYearModel: Codable {
+struct CarManufacturingYearModel: Codable, Equatable, Hashable {
     let id: String
     let year: Int
     let engineConfigurations: [EngineConfigurationModel]

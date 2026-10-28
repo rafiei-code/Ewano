@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5104D896308F25D700AA7BA3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5104D895308F25D700AA7BA3 /* Lottie */; };
+		517005033091A7690055FFFC /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 517005023091A7690055FFFC /* SDWebImageSwiftUI */; };
 		7F1713F3308F683E00DAD814 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 7F1713F2308F683E00DAD814 /* Alamofire */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				517005033091A7690055FFFC /* SDWebImageSwiftUI in Frameworks */,
 				5104D896308F25D700AA7BA3 /* Lottie in Frameworks */,
 				7F1713F3308F683E00DAD814 /* Alamofire in Frameworks */,
 			);
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				5104D895308F25D700AA7BA3 /* Lottie */,
 				7F1713F2308F683E00DAD814 /* Alamofire */,
+				517005023091A7690055FFFC /* SDWebImageSwiftUI */,
 			);
 			productName = Ewano;
 			productReference = 51965AB6308CE09E0097533C /* Ewano.app */;
@@ -106,6 +109,7 @@
 			packageReferences = (
 				5104D894308F25D700AA7BA3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				7F1713F1308F683E00DAD814 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				517005013091A7690055FFFC /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 51965AB7308CE09E0097533C /* Products */;
@@ -372,6 +376,14 @@
 				minimumVersion = 4.6.1;
 			};
 		};
+		517005013091A7690055FFFC /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.4;
+			};
+		};
 		7F1713F1308F683E00DAD814 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -387,6 +399,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5104D894308F25D700AA7BA3 /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
+		};
+		517005023091A7690055FFFC /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 517005013091A7690055FFFC /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
 		};
 		7F1713F2308F683E00DAD814 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
