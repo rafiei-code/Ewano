@@ -12,5 +12,5 @@ struct CarFactoryModel: Codable {
     let name: String
     let imageURl: String
     let isSelected: Bool?
-    let models: [CarModel]
+    let models: [Car]
 }

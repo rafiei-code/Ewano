@@ -21,7 +21,7 @@ struct EwanoApp: App {
             }
             .environment(\.navigate, NavigateAction(action: navigate))
             // Pages in one stack share a single color scheme, so it is chosen here from the top page.
-            .preferredColorScheme(path.last?.colorScheme ?? .dark)
+            .preferredColorScheme(path.last?.colorScheme ?? .light)
         }
     }
 

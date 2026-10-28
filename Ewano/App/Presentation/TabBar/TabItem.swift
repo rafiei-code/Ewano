@@ -42,9 +42,9 @@ extension TabItem {
     var page: some View {
         switch self {
         case .home:
-            Color.green.opacity(0.5).ignoresSafeArea()
+            HomeView(user: .sample)
         case .services:
-            Color.green.opacity(0.5).ignoresSafeArea()
+            SchedulePageView(user: .sample)
         case .garage:
             Color.brown.opacity(0.5)
         case .more:

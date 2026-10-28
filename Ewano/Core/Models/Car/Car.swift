@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CarModel: Codable, Equatable, Hashable {
+struct Car: Codable, Hashable {
     let id: String
     let name: String
     let nickname: String?

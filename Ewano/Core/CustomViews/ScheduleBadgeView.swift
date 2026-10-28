@@ -16,79 +16,18 @@ struct ScheduleBadgeView: View {
         case allGood
     }
 
-    let schedule: ScheduleType
+    let schedule: ScheduleFilter
 
     var body: some View {
         BadgeView(
-            text: badgeText,
-            image: badgeIcon,
+            text: schedule.text,
+            image: schedule.icon,
             textFont: .svLabel,
-            textColor: badgeTextColor,
-            imageColor: badgeIconColor,
-            backgroundColor: badgeBackgroundColor
+            textColor: schedule.textColor,
+            imageColor: schedule.iconColor,
+            backgroundColor: schedule.backgroundColor
         )
         .tracking(1.5)
-    }
-
-    var badgeBackgroundColor: Color {
-        switch schedule {
-        case .ok:
-            return .clear
-        case .overdue:
-            return .clear
-        case .deuSoon:
-            return .svTertiaryFixedDim
-        case .allGood:
-            return .clear
-        }
-    }
-
-    var badgeText: String {
-        switch schedule {
-        case .ok:
-            return "OK"
-        case .overdue:
-            return "Overdue"
-        case .deuSoon:
-            return "Due Soon"
-        case .allGood:
-            return "All Good"
-        }
-    }
-
-    var badgeTextColor: Color {
-        switch schedule {
-        case .ok:
-            return .black
-        case .overdue:
-            return .svError
-        case .deuSoon:
-            return .svOnTertiaryContainer
-        case .allGood:
-            return .svPrimary
-        }
-    }
-
-    var badgeIconColor: Color {
-        switch schedule {
-        case .overdue:
-            return .svError
-        case .allGood:
-            return .svPrimary
-        default:
-            return .clear
-        }
-    }
-
-    var badgeIcon: ImageResource? {
-        switch schedule {
-        case .overdue:
-            return .icWarning
-        case .allGood:
-            return .icDoneAll
-        default:
-            return nil
-        }
     }
 }
 
@@ -96,7 +35,7 @@ struct ScheduleBadgeView: View {
     VStack {
         ScheduleBadgeView(schedule: .allGood)
         ScheduleBadgeView(schedule: .overdue)
-        ScheduleBadgeView(schedule: .deuSoon)
+        ScheduleBadgeView(schedule: .dueSoon)
         ScheduleBadgeView(schedule: .ok)
     }
 }
