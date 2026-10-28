@@ -5,11 +5,10 @@
 //  Created by Alireza Sotoudeh on 10/28/26.
 //
 
-import Observation
+import Combine
 
-@Observable
-final public class SwitchTabRouter {
+final public class SwitchTabRouter: ObservableObject {
     static let shared = SwitchTabRouter()
 
-    var currentTab: TabItem = .home
+    @Published var currentTab: TabItem = .home
 }

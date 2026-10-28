@@ -11,21 +11,21 @@ struct StartPageView: View {
     var onFeatureTap: () -> Void = {}
 
     private let slides = StartSlide.all
-    private static let loopCount = 1_000
     private static let autoAdvanceDelay: Duration = .seconds(3)
 
-    @State private var position: Int? = StartSlide.all.count * (loopCount / 2)
-    @State private var scrollPhase: ScrollPhase = .idle
+    /// Unbounded page counter, so the carousel loops in both directions.
+    @State private var position = 0
+    @State private var dragOffset: CGFloat = 0
     @State private var controlsHeight: CGFloat = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.navigate) private var navigate
 
     private var currentSlide: Int {
-        (position ?? 0) % slides.count
+        slideIndex(for: position)
     }
 
     private var autoAdvanceID: Int? {
-        scrollPhase == .idle && !reduceMotion ? position : nil
+        dragOffset == 0 && !reduceMotion ? position : nil
     }
 
     var body: some View {
@@ -61,21 +61,38 @@ struct StartPageView: View {
     }
 
     private func carousel(bottomInset: CGFloat) -> some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: 0) {
-                ForEach(0..<slides.count * Self.loopCount, id: \.self) { index in
-                    slidePage(slides[index % slides.count], bottomInset: bottomInset)
-                        .containerRelativeFrame([.horizontal, .vertical])
+        GeometryReader { proxy in
+            let pageWidth = proxy.size.width
+            ZStack {
+                ForEach(position - 1...position + 1, id: \.self) { index in
+                    slidePage(slides[slideIndex(for: index)], bottomInset: bottomInset)
+                        .frame(width: pageWidth)
+                        .offset(x: CGFloat(index - position) * pageWidth + dragOffset)
                 }
             }
-            .scrollTargetLayout()
+            .contentShape(Rectangle())
+            .gesture(swipeGesture(pageWidth: pageWidth))
         }
-        .scrollTargetBehavior(.paging)
-        .scrollPosition(id: $position)
-        .scrollIndicators(.hidden)
-        .onScrollPhaseChange { _, newPhase in
-            scrollPhase = newPhase
-        }
+    }
+
+    private func swipeGesture(pageWidth: CGFloat) -> some Gesture {
+        DragGesture()
+            .onChanged { dragOffset = $0.translation.width }
+            .onEnded { value in
+                let travel = value.predictedEndTranslation.width
+                withAnimation(.easeOut(duration: 0.3)) {
+                    if travel < -pageWidth / 2 {
+                        position += 1
+                    } else if travel > pageWidth / 2 {
+                        position -= 1
+                    }
+                    dragOffset = 0
+                }
+            }
+    }
+
+    private func slideIndex(for position: Int) -> Int {
+        (position % slides.count + slides.count) % slides.count
     }
 
     private func slidePage(_ slide: StartSlide, bottomInset: CGFloat) -> some View {
@@ -87,7 +104,7 @@ struct StartPageView: View {
             Text(slide.title)
                 .font(.svDisplay)
                 .tracking(-0.44)
-                .lineHeight(.multiple(factor: 1.0))
+                .tightLineHeight()
                 .foregroundStyle(.svInverseOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
@@ -184,4 +201,15 @@ struct StartPageView: View {
 
 #Preview {
     StartPageView()
+}
+
+private extension Text {
+    @ViewBuilder
+    func tightLineHeight() -> some View {
+        if #available(iOS 26.0, *) {
+            lineHeight(.multiple(factor: 1.0))
+        } else {
+            self
+        }
+    }
 }

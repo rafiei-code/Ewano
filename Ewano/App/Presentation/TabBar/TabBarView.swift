@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TabBarView: View {
-    @Bindable var router: SwitchTabRouter
+    @ObservedObject var router: SwitchTabRouter
     var tabs: [TabItem] = TabItem.allCases
 
     @Namespace private var selectionNamespace

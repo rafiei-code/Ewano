@@ -125,9 +125,11 @@ struct SchedulePageView: View {
                 }
             }
             .padding(.vertical, 4)
+            .padding(.horizontal, 20)
         }
         .scrollIndicators(.hidden)
-        .scrollClipDisabled()
+        // Bleeds past the page padding so chips scroll to the screen edges.
+        .padding(.horizontal, -20)
     }
 
     @ViewBuilder
@@ -151,8 +153,8 @@ struct SchedulePageView: View {
                     )
                 }
             }
-            .animation(.snappy(duration: 0.25), value: filter)
-            .animation(.snappy(duration: 0.25), value: selectedCarID)
+            .animation(.spring(response: 0.25, dampingFraction: 0.85), value: filter)
+            .animation(.spring(response: 0.25, dampingFraction: 0.85), value: selectedCarID)
         }
     }
 }
