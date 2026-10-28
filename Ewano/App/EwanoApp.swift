@@ -10,11 +10,12 @@ import SwiftUI
 @main
 struct EwanoApp: App {
     @State private var path: [AppRoute] = []
-
+    @State private var tabRouter = SwitchTabRouter.shared
+    
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $path) {
-                StartPageView()
+                TabBarView(router: tabRouter)
                     .toolbar(.hidden, for: .navigationBar)
                     .appRouteDestinations()
             }
