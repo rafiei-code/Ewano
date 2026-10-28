@@ -12,17 +12,23 @@ struct TabBarView: View {
     var tabs: [TabItem] = TabItem.allCases
 
     @Namespace private var selectionNamespace
+    @State private var tabBarHeight: CGFloat = 0
 
     var body: some View {
         TabView(selection: $router.currentTab) {
             ForEach(values: tabs) { tab in
                 tab.page
+                    .safeAreaInset(edge: .bottom) {
+                        Color.clear
+                            .frame(height: tabBarHeight)
+                    }
                     .toolbar(.hidden, for: .tabBar)
                     .tag(tab)
             }
         }
         .safeAreaInset(edge: .bottom) {
             tabBar
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { tabBarHeight = $0 }
         }
     }
 

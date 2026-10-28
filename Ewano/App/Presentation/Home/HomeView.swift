@@ -22,6 +22,7 @@ struct HomeView: View {
                     Text("Welcome, \(user.name)")
                         .font(.footnote)
                         .padding(.horizontal)
+                        .foregroundStyle(.black)
                     Spacer()
                 }
                 ForEach(user.cars, id: \.id) { car in
@@ -50,16 +51,18 @@ struct HomeView: View {
     }
 
     var appHeader: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack {
                 Image(.icGarageDoor)
                     .resizable()
                     .renderingMode(.template)
                     .scaledToFit()
                     .frame(height: 34)
+                    .foregroundStyle(.black)
 
                 Text("Ewano")
                     .font(.svHeadlineMobile)
+                    .foregroundStyle(.black)
 
                 LottieView(animation: .loginStar)
                     .playing(loopMode: .loop)
@@ -67,10 +70,11 @@ struct HomeView: View {
                     .accessibilityHidden(true)
                 Spacer()
 
-                CustomButtonView(config: .init(leadingImage: .icNotifications, leadingImageSize: 30, variant: .plain), action: {
+                CustomButtonView(config: .init(leadingImage: .icNotifications, leadingImageSize: 30, iconColor: .black, variant: .plain), action: {
 
                 })
                 .fixedSize()
+
                 Button {
                     onTapProfile?()
                 } label: {
@@ -78,7 +82,6 @@ struct HomeView: View {
                 }
 
             }
-            Divider()
         }
         .padding(.horizontal, 8)
     }

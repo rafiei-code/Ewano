@@ -42,7 +42,44 @@ extension TabItem {
     var page: some View {
         switch self {
         case .home:
-            Color.red.opacity(0.5)
+            HomeView(
+                user: .init(
+                    id: "1",
+                    name: "Ali",
+                    email: "ali@gmail.com",
+                    password: "1234",
+                    profileImageURL: nil,
+                    cars: [
+                        .init(
+                            id: "1",
+                            name: "Camry",
+                            nickname: "Family car",
+                            imageURL: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
+                            isSelected: false,
+                            carManufacturingYears: [],
+                            schedules: [
+                                .init(id: "1-1", title: "Engine Oil & Filter", accumulatedDistance: 500, serviceInterval: 1_000),
+                                .init(id: "1-2", title: "Brake Fluid Flush",   accumulatedDistance: 900, serviceInterval: 1_000),
+                                .init(id: "1-3", title: "Cabin Air Filter",     accumulatedDistance: 1_000, serviceInterval: 1_000),
+                                .init(id: "1-4", title: "Tire Rotation",        accumulatedDistance: 1_150, serviceInterval: 1_000)
+                            ],
+                            currentOdometer: "4825"
+                        ),
+                        .init(
+                            id: "2",
+                            name: "Corolla",
+                            nickname: "Work car",
+                            imageURL: "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=800",
+                            isSelected: false,
+                            carManufacturingYears: [],
+                            schedules: [
+                                .init(id: "2-1", title: "Coolant Change", accumulatedDistance: 300, serviceInterval: 1_000)
+                            ],
+                            currentOdometer: "12040"
+                        )
+                    ]
+                )
+            )
         case .services:
             Color.green.opacity(0.5).ignoresSafeArea()
         case .garage:
