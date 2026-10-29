@@ -7,26 +7,26 @@
 
 import Foundation
 
-struct EngineMaintenance: Decodable {
-    let id: Int
-    let engineID: Int
+struct MaintenanceModel: Codable {
     let code: String
     let name: String
+    let notes: String?
     let description: String
-    let applicability: String
     let intervalKM: Int
+    let applicability: String
     let intervalMonths: Int
+    let lastServiceKM: Int?
     let scheduleStatus: String
+    let lastServiceDate: String?
+    let maintenanceTypeID: Int
 
     enum CodingKeys: String, CodingKey {
-        case id
-        case engineID = "engine_id"
-        case code
-        case name
-        case description
-        case applicability
+        case code, name, notes, description, applicability
         case intervalKM = "interval_km"
         case intervalMonths = "interval_months"
+        case lastServiceKM = "last_service_km"
         case scheduleStatus = "schedule_status"
+        case lastServiceDate = "last_service_date"
+        case maintenanceTypeID = "maintenance_type_id"
     }
 }
