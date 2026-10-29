@@ -7,33 +7,44 @@
 
 import SwiftUI
 
+private struct TabBarHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
 struct TabBarView: View {
     @ObservedObject var router: SwitchTabRouter
     var tabs: [TabItem] = TabItem.allCases
 
     @Namespace private var selectionNamespace
     @State private var tabBarHeight: CGFloat = 0
-    private let contentSpacing: CGFloat = 24
+
+    private let contentSpacing: CGFloat = 16
 
     var body: some View {
         ZStack(alignment: .bottom) {
             TabView(selection: $router.currentTab) {
                 ForEach(tabs) { tab in
                     tab.page
-                        .safeAreaPadding(.bottom, tabBarHeight + contentSpacing)
-                        .safeAreaPadding(.top, 0)
-                        .toolbar(.hidden, for: .tabBar)
+                        .safeAreaInset(edge: .bottom, spacing: 0) {
+                            Color.clear
+                                .frame(height: tabBarHeight + contentSpacing)
+                        }
                         .tag(tab)
                 }
             }
 
             tabBar
-                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: {
-                    tabBarHeight = $0
-                }
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear.preference(key: TabBarHeightKey.self, value: proxy.size.height)
+                    }
+                )
         }
+        .onPreferenceChange(TabBarHeightKey.self) { tabBarHeight = $0 }
     }
-
     private var tabBar: some View {
         HStack(spacing: 0) {
             ForEach(tabs) { tab in
