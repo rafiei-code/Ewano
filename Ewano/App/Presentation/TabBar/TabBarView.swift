@@ -13,22 +13,24 @@ struct TabBarView: View {
 
     @Namespace private var selectionNamespace
     @State private var tabBarHeight: CGFloat = 0
+    private let contentSpacing: CGFloat = 24
 
     var body: some View {
-        TabView(selection: $router.currentTab) {
-            ForEach(values: tabs) { tab in
-                tab.page
-                    .safeAreaInset(edge: .bottom) {
-                        Color.clear
-                            .frame(height: tabBarHeight)
-                    }
-                    .toolbar(.hidden, for: .tabBar)
-                    .tag(tab)
+        ZStack(alignment: .bottom) {
+            TabView(selection: $router.currentTab) {
+                ForEach(tabs) { tab in
+                    tab.page
+                        .safeAreaPadding(.bottom, tabBarHeight + contentSpacing)
+                        .safeAreaPadding(.top, 0)
+                        .toolbar(.hidden, for: .tabBar)
+                        .tag(tab)
+                }
             }
-        }
-        .safeAreaInset(edge: .bottom) {
+
             tabBar
-                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { tabBarHeight = $0 }
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: {
+                    tabBarHeight = $0
+                }
         }
     }
 

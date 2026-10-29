@@ -10,6 +10,11 @@ import Lottie
 
 struct CustomButtonView: View {
 
+    enum ShapeType {
+        case circle
+        case square
+    }
+
     enum ButtonStyle {
         case danger
         case disabled
@@ -43,6 +48,7 @@ struct CustomButtonView: View {
         let backgroundColor: Color?
         let variant: CustomButtonVariant?
         let size: SizeType?
+        let shape: ShapeType?
 
         init(
             title: String? = nil,
@@ -61,6 +67,7 @@ struct CustomButtonView: View {
             backgroundColor: Color? = nil,
             variant: CustomButtonVariant? = .filled,
             size: SizeType? = .full,
+            shape: ShapeType? = .square
         ) {
             self.title = title
             self.style = style
@@ -78,6 +85,7 @@ struct CustomButtonView: View {
             self.backgroundColor = backgroundColor
             self.variant = variant
             self.size = size
+            self.shape = shape
         }
     }
 
@@ -121,14 +129,25 @@ struct CustomButtonView: View {
         }
         .padding(config.variant == .plain ? 0 : 16)        .background {
             if config.variant == .filled {
-                RoundedRectangle(cornerRadius: config.cornerRadius)
-                    .fill(config.backgroundColor ?? backgroundColor)
-                    .overlay {
-                        if !config.isEnabled {
-                            RoundedRectangle(cornerRadius: config.cornerRadius)
-                                .fill(.black.opacity(0.4))
+                if config.shape == .square {
+                    RoundedRectangle(cornerRadius: config.cornerRadius)
+                        .fill(config.backgroundColor ?? backgroundColor)
+                        .overlay {
+                            if !config.isEnabled {
+                                RoundedRectangle(cornerRadius: config.cornerRadius)
+                                    .fill(.black.opacity(0.4))
+                            }
                         }
-                    }
+                } else {
+                    Circle()
+                        .fill(config.backgroundColor ?? backgroundColor)
+                        .overlay {
+                            if !config.isEnabled {
+                                RoundedRectangle(cornerRadius: config.cornerRadius)
+                                    .fill(.black.opacity(0.4))
+                            }
+                        }
+                }
             }
         }
         .overlay {

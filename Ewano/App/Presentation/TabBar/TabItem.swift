@@ -46,7 +46,7 @@ extension TabItem {
         case .services:
             SchedulePageView(user: .sample)
         case .garage:
-            Color.brown.opacity(0.5)
+            GarageView(user: .sample)
         case .more:
             Color.yellow.opacity(0.5)
         }
