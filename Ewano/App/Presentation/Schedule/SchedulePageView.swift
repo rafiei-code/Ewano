@@ -57,43 +57,36 @@ struct SchedulePageView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                titleRow
-                    .padding(.top, 8)
-                    .padding(.bottom, 16)
+        VStack {
+            AppScreenHeaderView(user: .init(fullname: user.name, email: user.email, imageURL: user.profileImageURL), onTapNotification:  {
+            })
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    if selectedCar == nil {
+                        StateMessageView(
+                            kind: .empty,
+                            icon: .icDirectionsCar,
+                            title: "No vehicles yet",
+                            message: "Add a car to see its service schedule."
+                        )
+                        .padding(.top, 40)
+                    } else {
+                        UnderlineTabBar(items: ScheduleFilter.allCases, selection: $filter) {
+                            "\($0.title) (\(count($0.status)))"
+                        }
+                        .padding(.bottom, 12)
 
-                if selectedCar == nil {
-                    StateMessageView(
-                        kind: .empty,
-                        icon: .icDirectionsCar,
-                        title: "No vehicles yet",
-                        message: "Add a car to see its service schedule."
-                    )
-                    .padding(.top, 40)
-                } else {
-                    UnderlineTabBar(items: ScheduleFilter.allCases, selection: $filter) {
-                        "\($0.title) (\(count($0.status)))"
+                        summaryChips
+                            .padding(.bottom, 20)
+
+                        serviceList
                     }
-                    .padding(.bottom, 12)
-
-                    summaryChips
-                        .padding(.bottom, 20)
-
-                    serviceList
                 }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 24)
         }
         .background(.svSurface)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            AppHeaderView(
-                profileImageURL: user.profileImageURL,
-                onNotifications: onNotifications,
-                onProfile: onProfile
-            )
-        }
     }
 
     private var titleRow: some View {
