@@ -1,5 +1,5 @@
 //
-//  EngineMaintenance.swift
+//  MaintenanceModel.swift
 //  Ewano
 //
 //  Created by Abolfazl on 2026/10/28.
@@ -21,12 +21,8 @@ struct MaintenanceModel: Codable {
     let maintenanceTypeID: Int
 
     enum CodingKeys: String, CodingKey {
-        case code
-        case name
-        case notes
-        case description
+        case code, name, notes, description, applicability
         case intervalKM = "interval_km"
-        case applicability
         case intervalMonths = "interval_months"
         case lastServiceKM = "last_service_km"
         case scheduleStatus = "schedule_status"
