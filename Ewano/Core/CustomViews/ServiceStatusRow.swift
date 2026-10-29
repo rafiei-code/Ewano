@@ -60,6 +60,9 @@ enum ServiceStatus: CaseIterable {
         }
     }
 
+    var badgeBackgroundColor: Color { badgeBackground }
+    var badgeForegroundColor: Color { badgeForeground }
+
     fileprivate var badgeBackground: Color {
         switch self {
         case .overdue: .svErrorContainer

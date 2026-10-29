@@ -44,7 +44,18 @@
           "id": "camry-coolant",
           "title": "Coolant Change",
           "accumulatedDistance": 27000,
-          "serviceInterval": 30000
+          "serviceInterval": 30000,
+          "timeIntervalMonths": 24,
+          "averageCost": 90,
+          "difficulty": "Moderate",
+          "reason": "Engine coolant prevents overheating in summer and freezing in winter, while lubricating the water pump and protecting aluminum engine components from galvanic corrosion. Over time, rust inhibitors break down.",
+          "estimatedDueDate": 826848000,
+          "lastCompleted": {
+            "date": 750902400,
+            "distance": 21250,
+            "provider": "Downtown Toyota Certified Care Center",
+            "isCertified": true
+          }
         },
         {
           "id": "camry-oil",

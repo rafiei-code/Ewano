@@ -16,6 +16,7 @@ struct SchedulePageView: View {
 
     @State private var selectedCarID: String?
     @State private var filter: ScheduleFilter = .allGood
+    @State private var detailItem: ScheduleItem?
 
     init(
         user: UserModel,
@@ -87,6 +88,9 @@ struct SchedulePageView: View {
             }
         }
         .background(.svSurface)
+        .sheet(item: $detailItem) { item in
+            ScheduleDetailSheet(schedule: item.schedule, icon: item.icon)
+        }
     }
 
     private var titleRow: some View {
@@ -142,7 +146,10 @@ struct SchedulePageView: View {
                         icon: item.icon,
                         title: item.schedule.title,
                         interval: item.interval,
-                        onTap: { onSelectService(item.schedule) }
+                        onTap: {
+                            onSelectService(item.schedule)
+                            detailItem = item
+                        }
                     )
                 }
             }
