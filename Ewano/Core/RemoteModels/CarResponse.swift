@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 struct CarModel: Codable {
     let id: Int
     let userID: Int
@@ -24,17 +22,12 @@ struct CarModel: Codable {
     let maintenance: [MaintenanceModel]
 
     enum CodingKeys: String, CodingKey {
-        case id
+        case id, name, manufacturer, model, engine, maintenance
         case userID = "user_id"
-        case name
         case manufacturerID = "manufacturer_id"
-        case manufacturer
         case modelID = "model_id"
-        case model
         case engineID = "engine_id"
-        case engine
         case imageURL = "image_url"
         case imageSourceURL = "image_source_url"
-        case maintenance
     }
 }
