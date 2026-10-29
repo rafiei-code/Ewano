@@ -33,10 +33,6 @@ extension TabItem {
         }
     }
 
-    var iconSize: CGFloat {
-        self == .garage ? 26 : 24
-    }
-    
     @MainActor
     @ViewBuilder
     var page: some View {
