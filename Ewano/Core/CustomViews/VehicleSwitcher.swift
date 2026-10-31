@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct VehicleSwitcher: View {
-    let cars: [Car]
-    @Binding var selectedCarID: String?
+    let cars: [CarModel]
+    @Binding var selectedCarID: Int?
 
-    private var selectedCar: Car? {
+    private var selectedCar: CarModel? {
         cars.first { $0.id == selectedCarID }
     }
 
@@ -54,6 +54,10 @@ struct VehicleSwitcher: View {
         .accessibilityValue(selectedCar.map(Self.displayName) ?? "None")
     }
 
+    nonisolated static func displayName(_ car: CarModel) -> String {
+        return car.name
+    }
+
     nonisolated static func displayName(_ car: Car) -> String {
         if let year = car.carManufacturingYears.first?.year {
             return "\(year) \(car.name)"
@@ -62,9 +66,8 @@ struct VehicleSwitcher: View {
     }
 }
 
-//#Preview {
-//    @Previewable @State var selectedCarID: String? = UserModel.sample.cars.first?.id
-//    VehicleSwitcher(cars: UserModel.sample.cars, selectedCarID: $selectedCarID)
-//        .padding()
-//        .background(.svSurface)
-//}
+#Preview {
+    VehicleSwitcher(cars: CarModel.samples, selectedCarID: .constant(CarModel.samples.first?.id))
+        .padding()
+        .background(.svSurface)
+}

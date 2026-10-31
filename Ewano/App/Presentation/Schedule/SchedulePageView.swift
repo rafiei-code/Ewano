@@ -8,37 +8,35 @@
 import SwiftUI
 
 struct SchedulePageView: View {
-    let user: UserModel
-    let car: Car?
+    let user: User
+    let cars: [CarModel]
     let onNotifications: () -> Void
     let onProfile: () -> Void
-    let onSelectService: (ScheduleModel) -> Void
+    let onSelectService: (MaintenanceModel) -> Void
 
-    @State private var selectedCarID: String?
     @State private var filter: ScheduleFilter = .allGood
+    @ObservedObject private var router = SwitchTabRouter.shared
 
     init(
-        user: UserModel,
-        car: Car? = nil,
+        user: User,
+        cars: [CarModel],
         onNotifications: @escaping () -> Void = {},
         onProfile: @escaping () -> Void = {},
-        onSelectService: @escaping (ScheduleModel) -> Void = { _ in }
+        onSelectService: @escaping (MaintenanceModel) -> Void = { _ in }
     ) {
         self.user = user
-        self.car = car
+        self.cars = cars
         self.onNotifications = onNotifications
         self.onProfile = onProfile
         self.onSelectService = onSelectService
-        let preferred = user.cars.first { $0.isSelected == true } ?? user.cars.first
-        _selectedCarID = State(initialValue: preferred?.id)
     }
 
-    private var selectedCar: Car? {
-        user.cars.first { $0.id == selectedCarID }
+    private var car: CarModel? {
+        router.selectedCar ?? cars.first
     }
 
     private var items: [ScheduleItem] {
-        (selectedCar?.schedules ?? [])
+        (car?.maintenance ?? [])
             .map(ScheduleItem.init)
             .sorted { lhs, rhs in
                 if lhs.sortRank != rhs.sortRank { return lhs.sortRank < rhs.sortRank }
@@ -58,16 +56,19 @@ struct SchedulePageView: View {
 
     var body: some View {
         VStack {
-            AppScreenHeaderView(user: .init(fullname: user.name, email: user.email, imageURL: user.profileImageURL), onTapNotification:  {
+            AppScreenHeaderView(user: .init(fullname: user.fullname, email: nil, imageURL: nil), onTapNotification:  {
             })
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    if selectedCar == nil {
+                    titleRow
+                        .padding(.top, 8)
+                        .padding(.bottom, 16)
+                    if car == nil {
                         StateMessageView(
                             kind: .empty,
                             icon: .icDirectionsCar,
-                            title: "No vehicles yet",
-                            message: "Add a car to see its service schedule."
+                            title: "No vehicle selected",
+                            message: "Add a vehicle to see its schedule."
                         )
                         .padding(.top, 40)
                     } else {
@@ -89,6 +90,17 @@ struct SchedulePageView: View {
         .background(.svSurface)
     }
 
+    private var selectedCarID: Binding<Int?> {
+        Binding(
+            get: { car?.id },
+            set: { newID in
+                if let newCar = cars.first(where: { $0.id == newID }) {
+                    router.select(newCar)
+                }
+            }
+        )
+    }
+
     private var titleRow: some View {
         HStack {
             HStack(spacing: 4) {
@@ -100,10 +112,8 @@ struct SchedulePageView: View {
                     .accessibilityHidden(true)
             }
             .font(.svHeadlineMobile)
-
             Spacer(minLength: 12)
-
-            VehicleSwitcher(cars: user.cars, selectedCarID: $selectedCarID)
+            VehicleSwitcher(cars: cars, selectedCarID: selectedCarID)
         }
     }
 
@@ -121,7 +131,6 @@ struct SchedulePageView: View {
             .padding(.horizontal, 20)
         }
         .scrollIndicators(.hidden)
-        // Bleeds past the page padding so chips scroll to the screen edges.
         .padding(.horizontal, -20)
     }
 
@@ -140,30 +149,32 @@ struct SchedulePageView: View {
                 ForEach(filteredItems) { item in
                     ServiceStatusRow(
                         icon: item.icon,
-                        title: item.schedule.title,
+                        title: item.maintenance.name,
                         interval: item.interval,
-                        onTap: { onSelectService(item.schedule) }
+                        onTap: { onSelectService(item.maintenance) }
                     )
                 }
             }
             .animation(.spring(response: 0.25, dampingFraction: 0.85), value: filter)
-            .animation(.spring(response: 0.25, dampingFraction: 0.85), value: selectedCarID)
+            .animation(.spring(response: 0.25, dampingFraction: 0.85), value: car?.id)
         }
     }
 }
 
 private struct ScheduleItem: Identifiable {
-    let schedule: ScheduleModel
+    let maintenance: MaintenanceModel
     let interval: ServiceInterval
     let status: ServiceStatus?
 
-    var id: String { schedule.id }
+    var id: String { maintenance.code }
 
-    init(_ schedule: ScheduleModel) {
-        self.schedule = schedule
-        interval = .distance(interval: Int(schedule.serviceInterval), driven: Int(schedule.accumulatedDistance), unit: .miles)
+    init(_ maintenance: MaintenanceModel) {
+        self.maintenance = maintenance
+        interval = maintenance.serviceInterval
         status = interval.status
     }
+
+    var elapsedFraction: Double { maintenance.elapsedFraction }
 
     var sortRank: Int {
         switch status {
@@ -174,26 +185,9 @@ private struct ScheduleItem: Identifiable {
         }
     }
 
-    var elapsedFraction: Double {
-        schedule.serviceInterval > 0 ? schedule.accumulatedDistance / schedule.serviceInterval : 0
-    }
-
-    // ScheduleModel has no service type yet, so the glyph is picked from the title.
-    var icon: ImageResource? {
-        let title = schedule.title.lowercased()
-        let icons: [(String, ImageResource)] = [
-            ("coolant", .icModeFanFill),
-            ("oil", .icOilBarrelFill),
-            ("brake", .icMinorCrashFill),
-            ("spark", .icElectricBoltFill),
-            ("transmission", .icSettingsSuggestFill),
-            ("tire", .icTireRepairFill),
-            ("air", .icAirFill)
-        ]
-        return icons.first { title.contains($0.0) }?.1
-    }
+    var icon: ImageResource? { maintenance.serviceIcon }
 }
 
 #Preview {
-    SchedulePageView(user: .sample)
+    SchedulePageView(user: .sample, cars: CarModel.samples)
 }

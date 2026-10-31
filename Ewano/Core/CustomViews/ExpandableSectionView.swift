@@ -111,11 +111,9 @@ struct ExpandableSectionView: View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(car.maintenance.prefix(2), id: \.code) { maintenance in
                 ServiceStatusRow(
-                    icon: .icOilBarrelFill,
+                    icon: maintenance.serviceIcon,
                     title: maintenance.name,
-                    serviceInterval: maintenance.intervalKM,
-                    currentDistance: 0,
-                    distanceUnit: .miles,
+                    interval: maintenance.serviceInterval,
                     layout: .compact
                 )
             }

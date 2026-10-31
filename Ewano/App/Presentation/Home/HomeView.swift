@@ -12,6 +12,7 @@ struct HomeView: View {
 
     let user: User
     let userCars: [CarModel]
+
     var onTapProfile: (() -> Void)?
     var onTapNotification: (() -> Void)?
 
@@ -32,7 +33,7 @@ struct HomeView: View {
                         car: CarModel(id: car.id, userID: user.id, name: car.name, manufacturerID: car.manufacturerID, manufacturer: car.manufacturer, modelID: car.modelID, model: car.model, engineID: car.engineID, engine: car.engine, imageURL: car.imageURL, imageSourceURL: car.imageSourceURL, maintenance: car.maintenance),
                         isExpanded: /*user.cars.first?.id == car.id*/true
                     ) {
-                        SwitchTabRouter.shared.currentTab = .services
+                        SwitchTabRouter.shared.showSchedule(for: car)
                     }
                     .padding(.horizontal)
                 }
