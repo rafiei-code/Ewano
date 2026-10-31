@@ -48,7 +48,7 @@ extension TabItem {
         case .garage:
             GarageView(user: .sample)
         case .more:
-            Color.yellow.opacity(0.5)
+            ProfilePageView(user: .sample)
         }
     }
 }
