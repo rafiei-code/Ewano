@@ -8,13 +8,13 @@
 import Foundation
 
 protocol UserService {
-    func fetchCurrentUser() async throws -> UserModel
+    func login(email: String, password: String) async throws -> LoginResponse
 }
 
 struct UserServiceImpl: UserService {
-    let client: NetworkProvider<UserEndpoint>
-    
-    func fetchCurrentUser() async throws -> UserModel {
-        try await client.request(.currentUser)
+    let client: NetworkProvider<AuthenticationEndpoint>
+
+    func login(email: String, password: String) async throws -> LoginResponse {
+        try await client.request(.login(email: email, password: email))
     }
 }

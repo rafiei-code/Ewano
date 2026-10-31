@@ -161,7 +161,7 @@ private struct ScheduleItem: Identifiable {
 
     init(_ schedule: ScheduleModel) {
         self.schedule = schedule
-        interval = .distance(interval: schedule.serviceInterval, driven: schedule.accumulatedDistance, unit: .miles)
+        interval = .distance(interval: Int(schedule.serviceInterval), driven: Int(schedule.accumulatedDistance), unit: .miles)
         status = interval.status
     }
 

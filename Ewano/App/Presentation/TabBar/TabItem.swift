@@ -42,7 +42,7 @@ extension TabItem {
     var page: some View {
         switch self {
         case .home:
-            HomeView(user: .sample)
+            HomeView(user: .sample, userCars: CarModel.samples)
         case .services:
             SchedulePageView(user: .sample)
         case .garage:

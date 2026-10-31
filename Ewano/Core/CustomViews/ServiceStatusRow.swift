@@ -85,8 +85,6 @@ enum ServiceStatus: CaseIterable {
     }
 }
 
-/// Unit for distance-based services. Both values of a service use the same unit,
-/// so no conversion is ever done.
 enum DistanceUnit {
     case kilometers
     case miles
@@ -99,8 +97,6 @@ enum DistanceUnit {
     }
 }
 
-/// How a service is measured. The caller only says *what* is measured;
-/// the row calculates progress, remaining amount, status, icon and colour.
 enum ServiceInterval {
     enum TimeUnit {
         case days
@@ -114,25 +110,20 @@ enum ServiceInterval {
         }
     }
 
-    /// Interval and distance driven since the last service, both in `unit`.
-    case distance(interval: Double, driven: Double, unit: DistanceUnit = .kilometers)
-    /// Interval (in days or months), the last service date and "now".
+    case distance(interval: Int, driven: Int, unit: DistanceUnit = .kilometers)
     case time(interval: Int, unit: TimeUnit, lastService: Date, now: Date = .now)
 
-    /// Total length and elapsed part, in the chosen distance unit or whole days (time).
-    /// `nil` means the input is invalid. Status and percentage both use this.
     fileprivate var measure: Measure? {
         switch self {
         case let .distance(interval, driven, _):
-            guard interval.isFinite, interval > 0, driven.isFinite, driven >= 0 else { return nil }
-            return Measure(total: interval, elapsed: driven)
+            guard interval > 0, driven >= 0 else { return nil }
+            return Measure(total: Double(interval), elapsed: Double(driven))
 
         case let .time(interval, unit, lastService, now):
             guard interval > 0 else { return nil }
             let calendar = Calendar.current
             let start = calendar.startOfDay(for: lastService)
             let today = calendar.startOfDay(for: now)
-            // Calendar arithmetic handles different month lengths and leap years.
             guard let due = calendar.date(byAdding: unit.component, value: interval, to: start),
                   let total = calendar.dateComponents([.day], from: start, to: due).day,
                   let elapsed = calendar.dateComponents([.day], from: start, to: today).day,
@@ -142,10 +133,8 @@ enum ServiceInterval {
         }
     }
 
-    /// Service is "due soon" when this fraction of the interval (or less) remains.
     static let dueSoonThreshold = 0.1
 
-    /// `nil` means the input is invalid.
     var status: ServiceStatus? {
         guard let measure else { return nil }
         if measure.elapsed >= measure.total {
@@ -160,7 +149,7 @@ enum ServiceInterval {
     fileprivate var intervalText: String {
         switch self {
         case let .distance(interval, _, unit):
-            return "Interval: every \(Self.distance(interval, unit))"
+            return "Interval: every \(Self.distance(Double(interval), unit))"
         case let .time(interval, unit, _, _):
             let word = switch unit {
             case .days: interval == 1 ? "day" : "days"
@@ -198,7 +187,6 @@ struct ServiceStatusRow: View {
         case compact
     }
 
-    /// Optional glyph (e.g. oil can, brake disc). When nil, the status icon is used.
     var icon: ImageResource?
     let title: String
     let interval: ServiceInterval
@@ -223,8 +211,8 @@ struct ServiceStatusRow: View {
     init(
         icon: ImageResource? = nil,
         title: String,
-        serviceInterval: Double,
-        currentDistance: Double,
+        serviceInterval: Int,
+        currentDistance: Int,
         distanceUnit: DistanceUnit = .kilometers,
         layout: Layout = .standard,
         onTap: (() -> Void)? = nil

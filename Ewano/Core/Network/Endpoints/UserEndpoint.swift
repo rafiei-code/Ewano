@@ -6,19 +6,23 @@
 //
 
 import Alamofire
+import Foundation
 
-enum UserEndpoint: Endpoint {
-    case currentUser
+enum AuthenticationEndpoint: Endpoint {
+    case login(email: String, password: String)
+
+
 
     var path: String {
         switch self {
-        case .currentUser: "users/me"
+        case .login: "/auth/login"
         }
     }
 
-    var mockFileName: String? {
+    var body: Data? {
         switch self {
-        case .currentUser: "user_sample"
+        case let .login(username, password):
+            return try? JSONEncoder().encode(LoginModel(username: "testuser1", password: "Test@12345"))
         }
     }
 }

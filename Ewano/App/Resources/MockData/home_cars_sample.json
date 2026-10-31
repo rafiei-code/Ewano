@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "name": "Camry",
+    "manufacturer_id": 1,
+    "manufacturer": "Toyota",
+    "model_id": 1,
+    "model": "Camry",
+    "engine_id": 1,
+    "engine": "2.5L 4-Cylinder",
+    "image_url": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
+    "image_source_url": "https://unsplash.com",
+    "maintenance": [
+      {
+        "code": "coolant",
+        "name": "Coolant Change",
+        "notes": null,
+        "description": "Replace engine coolant.",
+        "interval_km": 30000,
+        "applicability": "all",
+        "interval_months": 24,
+        "last_service_km": 21250,
+        "schedule_status": "ok",
+        "last_service_date": "2024-10-18",
+        "maintenance_type_id": 1
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "user_id": 1,
+    "name": "Camry",
+    "manufacturer_id": 1,
+    "manufacturer": "Toyota",
+    "model_id": 1,
+    "model": "Camry",
+    "engine_id": 1,
+    "engine": "2.5L 4-Cylinder",
+    "image_url": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
+    "image_source_url": "https://unsplash.com",
+    "maintenance": [
+      {
+        "code": "coolant",
+        "name": "Coolant Change",
+        "notes": null,
+        "description": "Replace engine coolant.",
+        "interval_km": 30000,
+        "applicability": "all",
+        "interval_months": 24,
+        "last_service_km": 21250,
+        "schedule_status": "ok",
+        "last_service_date": "2024-10-18",
+        "maintenance_type_id": 1
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "user_id": 1,
+    "name": "Camry",
+    "manufacturer_id": 1,
+    "manufacturer": "Toyota",
+    "model_id": 1,
+    "model": "Camry",
+    "engine_id": 1,
+    "engine": "2.5L 4-Cylinder",
+    "image_url": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
+    "image_source_url": "https://unsplash.com",
+    "maintenance": [
+      {
+        "code": "coolant",
+        "name": "Coolant Change",
+        "notes": null,
+        "description": "Replace engine coolant.",
+        "interval_km": 30000,
+        "applicability": "all",
+        "interval_months": 24,
+        "last_service_km": 21250,
+        "schedule_status": "ok",
+        "last_service_date": "2024-10-18",
+        "maintenance_type_id": 1
+      }
+    ]
+  }
+]

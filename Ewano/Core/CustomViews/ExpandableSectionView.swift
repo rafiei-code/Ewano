@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ExpandableSectionView: View {
 
-    let car: Car
+    let car: CarModel
     @State var isExpanded: Bool = false
     var onTapSeeAll: (() -> Void)?
 
@@ -25,7 +25,7 @@ struct ExpandableSectionView: View {
                         Text("Coming Up")
                             .font(.svNumberMd)
                             .foregroundStyle(.black)
-                        BadgeView(text: "\(car.schedules.count)", backgroundColor: .svInverseOnSurface)
+                        BadgeView(text: "\(car.maintenance.count)", backgroundColor: .svInverseOnSurface)
                         Spacer()
                         CustomButtonView(config: .init(title: "See All", trailingImage: .icChevronRight, titleFont: .svBody, variant: .plain)) {
                             onTapSeeAll?()
@@ -72,7 +72,7 @@ struct ExpandableSectionView: View {
         .accessibilityValue(isExpanded ? "Expanded" : "Collapsed")
     }
 
-    private func carCard(_ car: Car) -> some View {
+    private func carCard(_ car: CarModel) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Spacer()
@@ -88,23 +88,13 @@ struct ExpandableSectionView: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(car.nickname ?? car.name)
+                Text(car.name)
                     .font(.svTitle)
                     .foregroundStyle(.svOnSurface)
                     .lineLimit(1)
 
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(car.currentOdometer)
-                        .font(.svNumberMd)
-                        .foregroundStyle(.svOnSurface)
-
-                    Text("mi")
-                        .font(.svBodySm)
-                        .foregroundStyle(.svOnSurfaceVariant)
-                }
-
-                if let schedule = car.schedules.first {
-                    Text(schedule.title)
+                if let maintenance = car.maintenance.first {
+                    Text(maintenance.name)
                         .font(.svBodySm)
                         .foregroundStyle(.svOnSurfaceVariant)
                         .lineLimit(1)
@@ -119,33 +109,16 @@ struct ExpandableSectionView: View {
 
     var schedule: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ForEach(car.schedules.prefix(2), id: \.id) { schedule in
+            ForEach(car.maintenance.prefix(2), id: \.code) { maintenance in
                 ServiceStatusRow(
                     icon: .icOilBarrelFill,
-                    title: schedule.title,
-                    serviceInterval: schedule.serviceInterval,
-                    currentDistance: schedule.accumulatedDistance,
+                    title: maintenance.name,
+                    serviceInterval: maintenance.intervalKM,
+                    currentDistance: 0,
                     distanceUnit: .miles,
                     layout: .compact
                 )
             }
         }
     }
-}
-
-#Preview("Expandable section") {
-    ExpandableSectionView(
-        car:Car(
-            id: "1",
-            name: "Toyota Camry",
-            nickname: "Daily driver",
-            imageURL: "https://example.com/camry.png",
-            isSelected: true,
-            carManufacturingYears: [],
-            schedules: [.init(id: "1", title: "ddd", accumulatedDistance: 280, serviceInterval: 300)],
-            currentOdometer: "48,250"
-        )
-    )
-    .padding()
-    .background(.svBackground)
 }
