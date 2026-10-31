@@ -9,6 +9,7 @@ import Foundation
 
 protocol AuthService {
     func login(username: String, password: String) async throws -> LoginResponse
+    func signUp(_ request: SignUpRequest) async throws -> SignUpResponse
 }
 
 struct AuthServiceImpl: AuthService {
@@ -16,5 +17,9 @@ struct AuthServiceImpl: AuthService {
 
     func login(username: String, password: String) async throws -> LoginResponse {
         try await client.request(.login(username: username, password: password))
+    }
+
+    func signUp(_ request: SignUpRequest) async throws -> SignUpResponse {
+        try await client.request(.signUp(request))
     }
 }

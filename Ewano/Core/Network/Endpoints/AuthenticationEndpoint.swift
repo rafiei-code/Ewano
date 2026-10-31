@@ -9,16 +9,18 @@ import Alamofire
 
 enum AuthenticationEndpoint: Endpoint {
     case login(username: String, password: String)
+    case signUp(SignUpRequest)
 
     var path: String {
         switch self {
         case .login: "auth/login"
+        case .signUp: "auth/signup"
         }
     }
 
     var method: HTTPMethod {
         switch self {
-        case .login: .post
+        case .login, .signUp: .post
         }
     }
 
@@ -26,12 +28,12 @@ enum AuthenticationEndpoint: Endpoint {
         switch self {
         case let .login(username, password):
             ["username": username, "password": password]
+        case let .signUp(request):
+            request.asParameters
         }
     }
 
     var requiresAuth: Bool {
-        switch self {
-        case .login: false
-        }
+        false
     }
 }

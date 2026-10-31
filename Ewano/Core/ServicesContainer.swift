@@ -23,4 +23,12 @@ final public class Services {
     var userCars: UserCarsService {
         UserCarsServiceImpl(client: NetworkProvider<UserCarsEndpoint>())
     }
+
+    var users: UsersService {
+        UsersServiceImpl(client: NetworkProvider<UsersEndpoint>())
+    }
+
+    var catalog: CatalogService {
+        CatalogServiceImpl(client: NetworkProvider<CatalogEndpoint>())
+    }
 }
