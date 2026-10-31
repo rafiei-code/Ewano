@@ -9,24 +9,42 @@ import Alamofire
 
 enum UserProfileEndpoint: Endpoint {
     case userProfile
+    case updateProfile(UpdateProfileRequest)
+    case updateImage(MultipartPayload)
 
     var path: String {
         switch self {
         case .userProfile: "profile"
+        case .updateProfile: "profile"
+        case .updateImage: "profile/image"
+        }
+    }
+
+    var method: HTTPMethod {
+        switch self {
+        case .userProfile: .get
+        case .updateProfile, .updateImage: .put
         }
     }
 
     var parameters: Parameters? {
         switch self {
-        case .userProfile:
+        case .userProfile, .updateImage:
             nil
+        case let .updateProfile(request):
+            request.asParameters
+        }
+    }
+
+    var multipart: MultipartPayload? {
+        switch self {
+        case let .updateImage(payload): payload
+        default: nil
         }
     }
 
     var requiresAuth: Bool {
-        switch self {
-        case .userProfile: true
-        }
+        true
     }
 }
 
