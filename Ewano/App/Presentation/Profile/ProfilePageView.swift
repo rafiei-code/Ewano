@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfilePageView: View {
 
-    let user: UserModel
+    let userProfile: ProfileResponse
     var onTapEditProfile: (() -> Void)?
     var onTapAbout: (() -> Void)?
     var onTapHelp: (() -> Void)?
@@ -19,8 +19,7 @@ struct ProfilePageView: View {
     var body: some View {
         VStack(spacing: 0) {
             AppScreenHeaderView(
-                user: .init(fullname: user.name, email: user.email, imageURL: user.profileImageURL)
-            )
+                user: .init(fullname: userProfile.fullname, email: userProfile.email, imageURL: userProfile.imageURL), hadProfileView: false)
 
             ScrollView {
                 VStack(spacing: 24) {
@@ -39,14 +38,14 @@ struct ProfilePageView: View {
 
     private var profileCard: some View {
         VStack(spacing: 4) {
-            ProfileAvatarView(imageURL: user.profileImageURL)
+            ProfileAvatarView(imageURL: userProfile.imageURL)
                 .padding(.bottom, 12)
 
-            Text(user.name)
+            Text(userProfile.fullname)
                 .font(.svHeadlineMobile)
                 .foregroundStyle(.svOnSurface)
 
-            Text(user.email)
+            Text(userProfile.email ?? "")
                 .font(.svLabel)
                 .foregroundStyle(.svOnSurfaceVariant)
 
@@ -130,5 +129,5 @@ struct ProfilePageView: View {
 }
 
 #Preview {
-    ProfilePageView(user: .sample)
+    ProfilePageView(userProfile: .sample)
 }

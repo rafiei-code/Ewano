@@ -11,6 +11,7 @@ import Lottie
 struct AppScreenHeaderView: View {
 
     let user: ProfileResponse
+    var hadProfileView: Bool = true
     var onTapProfile: (() -> Void)?
     var onTapNotification: (() -> Void)?
 
@@ -39,10 +40,12 @@ struct AppScreenHeaderView: View {
                 })
                 .fixedSize()
 
-                Button {
-                    onTapProfile?()
-                } label: {
-                    profileImageView
+                if hadProfileView {
+                    Button {
+                        onTapProfile?()
+                    } label: {
+                        profileImageView
+                    }
                 }
 
             }

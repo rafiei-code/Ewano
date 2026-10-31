@@ -11,6 +11,7 @@ import Lottie
 struct HomeView: View {
 
     let user: User
+    let userProfile: ProfileResponse
     let userCars: [CarModel]
 
     var onTapProfile: (() -> Void)?
@@ -18,7 +19,8 @@ struct HomeView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            appHeader
+            AppScreenHeaderView(user: userProfile, onTapNotification:  {
+            })
             ScrollView {
                 HStack {
                     Text("Welcome, \(user.fullname)")
@@ -31,7 +33,7 @@ struct HomeView: View {
                 ForEach(userCars, id: \.id) { car in
                     ExpandableSectionView(
                         car: CarModel(id: car.id, userID: user.id, name: car.name, manufacturerID: car.manufacturerID, manufacturer: car.manufacturer, modelID: car.modelID, model: car.model, engineID: car.engineID, engine: car.engine, imageURL: car.imageURL, imageSourceURL: car.imageSourceURL, maintenance: car.maintenance),
-                        isExpanded: /*user.cars.first?.id == car.id*/true
+                        isExpanded: userCars.first?.id == car.id,
                     ) {
                         SwitchTabRouter.shared.showSchedule(for: car)
                     }
@@ -49,54 +51,18 @@ struct HomeView: View {
         .navigationBarBackButtonHidden(true)
     }
 
-    var appHeader: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Image(.icGarageDoor)
-                    .resizable()
-                    .renderingMode(.template)
-                    .scaledToFit()
-                    .frame(height: 34)
-                    .foregroundStyle(.black)
-
-                Text("Ewano")
-                    .font(.svHeadlineMobile)
-                    .foregroundStyle(.black)
-
-                LottieView(animation: .loginStar)
-                    .playing(loopMode: .loop)
-                    .frame(width: 32, height: 32)
-                    .accessibilityHidden(true)
-                Spacer()
-
-                CustomButtonView(config: .init(leadingImage: .icNotifications, leadingImageSize: 30, iconColor: .black, variant: .plain), action: {
-                    onTapNotification?()
-                })
-                .fixedSize()
-
-                Button {
-                    onTapProfile?()
-                } label: {
-                    profileImageView
-                }
-
-            }
-        }
-        .padding(.horizontal, 8)
-    }
-
     var profileImageView: some View {
         VStack {
-            AppImage(type: .local(.icPerson))
-                .scaledToFit()
-                .frame(height: 30)
-                .padding(4)
-//            if let profileImageURL = user. { TODO
-//                AppImage(type: .url(profileImageURL))
-//                    .scaledToFit()
-//                    .frame(height: 40)
-//            } else {
-//            }
+            if let profileImageURL = userProfile.imageURL { 
+                AppImage(type: .url(profileImageURL))
+                    .scaledToFit()
+                    .frame(height: 40)
+            } else {
+                AppImage(type: .local(.icPerson))
+                    .scaledToFit()
+                    .frame(height: 30)
+                    .padding(4)
+            }
         }
         .background(.svSecondaryContainer)
         .clipShape(.circle)

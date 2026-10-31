@@ -20,8 +20,8 @@ enum AppRoute: Hashable {
         case .login: LoginPageView()
         case .signUp: SignUpPageView()
         case .forgotPassword(let email): ForgotPasswordPageView(email: email)
-        case .home(let user, let cars): HomeView(user: user, userCars: cars)
-        case .garage(let user, let cars): GarageView(user: user, cars: cars)
+        case .home(let user, let cars): HomeView(user: user, userProfile: .sample, userCars: cars)
+        case .garage(let user, let cars): GarageView(user: user, userProfile: .sample, cars: cars)
         }
     }
 
