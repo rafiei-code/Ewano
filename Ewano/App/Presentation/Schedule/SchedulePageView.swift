@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SchedulePageView: View {
     let user: User
+    let userProfile: ProfileResponse
     let cars: [CarModel]
     let onNotifications: () -> Void
     let onProfile: () -> Void
@@ -19,12 +20,14 @@ struct SchedulePageView: View {
 
     init(
         user: User,
+        userProfile: ProfileResponse,
         cars: [CarModel],
         onNotifications: @escaping () -> Void = {},
         onProfile: @escaping () -> Void = {},
         onSelectService: @escaping (MaintenanceModel) -> Void = { _ in }
     ) {
         self.user = user
+        self.userProfile = userProfile
         self.cars = cars
         self.onNotifications = onNotifications
         self.onProfile = onProfile
@@ -56,7 +59,7 @@ struct SchedulePageView: View {
 
     var body: some View {
         VStack {
-            AppScreenHeaderView(user: .init(fullname: user.fullname, email: nil, imageURL: nil), onTapNotification:  {
+            AppScreenHeaderView(user: userProfile, onTapNotification:  {
             })
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
@@ -189,5 +192,5 @@ private struct ScheduleItem: Identifiable {
 }
 
 #Preview {
-    SchedulePageView(user: .sample, cars: CarModel.samples)
+    SchedulePageView(user: .sample, userProfile: .sample, cars: CarModel.samples)
 }

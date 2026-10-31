@@ -12,15 +12,23 @@ struct EwanoApp: App {
     @State private var path: [AppRoute] = []
     @State private var tabRouter = SwitchTabRouter.shared
     @StateObject private var authStore = AuthStore.shared
+    @StateObject private var userData = UserDataStore.shared
     
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $path) {
                 Group {
                     if let session = authStore.session {
-                        TabBarView(router: tabRouter, user: session.user)
+                        signedInContent(for: session)
                     } else {
                         StartPageView()
+                    }
+                }
+                .task(id: authStore.session?.user.id) {
+                    if authStore.session == nil {
+                        userData.clear()
+                    } else {
+                        await userData.load()
                     }
                 }
                 .toolbar(.hidden, for: .navigationBar)
@@ -35,6 +43,28 @@ struct EwanoApp: App {
             }
             // Pages in one stack share a single color scheme, so it is chosen here from the top page.
             .preferredColorScheme(path.last?.colorScheme ?? .light)
+        }
+    }
+
+    @ViewBuilder
+    private func signedInContent(for session: UserSession) -> some View {
+        switch userData.phase {
+        case .loaded:
+            if let profile = userData.profile {
+                TabBarView(router: tabRouter, user: session.user, userProfile: profile, userCars: userData.cars)
+            }
+        case .failed(let message):
+            StateMessageView(
+                kind: .error,
+                icon: .icWarningFill,
+                title: "Something went wrong",
+                message: message,
+                actionTitle: "Retry",
+                action: { Task { await userData.load() } }
+            )
+        case .idle, .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 

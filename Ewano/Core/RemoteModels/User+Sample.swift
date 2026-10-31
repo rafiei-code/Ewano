@@ -14,3 +14,7 @@ extension User {
 extension CarModel {
     static let samples: [CarModel] = Bundle.main.decode(fromJSON: "home_cars_sample")
 }
+
+extension ProfileResponse {
+    static let sample: ProfileResponse = Bundle.main.decode(fromJSON: "profile_sample")
+}

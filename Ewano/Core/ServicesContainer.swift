@@ -15,4 +15,12 @@ final public class Services {
     var auth: AuthService {
         AuthServiceImpl(client: NetworkProvider<AuthenticationEndpoint>())
     }
+
+    var userProfile: UserProfileService {
+        UserProfileServiceImpl(client: NetworkProvider<UserProfileEndpoint>())
+    }
+
+    var userCars: UserCarsService {
+        UserCarsServiceImpl(client: NetworkProvider<UserCarsEndpoint>())
+    }
 }

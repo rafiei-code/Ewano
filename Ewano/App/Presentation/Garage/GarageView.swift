@@ -11,12 +11,13 @@ import Lottie
 struct GarageView: View {
 
     let user: User
+    let userProfile: ProfileResponse
     let cars: [CarModel]
     var onTapNotification: (() -> Void)?
 
     var body: some View {
         VStack(spacing: 16) {
-            AppScreenHeaderView(user: .init(fullname: user.fullname, email: nil, imageURL: nil), onTapNotification:  {
+            AppScreenHeaderView(user: userProfile, onTapNotification:  {
             })
             ScrollView {
                 HStack {
@@ -117,5 +118,5 @@ Track Maintenance intervals, parts
 }
 
 #Preview {
-    GarageView(user: .sample, cars: CarModel.samples)
+    GarageView(user: .sample, userProfile: .sample, cars: CarModel.samples)
 }
