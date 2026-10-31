@@ -39,17 +39,16 @@ extension TabItem {
     
     @MainActor
     @ViewBuilder
-    func page(for user: User) -> some View {
+    func page(for user: User, profileResponse: ProfileResponse, userCars: [CarModel]) -> some View {
         switch self {
         case .home:
-            // Cars stay on sample data until the cars API is connected.
-            HomeView(user: user, userCars: CarModel.samples)
+            HomeView(user: user, userProfile: profileResponse, userCars: userCars)
         case .services:
-            SchedulePageView(user: .sample, userProfile: .sample, cars: CarModel.samples)
+            SchedulePageView(user: user, userProfile: profileResponse, cars: userCars)
         case .garage:
-            GarageView(user: .sample, userProfile: .sample, cars: CarModel.samples)
+            GarageView(user: user, userProfile: profileResponse, cars: userCars)
         case .more:
-            ProfilePageView(userProfile: .sample)
+            ProfilePageView(userProfile: profileResponse)
         }
     }
 }
