@@ -9,29 +9,29 @@ import SwiftUI
 
 struct VehicleHealthCard: View {
 
-    let car: Car
+    let car: CarModel
     var footerMessage: String?
     var onTapSchedule: (() -> Void)?
 
     private var imageURL: String? {
-        if !car.imageURL.isEmpty {
-            return car.imageURL
-        }
-
-        let fallback = car.carManufacturingYears.first?.carImageURl ?? ""
-        return fallback.isEmpty ? nil : fallback
+        car.imageURL.isEmpty ? nil : car.imageURL
     }
 
-    private var overdueSchedules: [ScheduleModel] {
-        car.schedules.filter {
-            $0.serviceInterval > 0 && $0.accumulatedDistance >= $0.serviceInterval
-        }
+    private var overdueSchedules: [MaintenanceModel] {
+        car.maintenance.filter { $0.serviceStatus == .overdue }
     }
 
-    private var nextSchedule: ScheduleModel? {
-        car.schedules
-            .filter { $0.serviceInterval > 0 }
-            .min { remainingFraction(of: $0) < remainingFraction(of: $1) }
+    private var nextSchedule: MaintenanceModel? {
+        car.maintenance
+            .filter { $0.serviceStatus != nil }
+            .max { $0.elapsedFraction < $1.elapsedFraction }
+    }
+
+    private var mileage: String {
+        car.maintenance
+            .compactMap(\.lastServiceKM)
+            .max()
+            .map { $0.formatted() } ?? "—"
     }
 
     private var resolvedFooterMessage: String? {
@@ -39,9 +39,9 @@ struct VehicleHealthCard: View {
             return footerMessage
         }
         if let overdue = overdueSchedules.first {
-            return "\(overdue.title) overdue"
+            return "\(overdue.name) overdue"
         }
-        return nextSchedule.map { "\($0.title) upcoming" }
+        return nextSchedule.map { "\($0.name) upcoming" }
     }
 
     var body: some View {
@@ -91,13 +91,6 @@ struct VehicleHealthCard: View {
                 .font(.svTitle)
                 .foregroundStyle(.svOnSurface)
                 .lineLimit(1)
-
-            if let nickname = car.nickname {
-                Text(nickname)
-                    .font(.svBodySm)
-                    .foregroundStyle(.svOnSurfaceVariant)
-                    .lineLimit(1)
-            }
         }
         .padding(.horizontal, 16)
         .padding(.top, 16)
@@ -109,7 +102,7 @@ struct VehicleHealthCard: View {
         HStack(spacing: 14) {
             metric(
                 title: "MILEAGE",
-                value: car.currentOdometer,
+                value: mileage,
                 icon: .icSpeed,
                 valueColor: .svOnSurface
             )
@@ -121,7 +114,7 @@ struct VehicleHealthCard: View {
 
             metric(
                 title: "NEXT DUE",
-                value: nextSchedule?.title ?? "—",
+                value: nextSchedule?.name ?? "—",
                 icon: .icWaterDropFill,
                 valueColor: .svOnTertiaryContainer
             )
@@ -222,33 +215,16 @@ struct VehicleHealthCard: View {
         .accessibilityHidden(true)
     }
 
-    private func remainingFraction(of schedule: ScheduleModel) -> Double {
-        let remaining = (schedule.serviceInterval - schedule.accumulatedDistance) / schedule.serviceInterval
-        return min(max(remaining, 0), 1)
-    }
 }
 
 #Preview {
     ZStack {
         Color.svSurfaceHigh.ignoresSafeArea()
 
-        VehicleHealthCard(
-            car: Car(
-                id: "1",
-                name: "Toyota Camry",
-                nickname: "Daily driver",
-                imageURL: "",
-                isSelected: true,
-                carManufacturingYears: [],
-                schedules: [
-                    .init(id: "1", title: "Coolant Flush", accumulatedDistance: 240, serviceInterval: 300),
-                    .init(id: "2", title: "Oil service", accumulatedDistance: 300, serviceInterval: 300)
-                ],
-                currentOdometer: "48,250"
-            ),
-            footerMessage: "Oil service 14 days overdue"
-        ) {
+        if let car = CarModel.samples.first {
+            VehicleHealthCard(car: car) {
+            }
+            .padding()
         }
-        .padding()
     }
 }
