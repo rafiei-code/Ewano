@@ -10,7 +10,8 @@ import Lottie
 
 struct HomeView: View {
 
-    let user: UserModel
+    let user: User
+    let userCars: [CarModel]
     var onTapProfile: (() -> Void)?
     var onTapNotification: (() -> Void)?
 
@@ -19,25 +20,17 @@ struct HomeView: View {
             appHeader
             ScrollView {
                 HStack {
-                    Text("Welcome, \(user.name)")
+                    Text("Welcome, \(user.fullname)")
                         .font(.footnote)
                         .padding(.horizontal)
                         .foregroundStyle(.black)
                     Spacer()
                 }
-                ForEach(user.cars, id: \.id) { car in
+
+                ForEach(userCars, id: \.id) { car in
                     ExpandableSectionView(
-                        car: Car(
-                            id: car.id,
-                            name: car.name,
-                            nickname: car.nickname,
-                            imageURL: car.imageURL,
-                            isSelected: false,
-                            carManufacturingYears: [],
-                            schedules: car.schedules,
-                            currentOdometer: car.currentOdometer
-                        ),
-                        isExpanded: user.cars.first?.id == car.id
+                        car: CarModel(id: car.id, userID: user.id, name: car.name, manufacturerID: car.manufacturerID, manufacturer: car.manufacturer, modelID: car.modelID, model: car.model, engineID: car.engineID, engine: car.engine, imageURL: car.imageURL, imageSourceURL: car.imageSourceURL, maintenance: car.maintenance),
+                        isExpanded: /*user.cars.first?.id == car.id*/true
                     ) {
                         SwitchTabRouter.shared.currentTab = .services
                     }
@@ -47,9 +40,20 @@ struct HomeView: View {
             }
             .padding(.top, 8)
 
+            Color.clear
+                .frame(height: 0)
+
         }
         .background(.svSurfaceHigh)
         .navigationBarBackButtonHidden(true)
+        .task {
+            do {
+                let result = try await Services.shared.login.login(email: "pooyan88", password: "MyPassword123!")
+                dump(result)
+            } catch {
+                print("error", error)
+            }
+        }
     }
 
     var appHeader: some View {
@@ -90,59 +94,18 @@ struct HomeView: View {
 
     var profileImageView: some View {
         VStack {
-            if let profileImageURL = user.profileImageURL {
-                AppImage(type: .url(profileImageURL))
-                    .scaledToFit()
-                    .frame(height: 40)
-            } else {
-                AppImage(type: .local(.icPerson))
-                    .scaledToFit()
-                    .frame(height: 30)
-                    .padding(4)
-            }
+            AppImage(type: .local(.icPerson))
+                .scaledToFit()
+                .frame(height: 30)
+                .padding(4)
+//            if let profileImageURL = user. { TODO
+//                AppImage(type: .url(profileImageURL))
+//                    .scaledToFit()
+//                    .frame(height: 40)
+//            } else {
+//            }
         }
         .background(.svSecondaryContainer)
         .clipShape(.circle)
     }
-}
-
-#Preview {
-    HomeView(
-        user: .init(
-            id: "1",
-            name: "Ali",
-            email: "ali@gmail.com",
-            password: "1234",
-            profileImageURL: nil,
-            cars: [
-                .init(
-                    id: "1",
-                    name: "Camry",
-                    nickname: "Family car",
-                    imageURL: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
-                    isSelected: false,
-                    carManufacturingYears: [],
-                    schedules: [
-                        .init(id: "1-1", title: "Engine Oil & Filter", accumulatedDistance: 500, serviceInterval: 1_000),
-                        .init(id: "1-2", title: "Brake Fluid Flush",   accumulatedDistance: 900, serviceInterval: 1_000),
-                        .init(id: "1-3", title: "Cabin Air Filter",     accumulatedDistance: 1_000, serviceInterval: 1_000),
-                        .init(id: "1-4", title: "Tire Rotation",        accumulatedDistance: 1_150, serviceInterval: 1_000)
-                    ],
-                    currentOdometer: "4825"
-                ),
-                .init(
-                    id: "2",
-                    name: "Corolla",
-                    nickname: "Work car",
-                    imageURL: "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=800",
-                    isSelected: false,
-                    carManufacturingYears: [],
-                    schedules: [
-                        .init(id: "2-1", title: "Coolant Change", accumulatedDistance: 300, serviceInterval: 1_000)
-                    ],
-                    currentOdometer: "12040"
-                )
-            ]
-        )
-    )
 }

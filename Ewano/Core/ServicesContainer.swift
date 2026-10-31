@@ -12,8 +12,8 @@ final public class Services {
     
     private init() {}
     
-    var user: UserService {
-        let provider = NetworkProvider<UserEndpoint>()
+    var login: UserService {
+        let provider = NetworkProvider<AuthenticationEndpoint>()
         return UserServiceImpl(client: provider)
     }
 }

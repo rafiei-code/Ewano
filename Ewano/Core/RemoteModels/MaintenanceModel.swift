@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MaintenanceModel: Codable {
+struct MaintenanceModel: Codable, Hashable {
     let code: String
     let name: String
     let notes: String?

@@ -25,7 +25,7 @@ final class UserStore: Observable {
     }
 
     convenience init() {
-        self.init(service: Services.shared.user)
+        self.init(service: Services.shared.login)
     }
 
     var user: UserModel? {
@@ -36,7 +36,7 @@ final class UserStore: Observable {
     func load() async {
         state = .loading
         do {
-            state = .loaded(try await service.fetchCurrentUser())
+//            state = .loaded(try await service.login(email: "pooyan88", password: "MyPassword123!"))
         } catch {
             state = .failed(error.localizedDescription)
         }
