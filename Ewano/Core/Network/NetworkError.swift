@@ -10,18 +10,22 @@ import Alamofire
 
 enum NetworkError: LocalizedError {
     case noConnection
+    case unauthorized
     case server(statusCode: Int)
     case decoding(Error)
     case missingMock(path: String)
     case unknown(Error)
 
     init(_ error: AFError, statusCode: Int?) {
-        if error.isResponseSerializationError {
+        if let networkError = error.underlyingError as? NetworkError {
+            self = networkError
+        } else if let statusCode, !(200..<300).contains(statusCode) {
+            // The CDN can drop the connection while sending an error page, so the status code wins.
+            self = statusCode == 401 ? .unauthorized : .server(statusCode: statusCode)
+        } else if error.isResponseSerializationError {
             self = .decoding(error.underlyingError ?? error)
         } else if let urlError = error.underlyingError as? URLError, Self.connectionErrors.contains(urlError.code) {
             self = .noConnection
-        } else if let statusCode {
-            self = .server(statusCode: statusCode)
         } else {
             self = .unknown(error.underlyingError ?? error)
         }
@@ -31,6 +35,8 @@ enum NetworkError: LocalizedError {
         switch self {
         case .noConnection:
             "You're offline. Check your connection and try again."
+        case .unauthorized:
+            "Your session has expired. Please log in again."
         case .server(let statusCode):
             "The server returned an error (\(statusCode))."
         case .decoding:

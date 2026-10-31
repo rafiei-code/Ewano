@@ -8,20 +8,21 @@
 import SwiftUI
 
 struct LoginPageView: View {
-    var onLogIn: (_ email: String, _ password: String) async -> Void = { _, _ in }
     var onAppleSignIn: () -> Void = {}
     var onGoogleSignIn: () -> Void = {}
 
     @Environment(\.navigate) private var navigate
+    @EnvironmentObject private var authStore: AuthStore
 
-    @State private var email = ""
+    @State private var username = ""
     @State private var password = ""
-    @State private var isEmailValid = false
+    @State private var isUsernameValid = false
     @State private var isPasswordValid = false
     @State private var isLoggingIn = false
+    @State private var errorMessage: String?
 
     private var canLogIn: Bool {
-        isEmailValid && isPasswordValid && !isLoggingIn
+        isUsernameValid && isPasswordValid && !isLoggingIn
     }
 
     var body: some View {
@@ -79,18 +80,14 @@ struct LoginPageView: View {
     private var form: some View {
         VStack(spacing: 16) {
             CustomTextFieldView(
-                placeholder: "alex.morgan@email.com",
-                text: $email,
-                title: "Email address",
-                icon: .icMail,
-                rules: [
-                    .required("Enter your email address"),
-                    .email()
-                ],
+                placeholder: "Enter your username",
+                text: $username,
+                title: "Username",
+                icon: .icPerson,
+                rules: [.required("Enter your username")],
                 isEnabled: !isLoggingIn,
-                onValidationChange: { isEmailValid = $0 }
+                onValidationChange: { isUsernameValid = $0 }
             )
-            .keyboardType(.emailAddress)
             .textContentType(.username)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
@@ -107,12 +104,19 @@ struct LoginPageView: View {
             )
 
             Button("Forgot password?") {
-                navigate(to: .forgotPassword(email: email.trimmingCharacters(in: .whitespaces)))
+                navigate(to: .forgotPassword(email: ""))
             }
                 .font(.svBodySm)
                 .foregroundStyle(.svOutline)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.top, -4)
+
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.svBodySm)
+                    .foregroundStyle(.svError)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
 
             CustomButtonView(config: .init(
                 title: "LOG IN",
@@ -128,6 +132,8 @@ struct LoginPageView: View {
             .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
             .padding(.top, 4)
         }
+        .onChange(of: username) { _ in errorMessage = nil }
+        .onChange(of: password) { _ in errorMessage = nil }
     }
 
     private var footer: some View {
@@ -142,10 +148,18 @@ struct LoginPageView: View {
         .frame(maxWidth: .infinity)
     }
 
+    // On success `AuthStore` publishes the session and the app root switches to the tabs.
     private func logIn() {
         isLoggingIn = true
+        errorMessage = nil
         Task {
-            await onLogIn(email.trimmingCharacters(in: .whitespaces), password)
+            do {
+                try await authStore.logIn(username: username.trimmingCharacters(in: .whitespaces), password: password)
+            } catch NetworkError.unauthorized, NetworkError.server(statusCode: 400) {
+                errorMessage = "Incorrect username or password."
+            } catch {
+                errorMessage = error.localizedDescription
+            }
             isLoggingIn = false
         }
     }
@@ -155,4 +169,5 @@ struct LoginPageView: View {
     NavigationStack {
         LoginPageView()
     }
+    .environmentObject(AuthStore.shared)
 }
