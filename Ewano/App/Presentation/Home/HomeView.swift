@@ -20,7 +20,9 @@ struct HomeView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AppScreenHeaderView(user: userProfile, onTapNotification:  {
+            AppScreenHeaderView(user: userProfile, onTapProfile: {
+                SwitchTabRouter.shared.currentTab = .more
+            }, onTapNotification: {
             })
             ScrollView {
                 HStack {
