@@ -13,6 +13,7 @@ struct EwanoApp: App {
     @State private var tabRouter = SwitchTabRouter.shared
     @StateObject private var authStore = AuthStore.shared
     @StateObject private var userData = UserDataStore.shared
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
         _ = DataManager.shared

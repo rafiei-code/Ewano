@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5104D896308F25D700AA7BA3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5104D895308F25D700AA7BA3 /* Lottie */; };
 		517005033091A7690055FFFC /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 517005023091A7690055FFFC /* SDWebImageSwiftUI */; };
+		51B44D7830962427000C00D4 /* netfox in Frameworks */ = {isa = PBXBuildFile; productRef = 51B44D7730962427000C00D4 /* netfox */; };
 		7F1713F3308F683E00DAD814 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 7F1713F2308F683E00DAD814 /* Alamofire */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 			files = (
 				517005033091A7690055FFFC /* SDWebImageSwiftUI in Frameworks */,
 				5104D896308F25D700AA7BA3 /* Lottie in Frameworks */,
+				51B44D7830962427000C00D4 /* netfox in Frameworks */,
 				7F1713F3308F683E00DAD814 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +92,7 @@
 				5104D895308F25D700AA7BA3 /* Lottie */,
 				7F1713F2308F683E00DAD814 /* Alamofire */,
 				517005023091A7690055FFFC /* SDWebImageSwiftUI */,
+				51B44D7730962427000C00D4 /* netfox */,
 			);
 			productName = Ewano;
 			productReference = 51965AB6308CE09E0097533C /* Ewano.app */;
@@ -123,6 +126,7 @@
 				5104D894308F25D700AA7BA3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				7F1713F1308F683E00DAD814 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				517005013091A7690055FFFC /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				51B44D7630962427000C00D4 /* XCRemoteSwiftPackageReference "netfox" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 51965AB7308CE09E0097533C /* Products */;
@@ -399,6 +403,14 @@
 				minimumVersion = 3.1.4;
 			};
 		};
+		51B44D7630962427000C00D4 /* XCRemoteSwiftPackageReference "netfox" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kasketis/netfox";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.21.0;
+			};
+		};
 		7F1713F1308F683E00DAD814 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -419,6 +431,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 517005013091A7690055FFFC /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		51B44D7730962427000C00D4 /* netfox */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 51B44D7630962427000C00D4 /* XCRemoteSwiftPackageReference "netfox" */;
+			productName = netfox;
 		};
 		7F1713F2308F683E00DAD814 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
