@@ -48,7 +48,7 @@ extension TabItem {
         case .garage:
             GarageView(user: user, userProfile: profileResponse, cars: userCars)
         case .more:
-            ProfilePageView(userProfile: profileResponse)
+            ProfilePageView(userProfile: profileResponse, onTapLogout: { AuthStore.shared.logOut() })
         }
     }
 }

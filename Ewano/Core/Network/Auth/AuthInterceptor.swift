@@ -10,7 +10,7 @@ import Foundation
 
 /// Adds the stored token to authenticated requests and logs the user out when the server rejects it.
 nonisolated struct AuthInterceptor: RequestInterceptor {
-    var store: UserSessionStore = .shared
+    var store: DataManager = .shared
 
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping @Sendable (Result<URLRequest, any Error>) -> Void) {
         guard let userSession = store.session, !userSession.isExpired else {
