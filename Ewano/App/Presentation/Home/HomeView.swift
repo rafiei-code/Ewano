@@ -46,14 +46,6 @@ struct HomeView: View {
         }
         .background(.svSurfaceHigh)
         .navigationBarBackButtonHidden(true)
-        .task {
-            do {
-                let result = try await Services.shared.login.login(email: "pooyan88", password: "MyPassword123!")
-                dump(result)
-            } catch {
-                print("error", error)
-            }
-        }
     }
 
     var appHeader: some View {
