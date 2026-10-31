@@ -11,15 +11,28 @@ import SwiftUI
 struct EwanoApp: App {
     @State private var path: [AppRoute] = []
     @State private var tabRouter = SwitchTabRouter.shared
+    @StateObject private var authStore = AuthStore.shared
     
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $path) {
-                TabBarView(router: tabRouter)
-                    .toolbar(.hidden, for: .navigationBar)
-                    .appRouteDestinations()
+                Group {
+                    if let session = authStore.session {
+                        TabBarView(router: tabRouter, user: session.user)
+                    } else {
+                        StartPageView()
+                    }
+                }
+                .toolbar(.hidden, for: .navigationBar)
+                .appRouteDestinations()
             }
             .environment(\.navigate, NavigateAction(action: navigate))
+            .environmentObject(authStore)
+            // Logging in or out swaps the root, so drop the pages pushed on top of it.
+            .onChange(of: authStore.session?.user) { _ in
+                path = []
+                tabRouter.currentTab = .home
+            }
             // Pages in one stack share a single color scheme, so it is chosen here from the top page.
             .preferredColorScheme(path.last?.colorScheme ?? .light)
         }

@@ -17,11 +17,18 @@ final class NetworkProvider<U: Endpoint>: NetworkClient {
     private let baseURL: URL
     private let session: Session
     private let decoder: JSONDecoder
+    private let authInterceptor: RequestInterceptor
 
-    init(baseURL: URL = APIConfig.baseURL, session: Session = .default, decoder: JSONDecoder = JSONDecoder()) {
+    init(
+        baseURL: URL = APIConfig.baseURL,
+        session: Session = .default,
+        decoder: JSONDecoder = JSONDecoder(),
+        authInterceptor: RequestInterceptor = AuthInterceptor()
+    ) {
         self.baseURL = baseURL
         self.session = session
         self.decoder = decoder
+        self.authInterceptor = authInterceptor
     }
 
     func request<T: Decodable>(_ endpoint: U) async throws -> T {
@@ -30,7 +37,8 @@ final class NetworkProvider<U: Endpoint>: NetworkClient {
             method: endpoint.method,
             parameters: endpoint.parameters,
             encoding: endpoint.encoding,
-            headers: endpoint.headers
+            headers: endpoint.headers,
+            interceptor: endpoint.requiresAuth ? authInterceptor : nil
         )
         .validate()
         .serializingDecodable(T.self, decoder: decoder)

@@ -8,18 +8,15 @@
 import SwiftUI
 
 struct StartPageView: View {
-    var onFeatureTap: () -> Void = {}
-
     private let slides = StartSlide.all
     private static let autoAdvanceDelay: Duration = .seconds(3)
-
     /// Unbounded page counter, so the carousel loops in both directions.
     @State private var position = 0
     @State private var dragOffset: CGFloat = 0
     @State private var controlsHeight: CGFloat = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.navigate) private var navigate
-
+       
     private var currentSlide: Int {
         slideIndex(for: position)
     }
@@ -131,7 +128,9 @@ struct StartPageView: View {
                 icon: .icVerified,
                 title: "OEM Precision",
                 subtitle: "Factory scheduled intervals",
-                onTap: onFeatureTap
+                onTap: {
+                    // Should be implemented
+                }
             )
             .padding(.bottom, 16)
 

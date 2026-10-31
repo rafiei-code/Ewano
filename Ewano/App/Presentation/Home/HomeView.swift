@@ -15,7 +15,8 @@ struct HomeView: View {
 
     var onTapProfile: (() -> Void)?
     var onTapNotification: (() -> Void)?
-
+    @Environment(\.navigate) private var navigate
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             appHeader
