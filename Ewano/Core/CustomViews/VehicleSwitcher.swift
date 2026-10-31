@@ -57,13 +57,6 @@ struct VehicleSwitcher: View {
     nonisolated static func displayName(_ car: CarModel) -> String {
         return car.name
     }
-
-    nonisolated static func displayName(_ car: Car) -> String {
-        if let year = car.carManufacturingYears.first?.year {
-            return "\(year) \(car.name)"
-        }
-        return car.name
-    }
 }
 
 #Preview {

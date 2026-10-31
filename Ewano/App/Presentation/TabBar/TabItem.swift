@@ -46,7 +46,7 @@ extension TabItem {
         case .services:
             SchedulePageView(user: .sample, cars: CarModel.samples)
         case .garage:
-            GarageView(user: .sample)
+            GarageView(user: .sample, cars: CarModel.samples)
         case .more:
             ProfilePageView(user: .sample)
         }

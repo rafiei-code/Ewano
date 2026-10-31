@@ -10,12 +10,13 @@ import Lottie
 
 struct GarageView: View {
 
-    let user: UserModel
+    let user: User
+    let cars: [CarModel]
     var onTapNotification: (() -> Void)?
 
     var body: some View {
         VStack(spacing: 16) {
-            AppScreenHeaderView(user: .init(fullname: user.name, email: user.email, imageURL: user.profileImageURL), onTapNotification:  {
+            AppScreenHeaderView(user: .init(fullname: user.fullname, email: nil, imageURL: nil), onTapNotification:  {
             })
             ScrollView {
                 HStack {
@@ -33,7 +34,7 @@ struct GarageView: View {
 
                         }
                         HStack(spacing: 4) {
-                            Text("\(user.cars.count) vehicles registered")
+                            Text("\(cars.count) vehicles registered")
                                 .font(.caption)
                                 .foregroundStyle(.black)
 
@@ -54,21 +55,11 @@ struct GarageView: View {
                 }
                 .padding()
 
-                ForEach(values: user.cars) { car in
+                ForEach(cars, id: \.id) { car in
                     VehicleHealthCard(
-                        car: Car(
-                            id: car.id,
-                            name: car.name,
-                            nickname: car.nickname,
-                            imageURL: car.imageURL,
-                            isSelected: car.isSelected,
-                            carManufacturingYears: [],
-                            schedules: car.schedules,
-                            currentOdometer: car.currentOdometer
-                        ),
-                        footerMessage: "Oil service 14 days overdue"
+                        car: car
                     ) {
-                        SwitchTabRouter.shared.currentTab = .services
+                        SwitchTabRouter.shared.showSchedule(for: car)
                     }
                     .padding()
                 }
@@ -113,13 +104,10 @@ Track Maintenance intervals, parts
     }
 
     func calculateFleetHealth() -> Int {
-        let remainingFractions = user.cars
-            .flatMap(\.schedules)
-            .filter { $0.serviceInterval > 0 }
-            .map { schedule in
-                let remaining = (schedule.serviceInterval - schedule.accumulatedDistance) / schedule.serviceInterval
-                return min(max(remaining, 0), 1)
-            }
+        let remainingFractions = cars
+            .flatMap(\.maintenance)
+            .filter { $0.serviceStatus != nil }
+            .map { min(max(1 - $0.elapsedFraction, 0), 1) }
 
         guard !remainingFractions.isEmpty else { return 0 }
 
@@ -129,5 +117,5 @@ Track Maintenance intervals, parts
 }
 
 #Preview {
-    GarageView(user: .sample)
+    GarageView(user: .sample, cars: CarModel.samples)
 }
