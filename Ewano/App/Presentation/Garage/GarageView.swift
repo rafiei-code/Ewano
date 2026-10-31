@@ -17,7 +17,9 @@ struct GarageView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            AppScreenHeaderView(user: userProfile, onTapNotification:  {
+            AppScreenHeaderView(user: userProfile, onTapProfile: {
+                SwitchTabRouter.shared.currentTab = .more
+            }, onTapNotification: {
             })
             ScrollView {
                 HStack {

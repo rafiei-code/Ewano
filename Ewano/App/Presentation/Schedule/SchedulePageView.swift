@@ -59,7 +59,9 @@ struct SchedulePageView: View {
 
     var body: some View {
         VStack {
-            AppScreenHeaderView(user: userProfile, onTapNotification:  {
+            AppScreenHeaderView(user: userProfile, onTapProfile: {
+                SwitchTabRouter.shared.currentTab = .more
+            }, onTapNotification: {
             })
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
