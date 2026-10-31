@@ -16,15 +16,15 @@ final class AuthStore: ObservableObject {
     @Published private(set) var session: UserSession?
 
     private let service: AuthService
-    private let store: UserSessionStore
+    private let store: DataManager
 
-    init(service: AuthService, store: UserSessionStore = .shared) {
+    init(service: AuthService, store: DataManager = .shared) {
         self.service = service
         self.store = store
         if let saved = store.session, !saved.isExpired {
             session = saved
         } else {
-            store.clear()
+            store.clearSession()
         }
     }
 
@@ -35,12 +35,12 @@ final class AuthStore: ObservableObject {
     func logIn(username: String, password: String) async throws {
         let response = try await service.login(username: username, password: password)
         let newSession = UserSession(response)
-        store.save(newSession)
+        store.saveSession(newSession)
         session = newSession
     }
 
     func logOut() {
-        store.clear()
+        store.logOut()
         session = nil
     }
 }

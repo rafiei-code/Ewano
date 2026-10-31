@@ -13,7 +13,11 @@ struct EwanoApp: App {
     @State private var tabRouter = SwitchTabRouter.shared
     @StateObject private var authStore = AuthStore.shared
     @StateObject private var userData = UserDataStore.shared
-    
+
+    init() {
+        _ = DataManager.shared
+    }
+
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $path) {
