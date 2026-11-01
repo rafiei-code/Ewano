@@ -13,6 +13,8 @@ struct EwanoApp: App {
     @State private var tabRouter = SwitchTabRouter.shared
     @StateObject private var authStore = AuthStore.shared
     @StateObject private var userData = UserDataStore.shared
+    @State private var isShowingSplash = true
+    @State private var splashMinimumDuration: Duration = .seconds(3)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
@@ -21,33 +23,43 @@ struct EwanoApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $path) {
-                Group {
-                    if let session = authStore.session {
-                        signedInContent(for: session)
-                    } else {
-                        StartPageView()
+            ZStack {
+                if isShowingSplash {
+                    SplashPageView(minimumDuration: splashMinimumDuration) {
+                        isShowingSplash = false
                     }
-                }
-                .task(id: authStore.session?.user.id) {
-                    if authStore.session == nil {
-                        userData.clear()
-                    } else {
-                        await userData.load()
+                    .transition(.opacity)
+                } else {
+                    NavigationStack(path: $path) {
+                        Group {
+                            if let session = authStore.session {
+                                signedInContent(for: session)
+                            } else {
+                                StartPageView()
+                            }
+                        }
+                        .toolbar(.hidden, for: .navigationBar)
+                        .appRouteDestinations()
                     }
+                    .environment(\.navigate, NavigateAction(action: navigate, popToRoot: { path = [] }))
+                    .transition(.opacity)
                 }
-                .toolbar(.hidden, for: .navigationBar)
-                .appRouteDestinations()
             }
-            .environment(\.navigate, NavigateAction(action: navigate))
+            .animation(.easeOut(duration: 0.4), value: isShowingSplash)
             .environmentObject(authStore)
+            .environmentObject(userData)
             // Logging in or out swaps the root, so drop the pages pushed on top of it.
-            .onChange(of: authStore.session?.user) { _ in
+            .onChange(of: authStore.session?.user) { user in
                 path = []
                 tabRouter.currentTab = .home
+                // A fresh login loads the user's data behind the splash.
+                if user != nil {
+                    splashMinimumDuration = .seconds(1)
+                    isShowingSplash = true
+                }
             }
             // Pages in one stack share a single color scheme, so it is chosen here from the top page.
-            .preferredColorScheme(path.last?.colorScheme ?? .light)
+            .preferredColorScheme(isShowingSplash ? .dark : path.last?.colorScheme ?? .light)
         }
     }
 
@@ -65,11 +77,13 @@ struct EwanoApp: App {
                 title: "Something went wrong",
                 message: message,
                 actionTitle: "Retry",
-                action: { Task { await userData.load() } }
+                action: { isShowingSplash = true }
             )
         case .idle, .loading:
-            ProgressView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Only reached if the splash finished without loading; it loads again.
+            Color.svInverseSurface
+                .ignoresSafeArea()
+                .onAppear { isShowingSplash = true }
         }
     }
 

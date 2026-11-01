@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ImageType: Equatable {
+enum ImageType: Hashable {
     case url(String)
     case local(ImageResource)
 }

@@ -108,6 +108,12 @@ struct CustomButtonView: View {
                     .foregroundStyle(config.iconColor ?? iconColor)
             }
 
+            if config.isLoading && config.variant == .filled {
+                ProgressView()
+                    .tint(config.titleColor ?? titleColor)
+                    .padding(.trailing, 8)
+            }
+
             if let title = config.title {
                 Text(title)
                     .font(config.titleFont)

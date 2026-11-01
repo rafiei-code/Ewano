@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ModelEngine: Decodable {
+struct ModelEngine: Decodable, Hashable {
     let id: Int
     let modelID: Int
     let name: String

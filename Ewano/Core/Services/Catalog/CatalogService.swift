@@ -10,8 +10,8 @@ import Foundation
 protocol CatalogService {
     func manufacturers() async throws -> [Manufacturer]
     func manufacturer(id: Int) async throws -> Manufacturer
-    func models(manufacturerID: Int) async throws -> [ManufacturerModel]
     func engines(modelID: Int) async throws -> [ModelEngine]
+    func models(manufacturerID: Int) async throws -> [ManufacturerModel]
     func engineMaintenance(engineID: Int) async throws -> EngineMaintenanceResponse
 }
 

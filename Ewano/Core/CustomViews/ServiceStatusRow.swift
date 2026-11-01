@@ -92,7 +92,7 @@ enum DistanceUnit {
     case kilometers
     case miles
 
-    fileprivate var symbol: String {
+    var symbol: String {
         switch self {
         case .kilometers: "km"
         case .miles: "mi"

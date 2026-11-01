@@ -53,6 +53,12 @@ final class UserDataStore: ObservableObject {
         }
     }
 
+    /// Refreshes the cars without leaving the loaded phase, so the screens stay up while it runs.
+    func reloadCars() async {
+        guard let cars = try? await carsService.cars() else { return }
+        self.cars = cars
+    }
+
     func clear() {
         profile = nil
         cars = []
