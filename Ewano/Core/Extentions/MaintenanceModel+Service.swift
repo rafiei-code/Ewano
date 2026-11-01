@@ -8,13 +8,8 @@
 import SwiftUI
 
 extension MaintenanceModel {
-    var lastServiceDay: Date? {
+    private var lastServiceDay: Date? {
         lastServiceDate.flatMap { try? Date($0, strategy: .iso8601.year().month().day()) }
-    }
-
-    var dueDate: Date? {
-        guard let lastServiceDay, intervalMonths > 0 else { return nil }
-        return Calendar.current.date(byAdding: .month, value: intervalMonths, to: Calendar.current.startOfDay(for: lastServiceDay))
     }
 
     var serviceInterval: ServiceInterval {
