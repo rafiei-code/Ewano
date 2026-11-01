@@ -13,8 +13,8 @@ struct SplashPageView: View {
     let onFinish: () -> Void
 
     private static let steps = [
-        "Synchronizing telemetry...",
-        "Scanning onboard diagnostics...",
+        "Loading your garage...",
+        "Checking upcoming services...",
         "Verifying service logs...",
         "Garage ready"
     ]
@@ -67,6 +67,9 @@ struct SplashPageView: View {
         authStore.dropExpiredSession()
         if authStore.session != nil {
             await userData.load()
+            if userData.phase == .loaded {
+                await NotificationManager.shared.notifyOverdueServices(in: userData.cars)
+            }
         }
         try? await Task.sleep(until: start + minimumDuration, clock: .continuous)
         guard !Task.isCancelled else { return }
@@ -134,16 +137,16 @@ struct SplashPageView: View {
 
     private var footer: some View {
         VStack(spacing: 12) {
-            HStack(spacing: 8) {
-                PingingDot(size: 8, color: .svTertiaryFixed, showsCore: true)
-                Text("ENCRYPTED OBD-II LINK ACTIVE")
-                    .font(.svLabel)
-                    .tracking(0.33)
-                    .foregroundStyle(.svInverseOnSurface.opacity(0.9))
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 6)
-            .background(.svInverseSurface.opacity(0.8), in: Capsule())
+//            HStack(spacing: 8) {
+//                PingingDot(size: 8, color: .svTertiaryFixed, showsCore: true)
+//                Text("ENCRYPTED OBD-II LINK ACTIVE")
+//                    .font(.svLabel)
+//                    .tracking(0.33)
+//                    .foregroundStyle(.svInverseOnSurface.opacity(0.9))
+//            }
+//            .padding(.horizontal, 14)
+//            .padding(.vertical, 6)
+//            .background(.svInverseSurface.opacity(0.8), in: Capsule())
 
             Text(versionText)
                 .font(.svLabel)

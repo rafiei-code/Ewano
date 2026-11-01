@@ -53,6 +53,54 @@ final class UserDataStore: ObservableObject {
         }
     }
 
+    struct ProfileSaveResult {
+        var detailsError: Error?
+        var photoError: Error?
+
+        var firstError: Error? {
+            detailsError ?? photoError
+        }
+    }
+
+    /// Sends the new details and the new photo at the same time and returns once both requests have finished.
+    /// Whichever succeeds is applied to `profile`, even if the other fails.
+    func saveProfile(details: UpdateProfileRequest?, photo jpegData: Data?) async -> ProfileSaveResult {
+        let service = profileService
+        async let detailsResponse = Self.run(details) { try await service.updateProfile($0) }
+        async let photoResponse = Self.run(jpegData) {
+            try await service.updateImage(MultipartPayload(fieldName: "image", fileName: "profile.jpg", mimeType: "image/jpeg", data: $0))
+        }
+        let (detailsResult, photoResult) = await (detailsResponse, photoResponse)
+
+        var fullname = profile?.fullname
+        var email = profile?.email
+        var imageURL = profile?.imageURL
+        if case .success(let updated)? = detailsResult {
+            fullname = updated.fullname
+            email = updated.email
+        }
+        if case .success(let updated)? = photoResult {
+            imageURL = updated.imageURL
+        }
+        if let fullname {
+            profile = ProfileResponse(fullname: fullname, email: email, imageURL: imageURL)
+        }
+
+        var result = ProfileSaveResult()
+        if case .failure(let error)? = detailsResult { result.detailsError = error }
+        if case .failure(let error)? = photoResult { result.photoError = error }
+        return result
+    }
+
+    private static func run<Input, Output>(_ input: Input?, _ operation: (Input) async throws -> Output) async -> Result<Output, Error>? {
+        guard let input else { return nil }
+        do {
+            return .success(try await operation(input))
+        } catch {
+            return .failure(error)
+        }
+    }
+
     /// Refreshes the cars without leaving the loaded phase, so the screens stay up while it runs.
     func reloadCars() async {
         guard let cars = try? await carsService.cars() else { return }

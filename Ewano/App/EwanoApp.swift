@@ -13,6 +13,7 @@ struct EwanoApp: App {
     @State private var tabRouter = SwitchTabRouter.shared
     @StateObject private var authStore = AuthStore.shared
     @StateObject private var userData = UserDataStore.shared
+    @StateObject private var notifications = NotificationManager.shared
     @State private var isShowingSplash = true
     @State private var splashMinimumDuration: Duration = .seconds(3)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -27,6 +28,7 @@ struct EwanoApp: App {
                 if isShowingSplash {
                     SplashPageView(minimumDuration: splashMinimumDuration) {
                         isShowingSplash = false
+                        openNotificationsIfRequested()
                     }
                     .transition(.opacity)
                 } else {
@@ -52,11 +54,20 @@ struct EwanoApp: App {
             .onChange(of: authStore.session?.user) { user in
                 path = []
                 tabRouter.currentTab = .home
+                if user == nil {
+                    Task { await notifications.clear() }
+                }
                 // A fresh login loads the user's data behind the splash.
                 if user != nil {
                     splashMinimumDuration = .seconds(1)
                     isShowingSplash = true
                 }
+            }
+            .onChange(of: userData.cars) { cars in
+                Task { await notifications.updateBadge(for: cars) }
+            }
+            .onChange(of: notifications.opensNotificationsPage) { _ in
+                openNotificationsIfRequested()
             }
             // Pages in one stack share a single color scheme, so it is chosen here from the top page.
             .preferredColorScheme(isShowingSplash ? .dark : path.last?.colorScheme ?? .light)
@@ -85,6 +96,13 @@ struct EwanoApp: App {
                 .ignoresSafeArea()
                 .onAppear { isShowingSplash = true }
         }
+    }
+
+    /// A tap on an overdue notification opens the notifications page once the user's cars are on screen.
+    private func openNotificationsIfRequested() {
+        guard notifications.opensNotificationsPage, !isShowingSplash, authStore.session != nil, userData.phase == .loaded else { return }
+        notifications.opensNotificationsPage = false
+        path = [.notifications]
     }
 
     // Going to a page that is already in the stack pops back to it, so Login ⇄ Sign Up never piles up copies.

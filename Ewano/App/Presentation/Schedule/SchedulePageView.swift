@@ -64,7 +64,6 @@ struct SchedulePageView: View {
         VStack {
             AppScreenHeaderView(user: userProfile, onTapProfile: {
                 SwitchTabRouter.shared.currentTab = .more
-            }, onTapNotification: {
             })
             // Title, filters and counts stay put; only the service list scrolls.
             VStack(alignment: .leading, spacing: 0) {

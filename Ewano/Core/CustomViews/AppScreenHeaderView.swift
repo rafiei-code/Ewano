@@ -13,7 +13,9 @@ struct AppScreenHeaderView: View {
     let user: ProfileResponse
     var hadProfileView: Bool = true
     var onTapProfile: (() -> Void)?
-    var onTapNotification: (() -> Void)?
+
+    @Environment(\.navigate) private var navigate
+    @ObservedObject private var notifications = NotificationManager.shared
 
     var body: some View {
         VStack(spacing: 0) {
@@ -35,10 +37,24 @@ struct AppScreenHeaderView: View {
                     .accessibilityHidden(true)
                 Spacer()
 
-                CustomButtonView(config: .init(leadingImage: .icNotifications, leadingImageSize: 30, iconColor: .black, variant: .plain), action: {
-                    onTapNotification?()
+                CustomButtonView(config: .init(leadingImage: .icNotifications, leadingImageSize: 30, iconColor: .black, variant: .plain, size: .normal), action: {
+                    navigate(to: .notifications)
                 })
                 .fixedSize()
+                .overlay(alignment: .topTrailing) {
+                    if notifications.overdueCount > 0 {
+                        Text(notifications.overdueCount > 99 ? "99+" : "\(notifications.overdueCount)")
+                            .font(.svGaugeCaption)
+                            .foregroundStyle(.svOnError)
+                            .padding(.horizontal, 5)
+                            .frame(minWidth: 18, minHeight: 18)
+                            .background(.svError, in: Capsule())
+                            .offset(x: 7, y: -7)
+                            .accessibilityHidden(true)
+                    }
+                }
+                .padding(.trailing, notifications.overdueCount > 0 ? 6 : 0)
+                .accessibilityLabel(notifications.overdueCount > 0 ? "Notifications, \(notifications.overdueCount) overdue" : "Notifications")
 
                 if hadProfileView {
                     Button {

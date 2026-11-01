@@ -13,14 +13,12 @@ struct GarageView: View {
     let user: User
     let userProfile: ProfileResponse
     let cars: [CarModel]
-    var onTapNotification: (() -> Void)?
     @Environment(\.navigate) private var navigate
 
     var body: some View {
         VStack(spacing: 16) {
             AppScreenHeaderView(user: userProfile, onTapProfile: {
                 SwitchTabRouter.shared.currentTab = .more
-            }, onTapNotification: {
             })
             ScrollView {
                 HStack {

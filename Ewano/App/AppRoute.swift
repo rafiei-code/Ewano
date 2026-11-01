@@ -20,6 +20,8 @@ enum AppRoute: Hashable {
     case aboutUs
     case helpCenter
     case termsPrivacy
+    case editProfile
+    case notifications
 
     @MainActor @ViewBuilder
     var page: some View {
@@ -36,6 +38,8 @@ enum AppRoute: Hashable {
         case .aboutUs: AboutUsPageView()
         case .helpCenter: HelpCenterPageView()
         case .termsPrivacy: TermsPrivacyPageView()
+        case .editProfile: EditProfilePageView()
+        case .notifications: NotificationsPageView()
         }
     }
 

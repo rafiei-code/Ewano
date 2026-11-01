@@ -10,7 +10,6 @@ import SwiftUI
 struct ProfilePageView: View {
 
     let userProfile: ProfileResponse
-    var onTapEditProfile: (() -> Void)?
     var onTapLogout: (() -> Void)?
 
     @Environment(\.navigate) private var navigate
@@ -49,7 +48,7 @@ struct ProfilePageView: View {
                 .foregroundStyle(.svOnSurfaceVariant)
 
             Button {
-                onTapEditProfile?()
+                navigate(to: .editProfile)
             } label: {
                 HStack(spacing: 4) {
                     Text("Edit Profile")

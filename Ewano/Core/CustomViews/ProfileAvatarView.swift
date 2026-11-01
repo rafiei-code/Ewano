@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileAvatarView: View {
     var imageURL: String?
+    var previewImage: UIImage?
     var diameter: CGFloat = 96
     var onTapCamera: () -> Void = {}
 
@@ -24,7 +25,11 @@ struct ProfileAvatarView: View {
 
     @ViewBuilder
     private var avatar: some View {
-        if let imageURL {
+        if let previewImage {
+            Image(uiImage: previewImage)
+                .resizable()
+                .scaledToFill()
+        } else if let imageURL {
             AppImage(type: .url(imageURL), contentMode: .fill)
         } else {
             IconCircleView(

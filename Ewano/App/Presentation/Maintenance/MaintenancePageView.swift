@@ -16,7 +16,7 @@ struct MaintenancePageView: View {
     @EnvironmentObject private var userData: UserDataStore
     @State private var nickname = ""
     @State private var odometer = ""
-    @State private var unit = DistanceUnit.kilometers
+    @State private var unit: DistanceUnit = UserDefaults.standard.bool(forKey: AppPreferences.prefersMilesKey) ? .miles : .kilometers
     @State private var lastServiceDate: Date?
     @State private var pickerDate = Date.now
     @State private var isPickingDate = false
