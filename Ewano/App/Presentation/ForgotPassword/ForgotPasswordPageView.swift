@@ -47,6 +47,26 @@ struct ForgotPasswordPageView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .background(.svSurfaceHigh)
+        .safeAreaInset(edge: .bottom) {
+            if !isLinkSent {
+                BottomActionBar(background: .svSurfaceHigh) {
+                    CustomButtonView(config: .init(
+                        title: "SEND RESET LINK",
+                        isEnabled: isEmailValid && !isSending,
+                        isLoading: isSending,
+                        trailingImage: .icArrowForward,
+                        trailingImageSize: 20,
+                        titleColor: .svOnTertiaryContainer,
+                        titleFont: .svButton,
+                        titleTracking: 0.85,
+                        iconColor: .svOnTertiaryContainer,
+                        cornerRadius: 12,
+                        backgroundColor: .svTertiaryContainer
+                    ), action: sendResetLink)
+                    .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
+                }
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -66,22 +86,7 @@ struct ForgotPasswordPageView: View {
             .padding(.bottom, 20)
 
             emailCard
-                .padding(.bottom, 16)
 
-            CustomButtonView(config: .init(
-                title: "SEND RESET LINK",
-                isEnabled: isEmailValid && !isSending,
-                isLoading: isSending,
-                trailingImage: .icArrowForward,
-                trailingImageSize: 20,
-                titleColor: .svOnTertiaryContainer,
-                titleFont: .svButton,
-                titleTracking: 0.85,
-                iconColor: .svOnTertiaryContainer,
-                cornerRadius: 12,
-                backgroundColor: .svTertiaryContainer
-            ), action: sendResetLink)
-            .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
         }
     }
 

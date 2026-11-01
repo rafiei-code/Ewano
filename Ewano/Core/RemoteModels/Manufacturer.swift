@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Manufacturer: Decodable {
+struct Manufacturer: Decodable, Hashable {
     let id: Int
     let name: String
     let iconURL: String

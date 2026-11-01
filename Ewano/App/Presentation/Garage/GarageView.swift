@@ -13,13 +13,12 @@ struct GarageView: View {
     let user: User
     let userProfile: ProfileResponse
     let cars: [CarModel]
-    var onTapNotification: (() -> Void)?
+    @Environment(\.navigate) private var navigate
 
     var body: some View {
         VStack(spacing: 16) {
             AppScreenHeaderView(user: userProfile, onTapProfile: {
                 SwitchTabRouter.shared.currentTab = .more
-            }, onTapNotification: {
             })
             ScrollView {
                 HStack {
@@ -52,7 +51,7 @@ struct GarageView: View {
                         }
                     }
                     CustomButtonView(config: .init(leadingImage: .icAdd, leadingImageSize: 24, iconColor: .black, variant: .filled, shape: .circle), action: {
-                        onTapNotification?()
+                        navigate(to: .selectManufacturer)
                     })
                     .fixedSize()
                 }
@@ -68,7 +67,7 @@ struct GarageView: View {
                 }
 
                 CustomButtonView(config: .init(leadingImage: .icAddCircle, leadingImageSize: 24, iconColor: .svOnSurfaceVariant, backgroundColor: .svOnSurfaceVariant.opacity(0.4), variant: .filled, shape: .circle), action: {
-                    onTapNotification?()
+                    navigate(to: .selectManufacturer)
                 })
                 .fixedSize()
                 .padding(.top, 24)
@@ -96,7 +95,7 @@ Track Maintenance intervals, parts
                         variant: .filled,
                         shape: .square
                     ), action: {
-                        onTapNotification?()
+                        navigate(to: .selectManufacturer)
                     })
                 .fixedSize()
 

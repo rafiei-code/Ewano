@@ -11,12 +11,13 @@ enum UserCarsEndpoint: Endpoint {
     case userCars
     case createCar(CreateUserCarRequest)
     case saveMaintenance(carID: Int, request: SaveMaintenanceRequest)
+    case updateMaintenance(carID: Int, request: SaveMaintenanceRequest)
 
     var path: String {
         switch self {
         case .userCars: "user-cars"
         case .createCar: "user-cars"
-        case let .saveMaintenance(carID, _): "user-cars/\(carID)/maintenance"
+        case let .saveMaintenance(carID, _), let .updateMaintenance(carID, _): "user-cars/\(carID)/maintenance"
         }
     }
 
@@ -24,6 +25,7 @@ enum UserCarsEndpoint: Endpoint {
         switch self {
         case .userCars: .get
         case .createCar, .saveMaintenance: .post
+        case .updateMaintenance: .patch
         }
     }
 
@@ -31,7 +33,7 @@ enum UserCarsEndpoint: Endpoint {
         switch self {
         case .userCars: nil
         case let .createCar(request): request.asParameters
-        case let .saveMaintenance(_, request): request.asParameters
+        case let .saveMaintenance(_, request), let .updateMaintenance(_, request): request.asParameters
         }
     }
 }

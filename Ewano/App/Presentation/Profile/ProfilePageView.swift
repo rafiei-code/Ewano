@@ -10,11 +10,9 @@ import SwiftUI
 struct ProfilePageView: View {
 
     let userProfile: ProfileResponse
-    var onTapEditProfile: (() -> Void)?
-    var onTapAbout: (() -> Void)?
-    var onTapHelp: (() -> Void)?
-    var onTapTerms: (() -> Void)?
     var onTapLogout: (() -> Void)?
+
+    @Environment(\.navigate) private var navigate
 
     var body: some View {
         VStack(spacing: 0) {
@@ -50,7 +48,7 @@ struct ProfilePageView: View {
                 .foregroundStyle(.svOnSurfaceVariant)
 
             Button {
-                onTapEditProfile?()
+                navigate(to: .editProfile)
             } label: {
                 HStack(spacing: 4) {
                     Text("Edit Profile")
@@ -90,9 +88,9 @@ struct ProfilePageView: View {
             .accessibilityAddTraits(.isHeader)
             .padding(.bottom, 8)
 
-            SettingsRowView(icon: .icInfo, title: "About Us") { onTapAbout?() }
-            SettingsRowView(icon: .icMenuBook, title: "Help Center & Maintenance Guides") { onTapHelp?() }
-            SettingsRowView(icon: .icShield, title: "Terms & Privacy Policy") { onTapTerms?() }
+            SettingsRowView(icon: .icInfo, title: "About Us") { navigate(to: .aboutUs) }
+            SettingsRowView(icon: .icMenuBook, title: "Help Center & Maintenance Guides") { navigate(to: .helpCenter) }
+            SettingsRowView(icon: .icShield, title: "Terms & Privacy Policy") { navigate(to: .termsPrivacy) }
         }
         .padding(16)
         .cardSurface()

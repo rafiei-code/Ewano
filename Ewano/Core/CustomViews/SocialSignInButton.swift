@@ -21,14 +21,21 @@ struct SocialSignInButton: View {
     }
 
     let provider: Provider
+    var isLoading: Bool = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                logo
-                    .frame(width: 20, height: 20)
-                    .accessibilityHidden(true)
+                Group {
+                    if isLoading {
+                        ProgressView()
+                    } else {
+                        logo
+                    }
+                }
+                .frame(width: 20, height: 20)
+                .accessibilityHidden(true)
                 Text(provider.title)
                     .font(.svButton)
             }

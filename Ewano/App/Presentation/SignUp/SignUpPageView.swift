@@ -8,32 +8,32 @@
 import SwiftUI
 
 struct SignUpPageView: View {
-    var onCreateAccount: (_ name: String, _ email: String, _ password: String) async -> Void = { _, _, _ in }
-    var onTermsOfService: () -> Void = {}
-    var onPrivacyPolicy: () -> Void = {}
-
     private static let termsURL = URL(string: "servio://terms")!
     private static let privacyURL = URL(string: "servio://privacy")!
 
     @Environment(\.navigate) private var navigate
+    @EnvironmentObject private var authStore: AuthStore
 
     @State private var name = ""
+    @State private var username = ""
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
     @State private var isNameValid = false
+    @State private var isUsernameValid = false
     @State private var isEmailValid = false
     @State private var isPasswordValid = false
     @State private var isConfirmationValid = false
     @State private var hasAcceptedTerms = false
     @State private var isCreatingAccount = false
+    @State private var errorMessage: String?
 
     private var passwordsMatch: Bool {
         !confirmPassword.isEmpty && confirmPassword == password
     }
 
     private var canCreateAccount: Bool {
-        isNameValid && isEmailValid && isPasswordValid && isConfirmationValid
+        isNameValid && isUsernameValid && isEmailValid && isPasswordValid && isConfirmationValid
             && hasAcceptedTerms && !isCreatingAccount
     }
 
@@ -56,6 +56,35 @@ struct SignUpPageView: View {
             .padding(.bottom, 40)
         }
         .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .bottom) {
+            BottomActionBar(background: .svSurfaceHigh) {
+                VStack(spacing: 10) {
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(.svBodySm)
+                            .foregroundStyle(.svError)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .transition(.opacity)
+                    }
+
+                    CustomButtonView(config: .init(
+                        title: "CREATE ACCOUNT",
+                        isEnabled: canCreateAccount,
+                        isLoading: isCreatingAccount,
+                        trailingImage: .icArrowForward,
+                        trailingImageSize: 20,
+                        titleFont: .svButton,
+                        titleTracking: 0.85,
+                        iconColor: .svOnTertiaryContainer,
+                        cornerRadius: 12,
+                    ), action: createAccount)
+                    .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
+                }
+            }
+        }
+        .animation(.easeOut(duration: 0.2), value: errorMessage)
+        .onChange(of: username) { _ in errorMessage = nil }
+        .onChange(of: email) { _ in errorMessage = nil }
         .background(.svSurfaceHigh)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -82,6 +111,22 @@ struct SignUpPageView: View {
             .textInputAutocapitalization(.words)
 
             CustomTextFieldView(
+                placeholder: "alexmorgan",
+                text: $username,
+                title: "USERNAME",
+                icon: .icPerson,
+                rules: [
+                    .required("Choose a username"),
+                    .custom("Usernames can't contain spaces") { !$0.contains(where: \.isWhitespace) }
+                ],
+                isEnabled: !isCreatingAccount,
+                onValidationChange: { isUsernameValid = $0 }
+            )
+            .textContentType(.username)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+
+            CustomTextFieldView(
                 placeholder: "alex.morgan@email.com",
                 text: $email,
                 title: "EMAIL ADDRESS",
@@ -95,7 +140,7 @@ struct SignUpPageView: View {
                 onValidationChange: { isEmailValid = $0 }
             )
             .keyboardType(.emailAddress)
-            .textContentType(.username)
+            .textContentType(.emailAddress)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
 
@@ -133,19 +178,6 @@ struct SignUpPageView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 4)
 
-            CustomButtonView(config: .init(
-                title: "CREATE ACCOUNT",
-                isEnabled: canCreateAccount,
-                isLoading: isCreatingAccount,
-                trailingImage: .icArrowForward,
-                trailingImageSize: 20,
-                titleFont: .svButton,
-                titleTracking: 0.85,
-                iconColor: .svOnTertiaryContainer,
-                cornerRadius: 12,
-            ), action: createAccount)
-            .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
-            .padding(.top, 4)
         }
     }
 
@@ -162,11 +194,8 @@ struct SignUpPageView: View {
                 .foregroundStyle(.svOnSurface)
                 .padding(.top, 4)
                 .environment(\.openURL, OpenURLAction { url in
-                    switch url {
-                    case Self.termsURL: onTermsOfService()
-                    case Self.privacyURL: onPrivacyPolicy()
-                    default: return .systemAction
-                    }
+                    guard url == Self.termsURL || url == Self.privacyURL else { return .systemAction }
+                    navigate(to: .termsPrivacy)
                     return .handled
                 })
         }
@@ -207,13 +236,24 @@ struct SignUpPageView: View {
     }
 
     private func createAccount() {
+        let request = SignUpRequest(
+            fullname: name.trimmingCharacters(in: .whitespaces),
+            username: username,
+            password: password,
+            email: email.trimmingCharacters(in: .whitespaces)
+        )
         isCreatingAccount = true
+        errorMessage = nil
         Task {
-            await onCreateAccount(
-                name.trimmingCharacters(in: .whitespaces),
-                email.trimmingCharacters(in: .whitespaces),
-                password
-            )
+            do {
+                try await authStore.signUp(request)
+            } catch NetworkError.server(statusCode: 409) {
+                errorMessage = "That username or email is already registered."
+            } catch NetworkError.server(statusCode: 400), NetworkError.server(statusCode: 422) {
+                errorMessage = "Some details weren't accepted. Check them and try again."
+            } catch {
+                errorMessage = error.localizedDescription
+            }
             isCreatingAccount = false
         }
     }
@@ -223,4 +263,5 @@ struct SignUpPageView: View {
     NavigationStack {
         SignUpPageView()
     }
+    .environmentObject(AuthStore.shared)
 }

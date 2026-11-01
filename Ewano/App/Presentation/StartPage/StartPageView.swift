@@ -10,7 +10,6 @@ import SwiftUI
 struct StartPageView: View {
     private let slides = StartSlide.all
     private static let autoAdvanceDelay: Duration = .seconds(3)
-    /// Unbounded page counter, so the carousel loops in both directions.
     @State private var position = 0
     @State private var dragOffset: CGFloat = 0
     @State private var controlsHeight: CGFloat = 0

@@ -10,8 +10,8 @@ import SwiftUI
 struct CarModelOption: Identifiable, Hashable {
     let id: String
     var name: String
-    var details: String
-    var image: ImageResource?
+    var details: String?
+    var image: ImageType?
     var badge: String?
 }
 
@@ -35,7 +35,12 @@ struct CarModelRowView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardSurface()
+        .cardSurface(cornerRadius: 20)
+        .overlay {
+            RoundedRectangle(cornerRadius: 20)
+                .strokeBorder(isSelected ? Color.svTertiaryContainer : .clear, lineWidth: 2)
+        }
+        .animation(.easeOut(duration: 0.2), value: isSelected)
     }
 
     private func content(_ option: CarModelOption) -> some View {
@@ -58,10 +63,12 @@ struct CarModelRowView: View {
                         )
                     }
                 }
-                Text(option.details)
-                    .font(.svBodySm)
-                    .foregroundStyle(.svOnSurfaceVariant)
-                    .lineLimit(1)
+                if let details = option.details {
+                    Text(details)
+                        .font(.svBodySm)
+                        .foregroundStyle(.svOnSurfaceVariant)
+                        .lineLimit(1)
+                }
             }
 
             Spacer(minLength: 8)
@@ -70,16 +77,14 @@ struct CarModelRowView: View {
         .contentShape(Rectangle())
     }
 
-    private func thumbnail(_ image: ImageResource?) -> some View {
-        RoundedRectangle(cornerRadius: 16)
-            .fill(.svSurfaceContainer)
-            .frame(width: 68, height: 56)
+    private func thumbnail(_ image: ImageType?) -> some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill(.svSurfaceLow)
+            .frame(width: 96, height: 64)
             .overlay {
                 if let image {
-                    Image(image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 44, height: 36)
+                    AppImage(type: image)
+                        .padding(6)
                 } else {
                     Image(.icDirectionsCar)
                         .resizable()
@@ -94,9 +99,9 @@ struct CarModelRowView: View {
 
     private var skeleton: some View {
         HStack(spacing: 16) {
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 12)
                 .fill(.svSurfaceHigh)
-                .frame(width: 68, height: 56)
+                .frame(width: 96, height: 64)
 
             VStack(alignment: .leading, spacing: 10) {
                 Capsule().fill(.svSurfaceHigh).frame(width: 100, height: 16)

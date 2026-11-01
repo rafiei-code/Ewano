@@ -11,5 +11,6 @@ extension LottieAnimation {
     static let loader: LottieAnimation?       = .named("servio_loader_wheel")
     static let loaderSimple: LottieAnimation? = .named("loaderSimple")
     static let loginStar: LottieAnimation?    = .named("servio_login_asterisk_float")
+    static let gaugeLoader: LottieAnimation?  = .named("servio_gauge_loader")
 }
 
