@@ -41,7 +41,20 @@ final class AuthStore: ObservableObject {
     }
 
     func logIn(username: String, password: String) async throws {
-        let response = try await service.login(username: username, password: password)
+        startSession(try await service.login(username: username, password: password))
+    }
+
+    /// The backend checks Apple's identity token and answers like a normal login.
+    func logInWithApple(_ request: AppleLoginRequest) async throws {
+        startSession(try await service.loginWithApple(request))
+    }
+
+    /// The backend checks Google's ID token and answers like a normal login.
+    func logInWithGoogle(idToken: String) async throws {
+        startSession(try await service.loginWithGoogle(GoogleLoginRequest(idToken: idToken)))
+    }
+
+    private func startSession(_ response: LoginResponse) {
         let newSession = UserSession(response)
         store.saveSession(newSession)
         session = newSession

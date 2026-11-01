@@ -56,6 +56,8 @@ struct EwanoApp: App {
                 tabRouter.currentTab = .home
                 if user == nil {
                     Task { await notifications.clear() }
+                } else {
+                    notifications.startNewSession()
                 }
                 // A fresh login loads the user's data behind the splash.
                 if user != nil {

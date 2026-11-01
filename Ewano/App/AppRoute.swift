@@ -22,6 +22,7 @@ enum AppRoute: Hashable {
     case termsPrivacy
     case editProfile
     case notifications
+    case editMaintenance(car: CarModel)
 
     @MainActor @ViewBuilder
     var page: some View {
@@ -40,6 +41,7 @@ enum AppRoute: Hashable {
         case .termsPrivacy: TermsPrivacyPageView()
         case .editProfile: EditProfilePageView()
         case .notifications: NotificationsPageView()
+        case .editMaintenance(let car): MaintenancePageView(car: car)
         }
     }
 

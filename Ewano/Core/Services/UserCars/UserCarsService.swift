@@ -11,6 +11,7 @@ protocol UserCarsService {
     func cars() async throws -> [CarModel]
     func createCar(_ request: CreateUserCarRequest) async throws -> CarModel
     func saveMaintenance(carID: Int, request: SaveMaintenanceRequest) async throws
+    func updateMaintenance(carID: Int, request: SaveMaintenanceRequest) async throws
 }
 
 enum UserCarsError: LocalizedError {
@@ -44,5 +45,9 @@ struct UserCarsServiceImpl: UserCarsService {
 
     func saveMaintenance(carID: Int, request: SaveMaintenanceRequest) async throws {
         try await client.requestEmpty(.saveMaintenance(carID: carID, request: request))
+    }
+
+    func updateMaintenance(carID: Int, request: SaveMaintenanceRequest) async throws {
+        try await client.requestEmpty(.updateMaintenance(carID: carID, request: request))
     }
 }

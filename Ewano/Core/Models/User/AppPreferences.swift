@@ -11,4 +11,5 @@ import Foundation
 enum AppPreferences {
     static let prefersMilesKey = "prefersMiles"
     static let serviceAlertsKey = "serviceAlertsEnabled"
+    static let overdueAlertsDismissedKey = "overdueAlertsDismissed"
 }

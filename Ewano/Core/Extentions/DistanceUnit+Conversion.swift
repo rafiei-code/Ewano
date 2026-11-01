@@ -17,6 +17,13 @@ extension DistanceUnit {
         }
     }
 
+    func value(fromKilometers kilometers: Int) -> Int {
+        switch self {
+        case .kilometers: kilometers
+        case .miles: Int((Double(kilometers) / Self.kilometersPerMile).rounded())
+        }
+    }
+
     /// Miles are rounded to the nearest hundred so converted intervals stay readable.
     func formatted(kilometers: Int) -> String {
         let value = switch self {

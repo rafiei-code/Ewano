@@ -42,8 +42,8 @@ struct AppScreenHeaderView: View {
                 })
                 .fixedSize()
                 .overlay(alignment: .topTrailing) {
-                    if notifications.overdueCount > 0 {
-                        Text(notifications.overdueCount > 99 ? "99+" : "\(notifications.overdueCount)")
+                    if notifications.badgeCount > 0 {
+                        Text(notifications.badgeCount > 99 ? "99+" : "\(notifications.badgeCount)")
                             .font(.svGaugeCaption)
                             .foregroundStyle(.svOnError)
                             .padding(.horizontal, 5)
@@ -53,8 +53,8 @@ struct AppScreenHeaderView: View {
                             .accessibilityHidden(true)
                     }
                 }
-                .padding(.trailing, notifications.overdueCount > 0 ? 6 : 0)
-                .accessibilityLabel(notifications.overdueCount > 0 ? "Notifications, \(notifications.overdueCount) overdue" : "Notifications")
+                .padding(.trailing, notifications.badgeCount > 0 ? 6 : 0)
+                .accessibilityLabel(notifications.badgeCount > 0 ? "Notifications, \(notifications.badgeCount) overdue" : "Notifications")
 
                 if hadProfileView {
                     Button {

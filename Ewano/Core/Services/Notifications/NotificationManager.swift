@@ -14,8 +14,12 @@ import UserNotifications
 final class NotificationManager: NSObject, ObservableObject {
     static let shared = NotificationManager()
 
-    /// Overdue services across the user's cars, shown on the bell and the app icon.
-    @Published private(set) var overdueCount = 0
+    /// The number on the bell and the app icon: the overdue services, or 0 while alerts are switched off or cleared.
+    @Published private(set) var badgeCount = 0
+    /// True after the user clears the overdue alerts. It stays cleared, across launches, until the next login.
+    @Published private(set) var isDismissed = UserDefaults.standard.bool(forKey: AppPreferences.overdueAlertsDismissedKey) {
+        didSet { UserDefaults.standard.set(isDismissed, forKey: AppPreferences.overdueAlertsDismissedKey) }
+    }
     /// Set when the user taps an overdue notification. The app opens the notifications page and clears it.
     @Published var opensNotificationsPage = false
 
@@ -31,25 +35,39 @@ final class NotificationManager: NSObject, ObservableObject {
         center.delegate = self
     }
 
+    /// A new login brings the alerts back if anything is still overdue.
+    func startNewSession() {
+        isDismissed = false
+    }
+
     /// Posts one notification listing the overdue services, replacing any earlier one, and updates the badge.
     func notifyOverdueServices(in cars: [CarModel]) async {
         await updateBadge(for: cars)
         let overdue = cars.filter { !$0.overdueMaintenance.isEmpty }
-        guard alertsEnabled, overdueCount > 0, await isAuthorized() else { return }
+        guard badgeCount > 0, await isAuthorized() else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = overdueCount == 1 ? "1 service is overdue" : "\(overdueCount) services are overdue"
+        content.title = badgeCount == 1 ? "1 service is overdue" : "\(badgeCount) services are overdue"
         content.body = Self.summary(of: overdue)
         content.sound = .default
-        content.badge = NSNumber(value: overdueCount)
+        content.badge = NSNumber(value: badgeCount)
 
         center.removeDeliveredNotifications(withIdentifiers: [Self.overdueRequestID])
         try? await center.add(UNNotificationRequest(identifier: Self.overdueRequestID, content: content, trigger: nil))
     }
 
     func updateBadge(for cars: [CarModel]) async {
-        overdueCount = alertsEnabled ? cars.reduce(0) { $0 + $1.overdueMaintenance.count } : 0
-        await setAppBadge(overdueCount)
+        let overdueCount = cars.reduce(0) { $0 + $1.overdueMaintenance.count }
+        badgeCount = alertsEnabled && !isDismissed ? overdueCount : 0
+        await setAppBadge(badgeCount)
+    }
+
+    /// Removes the delivered alert and both badges until the next login.
+    func dismissAlerts() async {
+        isDismissed = true
+        badgeCount = 0
+        center.removeAllDeliveredNotifications()
+        await setAppBadge(0)
     }
 
     /// The notifications are summaries of what's on the page, so they're cleared once the user has seen it.
@@ -58,7 +76,8 @@ final class NotificationManager: NSObject, ObservableObject {
     }
 
     func clear() async {
-        overdueCount = 0
+        badgeCount = 0
+        isDismissed = false
         opensNotificationsPage = false
         center.removeAllDeliveredNotifications()
         await setAppBadge(0)

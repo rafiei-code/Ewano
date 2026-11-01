@@ -19,6 +19,8 @@ struct MaintenanceModel: Codable, Hashable {
     let scheduleStatus: String
     let lastServiceDate: String?
     let maintenanceTypeID: Int
+    /// Not part of the API: the car's current odometer, set by `UserDataStore` so progress can count kilometres too.
+    var currentOdometerKM: Int?
 
     enum CodingKeys: String, CodingKey {
         case code, name, notes, description, applicability

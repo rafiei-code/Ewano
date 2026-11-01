@@ -7,10 +7,13 @@
 
 import SwiftUI
 
+/// The page's main action, pinned to the bottom. Used in `.safeAreaInset(edge: .bottom)` it also rides on top of the keyboard.
 struct BottomActionBar<Content: View>: View {
+    private let background: Color
     private let content: Content
 
-    init(@ViewBuilder content: () -> Content) {
+    init(background: Color = .svSurface, @ViewBuilder content: () -> Content) {
+        self.background = background
         self.content = content()
     }
 
@@ -22,7 +25,7 @@ struct BottomActionBar<Content: View>: View {
             .frame(maxWidth: .infinity)
             .background {
                 Rectangle()
-                    .fill(.svSurface.opacity(0.9))
+                    .fill(background.opacity(0.9))
                     .background(.ultraThinMaterial)
                     .shadow(color: .black.opacity(0.06), radius: 8, y: -4)
                     .ignoresSafeArea(edges: .bottom)

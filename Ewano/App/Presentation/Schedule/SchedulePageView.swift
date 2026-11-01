@@ -13,11 +13,12 @@ struct SchedulePageView: View {
     let cars: [CarModel]
     let onNotifications: () -> Void
     let onProfile: () -> Void
-    let onUpdate: () -> Void
     let onSelectService: (MaintenanceModel) -> Void
 
     @State private var filter: ScheduleFilter = .allGood
     @ObservedObject private var router = SwitchTabRouter.shared
+    @State private var detailItem: ScheduleItem?
+    @Environment(\.navigate) private var navigate
 
     init(
         user: User,
@@ -25,7 +26,6 @@ struct SchedulePageView: View {
         cars: [CarModel],
         onNotifications: @escaping () -> Void = {},
         onProfile: @escaping () -> Void = {},
-        onUpdate: @escaping () -> Void = {},
         onSelectService: @escaping (MaintenanceModel) -> Void = { _ in }
     ) {
         self.user = user
@@ -33,12 +33,12 @@ struct SchedulePageView: View {
         self.cars = cars
         self.onNotifications = onNotifications
         self.onProfile = onProfile
-        self.onUpdate = onUpdate
         self.onSelectService = onSelectService
     }
 
+    // The router keeps a copy of the selected car, so it's looked up again to show the latest data after an update.
     private var car: CarModel? {
-        router.selectedCar ?? cars.first
+        router.selectedCar.flatMap { selected in cars.first { $0.id == selected.id } } ?? cars.first
     }
 
     private var items: [ScheduleItem] {
@@ -128,8 +128,11 @@ struct SchedulePageView: View {
             }
             .font(.svHeadlineMobile)
             Spacer(minLength: 8)
-            PillButton(title: "Update", icon: .icEdit, action: onUpdate)
-                .accessibilityLabel("Update mileage and service status")
+            PillButton(title: "Update", icon: .icEdit) {
+                if let car { navigate(to: .editMaintenance(car: car)) }
+            }
+            .disabled(car == nil)
+            .accessibilityLabel("Update mileage and service status")
             Spacer(minLength: 8)
             VehicleSwitcher(cars: cars, selectedCarID: selectedCarID)
         }

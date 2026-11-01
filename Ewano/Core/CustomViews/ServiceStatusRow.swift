@@ -135,6 +135,11 @@ enum ServiceInterval {
 
     static let dueSoonThreshold = 0.1
 
+    /// How far through the interval it is: 0 at the last service, 1 when due, above 1 when overdue.
+    var progress: Double? {
+        measure.map { $0.elapsed / $0.total }
+    }
+
     var status: ServiceStatus? {
         guard let measure else { return nil }
         if measure.elapsed >= measure.total {

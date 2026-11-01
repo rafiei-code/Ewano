@@ -56,6 +56,32 @@ struct SignUpPageView: View {
             .padding(.bottom, 40)
         }
         .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .bottom) {
+            BottomActionBar(background: .svSurfaceHigh) {
+                VStack(spacing: 10) {
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(.svBodySm)
+                            .foregroundStyle(.svError)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .transition(.opacity)
+                    }
+
+                    CustomButtonView(config: .init(
+                        title: "CREATE ACCOUNT",
+                        isEnabled: canCreateAccount,
+                        isLoading: isCreatingAccount,
+                        trailingImage: .icArrowForward,
+                        trailingImageSize: 20,
+                        titleFont: .svButton,
+                        titleTracking: 0.85,
+                        iconColor: .svOnTertiaryContainer,
+                        cornerRadius: 12,
+                    ), action: createAccount)
+                    .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
+                }
+            }
+        }
         .animation(.easeOut(duration: 0.2), value: errorMessage)
         .onChange(of: username) { _ in errorMessage = nil }
         .onChange(of: email) { _ in errorMessage = nil }
@@ -152,27 +178,6 @@ struct SignUpPageView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 4)
 
-            if let errorMessage {
-                Text(errorMessage)
-                    .font(.svBodySm)
-                    .foregroundStyle(.svError)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .transition(.opacity)
-            }
-
-            CustomButtonView(config: .init(
-                title: "CREATE ACCOUNT",
-                isEnabled: canCreateAccount,
-                isLoading: isCreatingAccount,
-                trailingImage: .icArrowForward,
-                trailingImageSize: 20,
-                titleFont: .svButton,
-                titleTracking: 0.85,
-                iconColor: .svOnTertiaryContainer,
-                cornerRadius: 12,
-            ), action: createAccount)
-            .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
-            .padding(.top, 4)
         }
     }
 

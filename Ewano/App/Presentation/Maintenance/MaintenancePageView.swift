@@ -7,23 +7,30 @@
 
 import SwiftUI
 
+/// The last add-car step, and the editor the Schedule tab opens for an existing car (no `selection`).
 struct MaintenancePageView: View {
-    let selection: NewCarSelection
+    var selection: NewCarSelection?
     let car: CarModel
     var userCars: UserCarsService = Services.shared.userCars
 
     @Environment(\.navigate) private var navigate
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var userData: UserDataStore
     @State private var nickname = ""
     @State private var odometer = ""
     @State private var unit: DistanceUnit = UserDefaults.standard.bool(forKey: AppPreferences.prefersMilesKey) ? .miles : .kilometers
     @State private var lastServiceDate: Date?
-    @State private var pickerDate = Date.now
-    @State private var isPickingDate = false
-    @State private var intervals: [Int: String] = [:]
+    @State private var lastServiceKMs: [Int: String] = [:]
+    @State private var originalKMs: [Int: String] = [:]
+    @State private var originalDate: Date?
     @State private var isSaving = false
     @State private var saveError: String?
+    @State private var hasPrefilled = false
     @FocusState private var isOdometerFocused: Bool
+
+    private var isEditing: Bool {
+        selection == nil
+    }
 
     private var odometerValue: Int? {
         Int(odometer)
@@ -37,18 +44,22 @@ struct MaintenancePageView: View {
         car.maintenance.filter(\.isConditional)
     }
 
+    private var services: [MaintenanceModel] {
+        requiredItems + conditionalItems
+    }
+
     private var canSave: Bool {
         odometerValue != nil
             && lastServiceDate != nil
-            && requiredItems.allSatisfy { !interval(for: $0).wrappedValue.trimmingCharacters(in: .whitespaces).isEmpty }
+            && services.allSatisfy { mileageError(for: $0) == nil }
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading, spacing: 4) {
-                    AccentTitleView(title: "Setup maintenance schedule")
-                    Text("Configure baseline mileage & service intervals for your vehicle.")
+                    AccentTitleView(title: isEditing ? "Update maintenance schedule" : "Setup maintenance schedule")
+                    Text(isEditing ? "Update your latest mileage & service date." : "Enter your current mileage and when each service was last done.")
                         .font(.svBodySm)
                         .foregroundStyle(.svOnSurfaceVariant)
                 }
@@ -70,30 +81,42 @@ struct MaintenancePageView: View {
                     iconColor: .svOnTertiaryContainer,
                     background: .svSurfaceHigh.opacity(0.8)
                 )
-                .padding(.bottom, 32)
+                .padding(.bottom, 16)
 
-                saveButton
+                syncNote
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 16)
         }
         .scrollDismissesKeyboard(.interactively)
         .background(.svSurface)
-        .wizardToolbar(step: 4, stepCount: 4)
+        .safeAreaInset(edge: .bottom) { saveBar }
+        .if(!isEditing) { $0.wizardToolbar(step: 4, stepCount: 4) }
+        .if(isEditing) { $0.navigationBarTitleDisplayMode(.inline) }
+        .navigationBarBackButtonHidden(isSaving)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("Done") { isOdometerFocused = false }
+                Button("Done") {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
             }
-        }
-        .sheet(isPresented: $isPickingDate) {
-            datePickerSheet
         }
         .onChange(of: odometer) { value in
             let digits = String(value.filter(\.isNumber).prefix(7))
             if digits != value { odometer = digits }
             saveError = nil
         }
+        .onChange(of: unit) { [unit] newUnit in
+            func convert(_ text: String) -> String {
+                guard let value = Int(text) else { return text }
+                return String(newUnit.value(fromKilometers: unit.kilometers(from: value)))
+            }
+            odometer = convert(odometer)
+            lastServiceKMs = lastServiceKMs.mapValues(convert)
+            originalKMs = originalKMs.mapValues(convert)
+        }
+        .onAppear(perform: prefillFromLastService)
     }
 
     private var vehicleCard: some View {
@@ -102,7 +125,7 @@ struct MaintenancePageView: View {
                 .fill(.svSurfaceHigh)
                 .frame(width: 56, height: 36)
                 .overlay {
-                    if let imageURL = selection.model.imageURL {
+                    if let imageURL = selection?.model.imageURL ?? (car.imageURL.isEmpty ? nil : car.imageURL) {
                         AppImage(type: .url(imageURL), contentMode: .fill)
                     }
                 }
@@ -110,11 +133,11 @@ struct MaintenancePageView: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(selection.title)
+                Text(selection?.title ?? "\(car.manufacturer) \(car.model)")
                     .font(.svBody)
                     .fontWeight(.bold)
                     .foregroundStyle(.svOnSurface)
-                Text("\(selection.engine.name) • \(selection.transmission.rawValue)")
+                Text(selection.map { "\($0.engine.name) • \($0.transmission.rawValue)" } ?? car.engine)
                     .font(.svLabel)
                     .foregroundStyle(.svOnSurfaceVariant)
                     .lineLimit(1)
@@ -123,7 +146,7 @@ struct MaintenancePageView: View {
             Spacer(minLength: 8)
 
             BadgeView(
-                text: "SCHEDULE SETUP",
+                text: isEditing ? "SCHEDULE UPDATE" : "SCHEDULE SETUP",
                 textFont: .svLabel,
                 textColor: .svOnSurfaceVariant,
                 backgroundColor: .svSurfaceHigh,
@@ -202,67 +225,26 @@ struct MaintenancePageView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 requiredLabel("Last Service Date")
-                Button {
-                    pickerDate = lastServiceDate ?? .now
-                    isPickingDate = true
-                } label: {
-                    HStack {
-                        Text(lastServiceDate?.formatted(date: .abbreviated, time: .omitted) ?? "Select date")
-                            .font(.svBody)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(lastServiceDate == nil ? .svOutline : .svOnSurface)
-                        Spacer(minLength: 8)
-                        Image(.icEditCalendar)
-                            .resizable()
-                            .renderingMode(.template)
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.svOnSurfaceVariant)
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 12)
-                            .strokeBorder(Color.svOutlineVariant.opacity(0.6), lineWidth: 2)
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.pressable)
-                .accessibilityLabel("Last service date")
-                .accessibilityValue(lastServiceDate?.formatted(date: .long, time: .omitted) ?? "Not set")
+                DatePickerField(title: "Last service date", date: $lastServiceDate)
             }
         }
         .padding(14)
         .cardSurface(cornerRadius: 12)
     }
 
-    private var datePickerSheet: some View {
-        VStack(spacing: 16) {
-            DatePicker("Last service date", selection: $pickerDate, in: ...Date.now, displayedComponents: .date)
-                .datePickerStyle(.graphical)
-                .labelsHidden()
-                .tint(.svTertiary)
-
-            CustomButtonView(config: .init(
-                title: "Done",
-                titleFont: .svButton,
-                iconColor: .svOnTertiaryContainer,
-                cornerRadius: 12,
-                backgroundColor: .svTertiaryContainer
-            )) {
-                lastServiceDate = pickerDate
-                isPickingDate = false
+    private func lastServiceKM(for item: MaintenanceModel) -> Binding<String> {
+        Binding(
+            get: { lastServiceKMs[item.maintenanceTypeID] ?? "" },
+            set: {
+                lastServiceKMs[item.maintenanceTypeID] = String($0.filter(\.isNumber).prefix(7))
+                saveError = nil
             }
-        }
-        .padding(20)
-        .presentationDetents([.medium, .large])
+        )
     }
 
-    private func interval(for item: MaintenanceModel) -> Binding<String> {
-        Binding(
-            get: { intervals[item.maintenanceTypeID] ?? "" },
-            set: { intervals[item.maintenanceTypeID] = $0 }
-        )
+    private func mileageError(for item: MaintenanceModel) -> String? {
+        guard let value = Int(lastServiceKMs[item.maintenanceTypeID] ?? ""), let odometerValue, value > odometerValue else { return nil }
+        return "Can't be more than the current odometer"
     }
 
     @ViewBuilder
@@ -289,53 +271,61 @@ struct MaintenancePageView: View {
         VStack(alignment: .leading, spacing: 12) {
             sectionHeader(title, badge: badge, caption: caption)
             ForEach(items, id: \.maintenanceTypeID) { item in
-                MaintenanceIntervalRow(
+                ServiceMileageRow(
                     icon: item.serviceIcon ?? .icBuild,
                     title: item.name,
-                    interval: interval(for: item),
-                    placeholder: "e.g. \(item.intervalText(in: unit))",
-                    isRequired: item.isRequired
+                    interval: item.intervalText(in: unit),
+                    lastServiceKM: lastServiceKM(for: item),
+                    placeholder: odometerValue.map { $0.formatted() } ?? "Same as odometer",
+                    unitSymbol: unit.symbol,
+                    isRequired: item.isRequired,
+                    errorMessage: mileageError(for: item)
                 )
             }
         }
         .padding(.bottom, 24)
     }
 
-    private var saveButton: some View {
-        VStack(spacing: 12) {
-            if let saveError {
-                Text(saveError)
-                    .font(.svBodySm)
-                    .foregroundStyle(.svError)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-            }
+    private var saveBar: some View {
+        BottomActionBar {
+            VStack(spacing: 10) {
+                if let saveError {
+                    Text(saveError)
+                        .font(.svBodySm)
+                        .foregroundStyle(.svError)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                }
 
-            CustomButtonView(config: .init(
-                title: isSaving ? "Saving…" : "Save Maintenance Schedule",
-                isEnabled: canSave,
-                isLoading: isSaving,
-                trailingImage: isSaving ? nil : .icCheckCircle,
-                trailingImageSize: 20,
-                titleFont: .svButton,
-                iconColor: .svOnTertiaryContainer,
-                cornerRadius: 12,
-                backgroundColor: .svTertiaryContainer
-            ), action: save)
-            .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
-
-            HStack(spacing: 6) {
-                Image(.icLock)
-                    .resizable()
-                    .renderingMode(.template)
-                    .scaledToFit()
-                    .frame(width: 12, height: 12)
-                    .accessibilityHidden(true)
-                Text("Synced securely to your account")
-                    .font(.svLabel)
+                CustomButtonView(config: .init(
+                    title: isSaving ? "Saving…" : isEditing ? "Update Maintenance Schedule" : "Save Maintenance Schedule",
+                    isEnabled: canSave,
+                    isLoading: isSaving,
+                    trailingImage: isSaving ? nil : .icCheckCircle,
+                    trailingImageSize: 20,
+                    titleFont: .svButton,
+                    iconColor: .svOnTertiaryContainer,
+                    cornerRadius: 12,
+                    backgroundColor: .svTertiaryContainer
+                ), action: save)
+                .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
             }
-            .foregroundStyle(.svOnSurfaceVariant.opacity(0.8))
         }
+    }
+
+    private var syncNote: some View {
+        HStack(spacing: 6) {
+            Image(.icLock)
+                .resizable()
+                .renderingMode(.template)
+                .scaledToFit()
+                .frame(width: 12, height: 12)
+                .accessibilityHidden(true)
+            Text("Synced securely to your account")
+                .font(.svLabel)
+        }
+        .foregroundStyle(.svOnSurfaceVariant.opacity(0.8))
+        .frame(maxWidth: .infinity)
     }
 
     private enum SectionBadge {
@@ -389,27 +379,58 @@ struct MaintenancePageView: View {
         }
     }
 
-    // The API has no fields for the nickname or the intervals yet, so only the odometer and date are sent.
+    /// When editing, starts from what's saved: the car's current odometer, the most recent service date,
+    /// and the odometer reading each service was last done at.
+    private func prefillFromLastService() {
+        guard isEditing, !hasPrefilled else { return }
+        hasPrefilled = true
+        if let km = CarOdometerStore.kilometers(for: car) {
+            odometer = String(unit.value(fromKilometers: km))
+        }
+        lastServiceDate = car.maintenance.compactMap { $0.lastServiceDate.flatMap(Date.init(apiDay:)) }.max()
+        originalDate = lastServiceDate
+        for item in services {
+            if let km = item.lastServiceKM {
+                lastServiceKMs[item.maintenanceTypeID] = String(unit.value(fromKilometers: km))
+            }
+        }
+        originalKMs = lastServiceKMs
+    }
+
+    /// A new car saves every service. An update saves only the services whose mileage changed, or all of them when the
+    /// date changed, so updating just the odometer doesn't mark every service as done. An empty mileage means
+    /// "done at the current odometer". The odometer itself is kept by `CarOdometerStore` until the API has a field for it.
+    /// Editing also uses POST until the server has PATCH user-cars/{id}/maintenance (`UserCarsService.updateMaintenance`).
     private func save() {
         guard let odometerValue, let lastServiceDate, !isSaving else { return }
-        let serviceDay = lastServiceDate.formatted(Date.ISO8601FormatStyle(timeZone: .current).year().month().day())
-        let request = SaveMaintenanceRequest(maintenance: car.maintenance.filter(\.hasInterval).map {
-            SaveMaintenanceRequest.Entry(
-                maintenanceTypeID: $0.maintenanceTypeID,
+        let serviceDay = lastServiceDate.apiDay
+        let dateChanged = serviceDay != originalDate?.apiDay
+        let entries = services.filter(\.hasInterval).compactMap { item -> SaveMaintenanceRequest.Entry? in
+            let text = lastServiceKMs[item.maintenanceTypeID] ?? ""
+            guard !isEditing || dateChanged || text != (originalKMs[item.maintenanceTypeID] ?? "") else { return nil }
+            return SaveMaintenanceRequest.Entry(
+                maintenanceTypeID: item.maintenanceTypeID,
                 lastServiceDate: serviceDay,
-                lastServiceKM: unit.kilometers(from: odometerValue),
+                lastServiceKM: unit.kilometers(from: Int(text) ?? odometerValue),
                 notes: nil
             )
-        })
+        }
         isOdometerFocused = false
         isSaving = true
         saveError = nil
 
         Task {
             do {
-                try await userCars.saveMaintenance(carID: car.id, request: request)
+                if !entries.isEmpty {
+                    try await userCars.saveMaintenance(carID: car.id, request: SaveMaintenanceRequest(maintenance: entries))
+                }
+                CarOdometerStore.save(unit.kilometers(from: odometerValue), forCarID: car.id)
                 await userData.reloadCars()
-                navigate.popToRoot()
+                if isEditing {
+                    dismiss()
+                } else {
+                    navigate.popToRoot()
+                }
             } catch {
                 saveError = error.localizedDescription
             }

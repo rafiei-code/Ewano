@@ -45,7 +45,7 @@ final class UserDataStore: ObservableObject {
             let (loadedProfile, loadedCars) = try await (profile, cars)
             guard !Task.isCancelled else { return }
             self.profile = loadedProfile
-            self.cars = loadedCars
+            self.cars = Self.withCurrentOdometers(loadedCars)
             phase = .loaded
         } catch {
             guard !Task.isCancelled else { return }
@@ -104,7 +104,25 @@ final class UserDataStore: ObservableObject {
     /// Refreshes the cars without leaving the loaded phase, so the screens stay up while it runs.
     func reloadCars() async {
         guard let cars = try? await carsService.cars() else { return }
-        self.cars = cars
+        self.cars = Self.withCurrentOdometers(cars)
+    }
+
+    /// Gives every service its car's current odometer, so progress can count kilometres since the last service.
+    private static func withCurrentOdometers(_ cars: [CarModel]) -> [CarModel] {
+        cars.map { car in
+            let odometer = CarOdometerStore.kilometers(for: car)
+            let maintenance = car.maintenance.map { item in
+                var item = item
+                item.currentOdometerKM = odometer
+                return item
+            }
+            return CarModel(
+                id: car.id, userID: car.userID, name: car.name,
+                manufacturerID: car.manufacturerID, manufacturer: car.manufacturer,
+                modelID: car.modelID, model: car.model, engineID: car.engineID, engine: car.engine,
+                imageURL: car.imageURL, imageSourceURL: car.imageSourceURL, maintenance: maintenance
+            )
+        }
     }
 
     func clear() {

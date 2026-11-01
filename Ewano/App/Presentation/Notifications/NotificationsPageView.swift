@@ -10,6 +10,7 @@ import SwiftUI
 struct NotificationsPageView: View {
     @Environment(\.navigate) private var navigate
     @EnvironmentObject private var userData: UserDataStore
+    @ObservedObject private var notifications = NotificationManager.shared
 
     private var carsWithOverdue: [CarModel] {
         userData.cars.filter { !$0.overdueMaintenance.isEmpty }
@@ -31,13 +32,23 @@ struct NotificationsPageView: View {
                     )
                     .padding(.top, 40)
                 } else {
-                    InfoTipCard(
-                        icon: .icReportFill,
-                        title: overdueCount == 1 ? "1 service is overdue" : "\(overdueCount) services are overdue",
-                        subtitle: "Tap a service to open its car's schedule.",
-                        iconColor: .svError,
-                        background: .svErrorContainer.opacity(0.5)
-                    )
+                    if notifications.isDismissed {
+                        InfoTipCard(
+                            icon: .icDoneAll,
+                            title: "Alerts cleared",
+                            subtitle: "You'll be reminded at your next login if anything is still overdue.",
+                            iconColor: .svOnSurfaceVariant,
+                            background: .svSurfaceContainer
+                        )
+                    } else {
+                        InfoTipCard(
+                            icon: .icReportFill,
+                            title: overdueCount == 1 ? "1 service is overdue" : "\(overdueCount) services are overdue",
+                            subtitle: "Tap a service to open its car's schedule.",
+                            iconColor: .svError,
+                            background: .svErrorContainer.opacity(0.5)
+                        )
+                    }
 
                     ForEach(carsWithOverdue, id: \.id) { car in
                         carSection(car)
@@ -59,7 +70,19 @@ struct NotificationsPageView: View {
                     .accessibilityAddTraits(.isHeader)
             }
             .hiddenSharedBackground()
+
+            if notifications.badgeCount > 0 {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Clear") {
+                        Task { await notifications.dismissAlerts() }
+                    }
+                    .font(.svButton)
+                    .foregroundStyle(.svTertiary)
+                    .accessibilityHint("Removes the overdue alert and badges until your next login")
+                }
+            }
         }
+        .animation(.easeOut(duration: 0.2), value: notifications.isDismissed)
         .onAppear {
             NotificationManager.shared.removeDeliveredNotifications()
         }

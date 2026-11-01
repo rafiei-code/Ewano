@@ -94,14 +94,14 @@ struct EditProfilePageView: View {
                 preferencesCard
                     .padding(.top, 8)
 
-                actions
-                    .padding(.top, 8)
+                cancelButton
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 40)
         }
         .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .bottom) { saveBar }
         .background(.svSurface)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -241,34 +241,38 @@ struct EditProfilePageView: View {
         }
     }
 
-    private var actions: some View {
-        VStack(spacing: 8) {
-            if let errorMessage {
-                Text(errorMessage)
-                    .font(.svBodySm)
-                    .foregroundStyle(.svError)
-                    .multilineTextAlignment(.center)
+    private var saveBar: some View {
+        BottomActionBar {
+            VStack(spacing: 10) {
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(.svBodySm)
+                        .foregroundStyle(.svError)
+                        .multilineTextAlignment(.center)
+                }
+
+                CustomButtonView(config: .init(
+                    title: isSaving ? "Saving…" : "Save Changes",
+                    isEnabled: canSave,
+                    isLoading: isSaving,
+                    leadingImage: isSaving ? nil : .icCheck,
+                    leadingImageSize: 20,
+                    titleFont: .svButton,
+                    iconColor: .svOnTertiaryContainer,
+                    cornerRadius: 12,
+                    backgroundColor: .svTertiaryContainer
+                ), action: save)
+                .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
             }
-
-            CustomButtonView(config: .init(
-                title: isSaving ? "Saving…" : "Save Changes",
-                isEnabled: canSave,
-                isLoading: isSaving,
-                leadingImage: isSaving ? nil : .icCheck,
-                leadingImageSize: 20,
-                titleFont: .svButton,
-                iconColor: .svOnTertiaryContainer,
-                cornerRadius: 12,
-                backgroundColor: .svTertiaryContainer
-            ), action: save)
-            .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
-
-            Button("Cancel") { dismiss() }
-                .font(.svButton)
-                .foregroundStyle(.svOnSurfaceVariant)
-                .frame(maxWidth: .infinity, minHeight: 48)
-                .disabled(isSaving)
         }
+    }
+
+    private var cancelButton: some View {
+        Button("Cancel") { dismiss() }
+            .font(.svButton)
+            .foregroundStyle(.svOnSurfaceVariant)
+            .frame(maxWidth: .infinity, minHeight: 48)
+            .disabled(isSaving)
     }
 
     private func loadValues() {
