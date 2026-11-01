@@ -17,6 +17,7 @@ struct SchedulePageView: View {
 
     @State private var filter: ScheduleFilter = .allGood
     @ObservedObject private var router = SwitchTabRouter.shared
+    @State private var detailItem: ScheduleItem?
 
     init(
         user: User,
@@ -93,6 +94,9 @@ struct SchedulePageView: View {
             }
         }
         .background(.svSurface)
+        .sheet(item: $detailItem) { item in
+            ScheduleDetailSheet(maintenance: item.maintenance, icon: item.icon)
+        }
     }
 
     private var selectedCarID: Binding<Int?> {
@@ -156,7 +160,10 @@ struct SchedulePageView: View {
                         icon: item.icon,
                         title: item.maintenance.name,
                         interval: item.interval,
-                        onTap: { onSelectService(item.maintenance) }
+                        onTap: {
+                            onSelectService(item.maintenance)
+                            detailItem = item
+                        }
                     )
                 }
             }
