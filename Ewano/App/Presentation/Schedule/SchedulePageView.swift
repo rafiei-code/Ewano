@@ -13,6 +13,7 @@ struct SchedulePageView: View {
     let cars: [CarModel]
     let onNotifications: () -> Void
     let onProfile: () -> Void
+    let onUpdate: () -> Void
     let onSelectService: (MaintenanceModel) -> Void
 
     @State private var filter: ScheduleFilter = .allGood
@@ -24,6 +25,7 @@ struct SchedulePageView: View {
         cars: [CarModel],
         onNotifications: @escaping () -> Void = {},
         onProfile: @escaping () -> Void = {},
+        onUpdate: @escaping () -> Void = {},
         onSelectService: @escaping (MaintenanceModel) -> Void = { _ in }
     ) {
         self.user = user
@@ -31,6 +33,7 @@ struct SchedulePageView: View {
         self.cars = cars
         self.onNotifications = onNotifications
         self.onProfile = onProfile
+        self.onUpdate = onUpdate
         self.onSelectService = onSelectService
     }
 
@@ -63,11 +66,26 @@ struct SchedulePageView: View {
                 SwitchTabRouter.shared.currentTab = .more
             }, onTapNotification: {
             })
+            // Title, filters and counts stay put; only the service list scrolls.
+            VStack(alignment: .leading, spacing: 0) {
+                titleRow
+                    .padding(.top, 8)
+                    .padding(.bottom, 16)
+
+                if car != nil {
+                    UnderlineTabBar(items: ScheduleFilter.allCases, selection: $filter) {
+                        "\($0.title) (\(count($0.status)))"
+                    }
+                    .padding(.bottom, 12)
+
+                    summaryChips
+                        .padding(.bottom, 8)
+                }
+            }
+            .padding(.horizontal, 20)
+
             ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    titleRow
-                        .padding(.top, 8)
-                        .padding(.bottom, 16)
+                Group {
                     if car == nil {
                         StateMessageView(
                             kind: .empty,
@@ -77,18 +95,11 @@ struct SchedulePageView: View {
                         )
                         .padding(.top, 40)
                     } else {
-                        UnderlineTabBar(items: ScheduleFilter.allCases, selection: $filter) {
-                            "\($0.title) (\(count($0.status)))"
-                        }
-                        .padding(.bottom, 12)
-
-                        summaryChips
-                            .padding(.bottom, 20)
-
                         serviceList
                     }
                 }
                 .padding(.horizontal, 20)
+                .padding(.top, 12)
                 .padding(.bottom, 24)
             }
         }
@@ -117,7 +128,10 @@ struct SchedulePageView: View {
                     .accessibilityHidden(true)
             }
             .font(.svHeadlineMobile)
-            Spacer(minLength: 12)
+            Spacer(minLength: 8)
+            PillButton(title: "Update", icon: .icEdit, action: onUpdate)
+                .accessibilityLabel("Update mileage and service status")
+            Spacer(minLength: 8)
             VehicleSwitcher(cars: cars, selectedCarID: selectedCarID)
         }
     }
