@@ -90,7 +90,7 @@ struct MaintenancePageView: View {
                 InfoTipCard(
                     icon: .icInfo,
                     title: "How reminders work",
-                    subtitle: "Servio calculates all future maintenance intervals and reminder projections based on your starting mileage.",
+                    subtitle: "Ewano calculates all future maintenance intervals and reminder projections based on your starting mileage.",
                     iconColor: .svOnTertiaryContainer,
                     background: .svSurfaceHigh.opacity(0.8)
                 )

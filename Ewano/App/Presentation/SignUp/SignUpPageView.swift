@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SignUpPageView: View {
-    private static let termsURL = URL(string: "servio://terms")!
-    private static let privacyURL = URL(string: "servio://privacy")!
+    private static let termsURL = URL(string: "Ewano://terms")!
+    private static let privacyURL = URL(string: "Ewano://privacy")!
 
     @Environment(\.navigate) private var navigate
     @EnvironmentObject private var authStore: AuthStore

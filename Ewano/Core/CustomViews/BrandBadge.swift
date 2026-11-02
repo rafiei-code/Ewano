@@ -18,7 +18,7 @@ struct BrandBadge: View {
                 .accessibilityHidden(true)
 
             HStack(spacing: 2) {
-                Text("SERVIO")
+                Text("Ewano")
                     .tracking(0.8)
                 Text("✱")
                     .foregroundStyle(.svTertiaryFixed)
@@ -32,7 +32,7 @@ struct BrandBadge: View {
         .background(.svSurfaceLowest.opacity(0.10), in: Capsule())
         .background(.ultraThinMaterial, in: Capsule())
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Servio")
+        .accessibilityLabel("Ewano")
     }
 }
 

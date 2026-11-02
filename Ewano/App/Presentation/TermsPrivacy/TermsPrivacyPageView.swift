@@ -24,7 +24,7 @@ struct TermsPrivacyPageView: View {
         ]),
         Section(title: "Fair Use", points: [
             "Don't misuse the app, try to access other people's data, or interfere with the service.",
-            "We may update these terms. Continuing to use Servio means you accept the latest version."
+            "We may update these terms. Continuing to use Ewano means you accept the latest version."
         ])
     ]
 
@@ -35,16 +35,16 @@ struct TermsPrivacyPageView: View {
             "An optional profile photo, if you choose to upload one."
         ]),
         Section(title: "How We Use It", points: [
-            "Only to run Servio: building your maintenance schedule, showing reminders and keeping your garage in sync.",
+            "Only to run Ewano: building your maintenance schedule, showing reminders and keeping your garage in sync.",
             "We don't sell your personal information or use it for advertising."
         ]),
         Section(title: "How It's Protected", points: [
-            "Your data travels over encrypted HTTPS connections and is stored on Servio's servers.",
+            "Your data travels over encrypted HTTPS connections and is stored on Ewano's servers.",
             "On your device, your sign-in session is kept in the iOS Keychain and removed when you log out."
         ]),
         Section(title: "Your Choices", points: [
             "You can update your profile from the Profile tab and log out at any time.",
-            "To delete your account and its data, contact the Servio team."
+            "To delete your account and its data, contact the Ewano team."
         ])
     ]
 

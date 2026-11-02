@@ -25,7 +25,7 @@ struct SplashPageView: View {
     @State private var step = 0
 
     private var versionText: String {
-        "Servio v\(Bundle.main.appVersion)  •  Build \(Bundle.main.buildNumber)"
+        "Ewano v\(Bundle.main.appVersion)  •  Build \(Bundle.main.buildNumber)"
     }
 
     var body: some View {
@@ -90,7 +90,7 @@ struct SplashPageView: View {
                 .padding(.bottom, 16)
                 .accessibilityHidden(true)
 
-            Text("SERVIO")
+            Text("Ewano")
                 .font(.svHeadlineMobile)
                 .tracking(2.8)
                 .foregroundStyle(.svInverseOnSurface)

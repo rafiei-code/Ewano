@@ -52,7 +52,7 @@ struct HighlightTag: View {
         HighlightTag(title: "Intelligent vehicle care")
             .padding()
             .background(.svInverseSurface)
-        HighlightTag(title: "Servio garage sync", style: .onLight)
+        HighlightTag(title: "Ewano garage sync", style: .onLight)
             .padding()
             .background(.svSurfaceHigh)
     }

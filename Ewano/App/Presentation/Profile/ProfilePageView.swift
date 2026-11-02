@@ -81,7 +81,7 @@ struct ProfilePageView: View {
                     .foregroundStyle(.svOnTertiaryContainer)
                     .accessibilityHidden(true)
 
-                Text("Servio & Support")
+                Text("Ewano & Support")
                     .font(.svTitle)
                     .foregroundStyle(.svOnSurface)
             }
@@ -110,7 +110,7 @@ struct ProfilePageView: View {
                 .frame(width: 24, height: 3)
                 .accessibilityHidden(true)
 
-            Text("Servio iOS v\(appVersion) (Build \(buildNumber)) · Crafted for Drivers")
+            Text("Ewano iOS v\(appVersion) (Build \(buildNumber)) · Crafted for Drivers")
                 .font(.svLabel)
                 .foregroundStyle(.svOnSurfaceVariant)
                 .multilineTextAlignment(.center)

@@ -25,7 +25,7 @@ struct AboutUsPageView: View {
     ]
 
     private var copyrightText: String {
-        "Copyright © \(Calendar.current.component(.year, from: .now)) Servio Automotive Technologies Inc. All rights reserved."
+        "Copyright © \(Calendar.current.component(.year, from: .now)) Ewano Automotive Technologies Inc. All rights reserved."
     }
 
     var body: some View {
@@ -41,7 +41,7 @@ struct AboutUsPageView: View {
                         .accessibilityAddTraits(.isHeader)
 
                     Group {
-                        Text("Servio was built by mechanics and automotive enthusiasts who believe vehicle maintenance shouldn't rely on guesswork or faded windshield reminder stickers.")
+                        Text("Ewano was built by mechanics and automotive enthusiasts who believe vehicle maintenance shouldn't rely on guesswork or faded windshield reminder stickers.")
                         Text("By pairing factory-accurate service schedules with simple distance countdowns, we help you keep your vehicle running smoothly, maintain maximum resale value, and avoid costly unexpected repairs.")
                     }
                     .font(.svBody)
@@ -89,7 +89,7 @@ struct AboutUsPageView: View {
             .overlay(alignment: .bottomLeading) {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(alignment: .firstTextBaseline, spacing: 6) {
-                        Text("SERVIO")
+                        Text("Ewano")
                             .font(.svHeadlineMobile)
                             .tracking(1.4)
                             .foregroundStyle(.svSurface)

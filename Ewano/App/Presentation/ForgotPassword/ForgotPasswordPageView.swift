@@ -81,7 +81,7 @@ struct ForgotPasswordPageView: View {
         VStack(alignment: .leading, spacing: 0) {
             AuthHeaderView(
                 title: "FORGOT PASSWORD?",
-                subtitle: "Enter the email associated with your Servio account and we'll send you a recovery link."
+                subtitle: "Enter the email associated with your Ewano account and we'll send you a recovery link."
             )
             .padding(.bottom, 20)
 
@@ -93,7 +93,7 @@ struct ForgotPasswordPageView: View {
     private var emailCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             CustomTextFieldView(
-                placeholder: "driver@servio.app",
+                placeholder: "driver@ewano.app",
                 text: $email,
                 appearance: .inset,
                 title: "EMAIL ADDRESS",
