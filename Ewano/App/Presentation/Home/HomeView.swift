@@ -31,15 +31,29 @@ struct HomeView: View {
                     Spacer()
                 }
 
-                ForEach(userCars, id: \.id) { car in
-                    ExpandableSectionView(
-                        car: CarModel(id: car.id, userID: user.id, name: car.name, manufacturerID: car.manufacturerID, manufacturer: car.manufacturer, modelID: car.modelID, model: car.model, engineID: car.engineID, engine: car.engine, imageURL: car.imageURL, imageSourceURL: car.imageSourceURL, maintenance: car.maintenance),
-                        isExpanded: userCars.first?.id == car.id,
-                    ) {
-                        SwitchTabRouter.shared.showSchedule(for: car)
+                Group {
+                    if userCars.isEmpty {
+                        StateMessageView(
+                            kind: .empty,
+                            icon: .icDirectionsCar,
+                            title: "No vehicle",
+                            message: "Add a vehicle from garage"
+                        )
+                        .padding(.top, 40)
+                    } else {
+                        ForEach(userCars, id: \.id) { car in
+
+                            ExpandableSectionView(
+                                car: car,
+                                isExpanded: userCars.first?.id == car.id,
+                            ) {
+                                SwitchTabRouter.shared.showSchedule(for: car)
+                            }
+                            .padding(.horizontal)
+                        }
                     }
-                    .padding(.horizontal)
                 }
+                .padding(.bottom, 24)
                 Spacer(minLength: 0)
             }
             .padding(.top, 8)

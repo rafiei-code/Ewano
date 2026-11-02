@@ -38,7 +38,9 @@ struct SchedulePageView: View {
 
     // The router keeps a copy of the selected car, so it's looked up again to show the latest data after an update.
     private var car: CarModel? {
-        router.selectedCar.flatMap { selected in cars.first { $0.id == selected.id } } ?? cars.first
+        router.selectedCar.flatMap { selected in
+            cars.first { $0.id == selected.id }
+        } ?? cars.first
     }
 
     private var items: [ScheduleItem] {
@@ -103,6 +105,12 @@ struct SchedulePageView: View {
             }
         }
         .background(.svSurface)
+        .sheet(item: $detailItem) { item in
+            ScheduleDetailSheet(
+                maintenance: item.maintenance,
+                icon: item.icon
+            )
+        }
     }
 
     private var selectedCarID: Binding<Int?> {
@@ -118,16 +126,6 @@ struct SchedulePageView: View {
 
     private var titleRow: some View {
         HStack {
-            HStack(spacing: 4) {
-                Text("SCHEDULE")
-                    .foregroundStyle(.svOnSurface)
-                    .accessibilityAddTraits(.isHeader)
-                Text("✱")
-                    .foregroundStyle(.svTertiaryContainer)
-                    .accessibilityHidden(true)
-            }
-            .font(.svHeadlineMobile)
-            Spacer(minLength: 8)
             PillButton(title: "Update", icon: .icEdit) {
                 if let car { navigate(to: .editMaintenance(car: car)) }
             }
@@ -172,7 +170,10 @@ struct SchedulePageView: View {
                         icon: item.icon,
                         title: item.maintenance.name,
                         interval: item.interval,
-                        onTap: { onSelectService(item.maintenance) }
+                        onTap: {
+                            onSelectService(item.maintenance)
+                            detailItem = item
+                        }
                     )
                 }
             }

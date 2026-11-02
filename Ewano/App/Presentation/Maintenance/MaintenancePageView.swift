@@ -49,9 +49,22 @@ struct MaintenancePageView: View {
     }
 
     private var canSave: Bool {
-        odometerValue != nil
-            && lastServiceDate != nil
-            && services.allSatisfy { mileageError(for: $0) == nil }
+        guard let odometerValue, odometerValue > 0,
+              lastServiceDate != nil else {
+            return false
+        }
+
+        return requiredItems.allSatisfy { item in
+            guard item.hasInterval else { return true }
+
+            guard let value = Int(lastServiceKMs[item.maintenanceTypeID] ?? ""),
+                  value > 0,
+                  value <= odometerValue else {
+                return false
+            }
+
+            return true
+        }
     }
 
     var body: some View {
@@ -88,20 +101,20 @@ struct MaintenancePageView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 16)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .scrollDismissesKeyboard(.immediately)
         .background(.svSurface)
         .safeAreaInset(edge: .bottom) { saveBar }
         .if(!isEditing) { $0.wizardToolbar(step: 4, stepCount: 4) }
         .if(isEditing) { $0.navigationBarTitleDisplayMode(.inline) }
         .navigationBarBackButtonHidden(isSaving)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }
-            }
-        }
+//        .toolbar {
+//            ToolbarItemGroup(placement: .keyboard) {
+//                Spacer()
+//                Button("Done") {
+//                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+//                }
+//            }
+//        }
         .onChange(of: odometer) { value in
             let digits = String(value.filter(\.isNumber).prefix(7))
             if digits != value { odometer = digits }
@@ -243,8 +256,25 @@ struct MaintenancePageView: View {
     }
 
     private func mileageError(for item: MaintenanceModel) -> String? {
-        guard let value = Int(lastServiceKMs[item.maintenanceTypeID] ?? ""), let odometerValue, value > odometerValue else { return nil }
-        return "Can't be more than the current odometer"
+        let text = lastServiceKMs[item.maintenanceTypeID] ?? ""
+
+        guard !text.isEmpty else {
+            return item.isRequired ? "This field is required" : nil
+        }
+
+        guard let value = Int(text), value > 0 else {
+            return "Enter a valid mileage"
+        }
+
+        guard let odometerValue else {
+            return nil
+        }
+
+        guard value <= odometerValue else {
+            return "Can't be more than the current odometer"
+        }
+
+        return nil
     }
 
     @ViewBuilder
