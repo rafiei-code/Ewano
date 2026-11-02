@@ -10,8 +10,6 @@ import SwiftUI
 struct ScheduleDetailSheet: View {
     let maintenance: MaintenanceModel
     let icon: ImageResource?
-    var onRemindLater: () -> Void = {}
-    var onMarkAsDone: () -> Void = {}
 
     @Environment(\.dismiss) private var dismiss
 
@@ -60,8 +58,6 @@ struct ScheduleDetailSheet: View {
                 if let lastDate = maintenance.lastServiceDay {
                     lastCompletedCard(date: lastDate, distance: maintenance.lastServiceKM)
                 }
-                actions
-                    .padding(.top, 8)
             }
             .padding(.horizontal, 20)
             .padding(.top, 24)
@@ -213,42 +209,6 @@ struct ScheduleDetailSheet: View {
         let day = date.formatted(.dateTime.month(.abbreviated).day().year())
         guard let distance else { return day }
         return "\(day) at \(distance.formatted()) km"
-    }
-
-    private var actions: some View {
-        HStack(spacing: 12) {
-            Button {
-                onRemindLater()
-                dismiss()
-            } label: {
-                Text("Remind Later")
-                    .font(.svTitle)
-                    .foregroundStyle(.svOnSurface)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
-                    .background(.svSurfaceHigh, in: RoundedRectangle(cornerRadius: 16))
-            }
-            .buttonStyle(.pressable)
-
-            Button {
-                onMarkAsDone()
-                dismiss()
-            } label: {
-                HStack(spacing: 6) {
-                    Text("Mark as Done")
-                    Image(.icCheck)
-                        .resizable()
-                        .renderingMode(.template)
-                        .frame(width: 18, height: 18)
-                }
-                .font(.svTitle)
-                .foregroundStyle(.svOnTertiaryContainer)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 18)
-                .background(.svTertiaryFixedDim, in: RoundedRectangle(cornerRadius: 16))
-            }
-            .buttonStyle(.pressable)
-        }
     }
 }
 
