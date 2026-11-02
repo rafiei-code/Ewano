@@ -12,6 +12,7 @@ enum AuthenticationEndpoint: Endpoint {
     case signUp(SignUpRequest)
     case appleLogin(AppleLoginRequest)
     case googleLogin(GoogleLoginRequest)
+    case refreshToken(RefreshTokenRequest)
 
     var path: String {
         switch self {
@@ -19,12 +20,13 @@ enum AuthenticationEndpoint: Endpoint {
         case .signUp: "auth/signup"
         case .appleLogin: "auth/apple"
         case .googleLogin: "auth/google"
+        case .refreshToken: "auth/refresh"
         }
     }
 
     var method: HTTPMethod {
         switch self {
-        case .login, .signUp, .appleLogin, .googleLogin: .post
+        case .login, .signUp, .appleLogin, .googleLogin, .refreshToken: .post
         }
     }
 
@@ -37,6 +39,8 @@ enum AuthenticationEndpoint: Endpoint {
         case let .appleLogin(request):
             request.asParameters
         case let .googleLogin(request):
+            request.asParameters
+        case let .refreshToken(request):
             request.asParameters
         }
     }

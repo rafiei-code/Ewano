@@ -23,7 +23,7 @@ final class NetworkProvider<U: Endpoint>: NetworkClient {
         baseURL: URL = APIConfig.baseURL,
         session: Session = .default,
         decoder: JSONDecoder = JSONDecoder(),
-        authInterceptor: RequestInterceptor = AuthInterceptor()
+        authInterceptor: RequestInterceptor = AuthInterceptor.shared
     ) {
         self.baseURL = baseURL
         self.session = session
