@@ -22,41 +22,21 @@ struct GarageView: View {
             })
             ScrollView {
                 Group {
-                    HStack {
-                        VStack(spacing: 4) {
-                            HStack(spacing: 4) {
-                                Text("MY GARAGE")
-                                    .font(.svHeadlineMobile)
-                                    .foregroundStyle(.black)
+                    HStack(spacing: 4) {
+                        Text("\(cars.count) vehicles registered")
+                            .font(.caption)
+                            .foregroundStyle(.black)
 
-                                LottieView(animation: .loginStar)
-                                    .playing(loopMode: .loop)
-                                    .frame(width: 32, height: 32)
-                                    .accessibilityHidden(true)
-                                Spacer()
+                        Circle()
+                            .frame(height: 4)
+                            .foregroundStyle(.svOutline)
 
-                            }
-                            HStack(spacing: 4) {
-                                Text("\(cars.count) vehicles registered")
-                                    .font(.caption)
-                                    .foregroundStyle(.black)
-
-                                Circle()
-                                    .frame(height: 4)
-                                    .foregroundStyle(.svOutline)
-
-                                Text("Fleet health: \(calculateFleetHealth()) %")
-                                    .font(.svBody)
-                                    .foregroundStyle(.svOnTertiaryContainer)
-                                Spacer()
-                            }
-                        }
-                        CustomButtonView(config: .init(leadingImage: .icAdd, leadingImageSize: 24, iconColor: .black, variant: .filled, shape: .circle), action: {
-                            navigate(to: .selectManufacturer)
-                        })
-                        .fixedSize()
+                        Text("Fleet health: \(calculateFleetHealth()) %")
+                            .font(.svBody)
+                            .foregroundStyle(.svOnTertiaryContainer)
+                        Spacer()
                     }
-                    .padding()
+                    .padding(.horizontal)
 
                     ForEach(cars, id: \.id) { car in
                         VehicleHealthCard(
@@ -64,7 +44,8 @@ struct GarageView: View {
                         ) {
                             SwitchTabRouter.shared.showSchedule(for: car)
                         }
-                        .padding()
+                        .padding(.horizontal)
+                        .padding(.bottom)
                     }
 
                     CustomButtonView(config: .init(leadingImage: .icAddCircle, leadingImageSize: 24, iconColor: .svOnSurfaceVariant, backgroundColor: .svOnSurfaceVariant.opacity(0.4), variant: .filled, shape: .circle), action: {

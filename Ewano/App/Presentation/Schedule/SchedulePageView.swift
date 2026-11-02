@@ -126,16 +126,6 @@ struct SchedulePageView: View {
 
     private var titleRow: some View {
         HStack {
-            HStack(spacing: 4) {
-                Text("SCHEDULE")
-                    .foregroundStyle(.svOnSurface)
-                    .accessibilityAddTraits(.isHeader)
-                Text("✱")
-                    .foregroundStyle(.svTertiaryContainer)
-                    .accessibilityHidden(true)
-            }
-            .font(.svHeadlineMobile)
-            Spacer(minLength: 8)
             PillButton(title: "Update", icon: .icEdit) {
                 if let car { navigate(to: .editMaintenance(car: car)) }
             }
