@@ -19,6 +19,8 @@ enum NetworkError: LocalizedError {
     init(_ error: AFError, statusCode: Int?) {
         if let networkError = error.underlyingError as? NetworkError {
             self = networkError
+        } else if error.underlyingError is AuthenticationError {
+            self = .unauthorized
         } else if let statusCode, !(200..<300).contains(statusCode) {
             // The CDN can drop the connection while sending an error page, so the status code wins.
             self = statusCode == 401 ? .unauthorized : .server(statusCode: statusCode)

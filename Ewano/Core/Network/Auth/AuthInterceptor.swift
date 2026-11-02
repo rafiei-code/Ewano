@@ -6,31 +6,12 @@
 //
 
 import Alamofire
-import Foundation
 
-/// Adds the stored token to authenticated requests and logs the user out when the server rejects it.
-nonisolated struct AuthInterceptor: RequestInterceptor {
-    var store: DataManager = .shared
-
-    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping @Sendable (Result<URLRequest, any Error>) -> Void) {
-        guard let userSession = store.session, !userSession.isExpired else {
-            Self.logOut()
-            completion(.failure(NetworkError.unauthorized))
-            return
-        }
-        var request = urlRequest
-        request.headers.add(.authorization(userSession.authorizationValue))
-        completion(.success(request))
-    }
-
-    func retry(_ request: Request, for session: Session, dueTo error: any Error, completion: @escaping @Sendable (RetryResult) -> Void) {
-        if request.response?.statusCode == 401 {
-            Self.logOut()
-        }
-        completion(.doNotRetry)
-    }
-
-    private static func logOut() {
-        Task { @MainActor in AuthStore.shared.logOut() }
-    }
+/// The one interceptor every authenticated request shares, so concurrent 401s trigger a single refresh.
+nonisolated enum AuthInterceptor {
+    static let shared = AuthenticationInterceptor(
+        authenticator: SessionAuthenticator(),
+        credential: DataManager.shared.session,
+        refreshWindow: .init(interval: 30, maximumAttempts: 2)
+    )
 }

@@ -5,6 +5,7 @@
 //  Created by Alireza Sotoudeh on 2026/10/31.
 //
 
+import Alamofire
 import Combine
 import Foundation
 
@@ -57,6 +58,7 @@ final class AuthStore: ObservableObject {
     private func startSession(_ response: LoginResponse) {
         let newSession = UserSession(response)
         store.saveSession(newSession)
+        AuthInterceptor.shared.credential = newSession
         session = newSession
     }
 
@@ -72,12 +74,13 @@ final class AuthStore: ObservableObject {
 
     func logOut() {
         store.logOut()
+        AuthInterceptor.shared.credential = nil
         session = nil
     }
 
-    /// Logs out when the saved token has expired, so the next screen is the start page.
+    /// Logs out when the saved refresh token has expired, so the next screen is the start page.
     func dropExpiredSession() {
-        guard let session, session.isExpired else { return }
+        guard let session, session.isRefreshTokenExpired else { return }
         logOut()
     }
 }
