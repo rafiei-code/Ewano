@@ -7,5 +7,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Servio uses the camera so you can take a new profile photo.</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>svInverseSurface</string>
+	</dict>
 </dict>
 </plist>

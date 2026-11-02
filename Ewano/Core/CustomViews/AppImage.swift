@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ImageType: Equatable {
+enum ImageType: Hashable {
     case url(String)
     case local(ImageResource)
 }
@@ -17,7 +17,8 @@ extension ImageType {
     var url: URL? {
         switch self {
         case .url(let string):
-            return URL(string: string)
+            // Uploaded files come back as paths like "/uploads/...", relative to the API's host.
+            return URL(string: string, relativeTo: APIConfig.baseURL)?.absoluteURL
 
         case .local:
             return nil
@@ -45,8 +46,8 @@ struct AppImage: View {
         case .local(let resource):
             localImage(resource)
 
-        case .url(let urlString):
-            remoteImage(urlString)
+        case .url:
+            remoteImage
         }
     }
 
@@ -73,10 +74,9 @@ struct AppImage: View {
         }
     }
 
-    @ViewBuilder
-    private func remoteImage(_ urlString: String) -> some View {
+    private var remoteImage: some View {
         WebImageLoader(
-            url: URL(string: urlString),
+            url: type.url,
             errorView: placeholder,
             imageSize: imageSize
         )

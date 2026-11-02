@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "img_splash_garage.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -9,7 +9,7 @@ import SwiftUI
 
 extension MaintenanceModel {
     var lastServiceDay: Date? {
-        lastServiceDate.flatMap { try? Date($0, strategy: .iso8601.year().month().day()) }
+        lastServiceDate.flatMap(Date.init(apiDay:))
     }
 
     var dueDate: Date? {
@@ -17,11 +17,22 @@ extension MaintenanceModel {
         return Calendar.current.date(byAdding: .month, value: intervalMonths, to: Calendar.current.startOfDay(for: lastServiceDay))
     }
 
+    /// Time since the last service or kilometres since it, whichever is further along, so the service is due at whichever comes first.
     var serviceInterval: ServiceInterval {
-        if let lastServiceDay, intervalMonths > 0 {
-            return .time(interval: intervalMonths, unit: .months, lastService: lastServiceDay)
-        }
-        return .distance(interval: intervalKM, driven: 0)
+        [timeInterval, distanceInterval]
+            .compactMap { $0 }
+            .max { ($0.progress ?? 0) < ($1.progress ?? 0) }
+            ?? .distance(interval: intervalKM, driven: 0)
+    }
+
+    private var timeInterval: ServiceInterval? {
+        guard let lastServiceDay, intervalMonths > 0 else { return nil }
+        return .time(interval: intervalMonths, unit: .months, lastService: lastServiceDay)
+    }
+
+    private var distanceInterval: ServiceInterval? {
+        guard intervalKM > 0, let lastServiceKM, let currentOdometerKM else { return nil }
+        return .distance(interval: intervalKM, driven: max(currentOdometerKM - lastServiceKM, 0))
     }
 
     var serviceStatus: ServiceStatus? {
@@ -29,12 +40,7 @@ extension MaintenanceModel {
     }
 
     var elapsedFraction: Double {
-        guard let lastServiceDay, intervalMonths > 0 else { return 0 }
-        let calendar = Calendar.current
-        let start = calendar.startOfDay(for: lastServiceDay)
-        guard let due = calendar.date(byAdding: .month, value: intervalMonths, to: start) else { return 0 }
-        let total = due.timeIntervalSince(start)
-        return total > 0 ? Date.now.timeIntervalSince(start) / total : 0
+        serviceInterval.progress ?? 0
     }
 
     var serviceIcon: ImageResource? {
