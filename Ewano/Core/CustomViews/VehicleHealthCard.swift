@@ -87,10 +87,28 @@ struct VehicleHealthCard: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(VehicleSwitcher.displayName(car))
-                .font(.svTitle)
-                .foregroundStyle(.svOnSurface)
-                .lineLimit(1)
+            HStack {
+                Text(VehicleSwitcher.displayName(car))
+                    .font(.svTitle)
+                    .foregroundStyle(.svOnSurface)
+                    .lineLimit(1)
+
+                Spacer(minLength: 0)
+
+                if !overdueSchedules.isEmpty {
+                    BadgeView(
+                        text: "\(overdueSchedules.count) Overdue",
+                        image: .icWarningFill,
+                        textFont: .svLabel,
+                        textColor: .svOnErrorContainer,
+                        imageColor: .svOnErrorContainer,
+                        backgroundColor: .svErrorContainer,
+                        verticalPadding: 6,
+                        horizontalPadding: 10
+                    )
+                    .fixedSize()
+                }
+            }
         }
         .padding(.horizontal, 16)
         .padding(.top, 16)
@@ -120,20 +138,6 @@ struct VehicleHealthCard: View {
             )
 
             Spacer(minLength: 8)
-
-            if !overdueSchedules.isEmpty {
-                BadgeView(
-                    text: "\(overdueSchedules.count) Overdue",
-                    image: .icWarningFill,
-                    textFont: .svLabel,
-                    textColor: .svOnErrorContainer,
-                    imageColor: .svOnErrorContainer,
-                    backgroundColor: .svErrorContainer,
-                    verticalPadding: 6,
-                    horizontalPadding: 10
-                )
-                .fixedSize()
-            }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)

@@ -11,6 +11,7 @@ struct ProfileAvatarView: View {
     var imageURL: String?
     var previewImage: UIImage?
     var diameter: CGFloat = 96
+    var hadCamera: Bool = true
     var onTapCamera: () -> Void = {}
 
     var body: some View {
@@ -19,7 +20,9 @@ struct ProfileAvatarView: View {
             .clipShape(Circle())
             .overlay(Circle().stroke(.svTertiaryContainer, lineWidth: 3))
             .overlay(alignment: .bottomTrailing) {
-                cameraButton
+                if hadCamera {
+                    cameraButton
+                }
             }
     }
 

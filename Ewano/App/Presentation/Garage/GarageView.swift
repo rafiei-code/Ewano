@@ -21,84 +21,87 @@ struct GarageView: View {
                 SwitchTabRouter.shared.currentTab = .more
             })
             ScrollView {
-                HStack {
-                    VStack(spacing: 4) {
-                        HStack(spacing: 4) {
-                            Text("MY GARAGE")
-                                .font(.svHeadlineMobile)
-                                .foregroundStyle(.black)
+                Group {
+                    HStack {
+                        VStack(spacing: 4) {
+                            HStack(spacing: 4) {
+                                Text("MY GARAGE")
+                                    .font(.svHeadlineMobile)
+                                    .foregroundStyle(.black)
 
-                            LottieView(animation: .loginStar)
-                                .playing(loopMode: .loop)
-                                .frame(width: 32, height: 32)
-                                .accessibilityHidden(true)
-                            Spacer()
+                                LottieView(animation: .loginStar)
+                                    .playing(loopMode: .loop)
+                                    .frame(width: 32, height: 32)
+                                    .accessibilityHidden(true)
+                                Spacer()
 
+                            }
+                            HStack(spacing: 4) {
+                                Text("\(cars.count) vehicles registered")
+                                    .font(.caption)
+                                    .foregroundStyle(.black)
+
+                                Circle()
+                                    .frame(height: 4)
+                                    .foregroundStyle(.svOutline)
+
+                                Text("Fleet health: \(calculateFleetHealth()) %")
+                                    .font(.svBody)
+                                    .foregroundStyle(.svOnTertiaryContainer)
+                                Spacer()
+                            }
                         }
-                        HStack(spacing: 4) {
-                            Text("\(cars.count) vehicles registered")
-                                .font(.caption)
-                                .foregroundStyle(.black)
-
-                            Circle()
-                                .frame(height: 4)
-                                .foregroundStyle(.svOutline)
-
-                            Text("Fleet health: \(calculateFleetHealth()) %")
-                                .font(.svBody)
-                                .foregroundStyle(.svOnTertiaryContainer)
-                            Spacer()
-                        }
+                        CustomButtonView(config: .init(leadingImage: .icAdd, leadingImageSize: 24, iconColor: .black, variant: .filled, shape: .circle), action: {
+                            navigate(to: .selectManufacturer)
+                        })
+                        .fixedSize()
                     }
-                    CustomButtonView(config: .init(leadingImage: .icAdd, leadingImageSize: 24, iconColor: .black, variant: .filled, shape: .circle), action: {
+                    .padding()
+
+                    ForEach(cars, id: \.id) { car in
+                        VehicleHealthCard(
+                            car: car
+                        ) {
+                            SwitchTabRouter.shared.showSchedule(for: car)
+                        }
+                        .padding()
+                    }
+
+                    CustomButtonView(config: .init(leadingImage: .icAddCircle, leadingImageSize: 24, iconColor: .svOnSurfaceVariant, backgroundColor: .svOnSurfaceVariant.opacity(0.4), variant: .filled, shape: .circle), action: {
                         navigate(to: .selectManufacturer)
                     })
                     .fixedSize()
-                }
-                .padding()
+                    .padding(.top, 24)
 
-                ForEach(cars, id: \.id) { car in
-                    VehicleHealthCard(
-                        car: car
-                    ) {
-                        SwitchTabRouter.shared.showSchedule(for: car)
-                    }
-                    .padding()
-                }
+                    Text("Add Another Car")
+                        .font(.svTitle)
+                        .foregroundStyle(.black)
 
-                CustomButtonView(config: .init(leadingImage: .icAddCircle, leadingImageSize: 24, iconColor: .svOnSurfaceVariant, backgroundColor: .svOnSurfaceVariant.opacity(0.4), variant: .filled, shape: .circle), action: {
-                    navigate(to: .selectManufacturer)
-                })
-                .fixedSize()
-                .padding(.top, 24)
-
-                Text("Add Another Car")
-                    .font(.svTitle)
-                    .foregroundStyle(.black)
-
-                Text("""
+                    Text("""
 Track Maintenance intervals, parts
  warranty, and service log for your entire
  garage.
 """)
-                .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.center)
 
-                CustomButtonView(
-                    config: .init(
-                        title: "Add Vehicle",
-                        leadingImage: .icDirectionsCar,
-                        leadingImageSize: 24,
-                        titleColor: .black,
-                        titleFont: .svTitle,
-                        iconColor: .black,
-                        backgroundColor: .svOnSurfaceVariant.opacity(0.4),
-                        variant: .filled,
-                        shape: .square
-                    ), action: {
-                        navigate(to: .selectManufacturer)
-                    })
-                .fixedSize()
+                    CustomButtonView(
+                        config: .init(
+                            title: "Add Vehicle",
+                            leadingImage: .icDirectionsCar,
+                            leadingImageSize: 24,
+                            titleColor: .black,
+                            titleFont: .svTitle,
+                            iconColor: .black,
+                            backgroundColor: .svOnSurfaceVariant.opacity(0.4),
+                            variant: .filled,
+                            shape: .square
+                        ), action: {
+                            navigate(to: .selectManufacturer)
+                        })
+                    .fixedSize()
 
+                }
+                .padding(.bottom, 24)
             }
         }
         .background(.svSurfaceHigh)

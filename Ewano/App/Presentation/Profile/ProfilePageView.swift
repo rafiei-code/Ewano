@@ -28,6 +28,7 @@ struct ProfilePageView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
+                .padding(.bottom, 24)
             }
         }
         .background(.svSurfaceHigh)
@@ -36,7 +37,7 @@ struct ProfilePageView: View {
 
     private var profileCard: some View {
         VStack(spacing: 4) {
-            ProfileAvatarView(imageURL: userProfile.imageURL)
+            ProfileAvatarView(imageURL: userProfile.imageURL, hadCamera: false)
                 .padding(.bottom, 12)
 
             Text(userProfile.fullname)

@@ -13,6 +13,12 @@ struct ExpandableSectionView: View {
     @State var isExpanded: Bool = false
     var onTapSeeAll: (() -> Void)?
 
+    private var mileage: String {
+        car.maintenance
+            .compactMap(\.lastServiceKM)
+            .max()
+            .map { $0.formatted() } ?? "—"
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -87,16 +93,25 @@ struct ExpandableSectionView: View {
                 Spacer()
             }
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(car.name)
-                    .font(.svTitle)
-                    .foregroundStyle(.svOnSurface)
-                    .lineLimit(1)
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(car.name)
+                        .font(.svTitle)
+                        .foregroundStyle(.svOnSurface)
+                        .lineLimit(1)
 
-                if let maintenance = car.maintenance.first {
-                    Text(maintenance.name)
-                        .font(.svBodySm)
-                        .foregroundStyle(.svOnSurfaceVariant)
+                    if let maintenance = car.maintenance.first {
+                        Text(maintenance.name)
+                            .font(.svBodySm)
+                            .foregroundStyle(.svOnSurfaceVariant)
+                            .lineLimit(1)
+                    }
+                }
+                Spacer()
+                if let _ = car.maintenance.first?.currentOdometerKM {
+                    Text("\(mileage) km")
+                        .font(.svTitle)
+                        .foregroundStyle(.svOnSurface)
                         .lineLimit(1)
                 }
             }
