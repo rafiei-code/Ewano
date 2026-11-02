@@ -136,7 +136,7 @@ enum ServiceInterval {
         }
     }
 
-    static let dueSoonThreshold = 0.1
+    static let dueSoonThreshold = 0.3
 
     /// How far through the interval it is: 0 at the last service, 1 when due, above 1 when overdue.
     var progress: Double? {
