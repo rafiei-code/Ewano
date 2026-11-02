@@ -66,6 +66,7 @@ struct AppScreenHeaderView: View {
 
             }
         }
+        .frame(height: 40)
         .padding(.horizontal, 8)
     }
 
